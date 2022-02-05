@@ -5,7 +5,7 @@ import { Login } from './components/Login';
 
 export interface Route {
   path: string;
-  component: React.FC<RouteComponentProps>;
+  component: React.FC<RouteComponentProps<any>> | React.FC<any>;
   exact?: boolean;
 }
 

@@ -13,22 +13,25 @@ import Typography from '@material-ui/core/Typography';
 import { ROUTES } from '../../routes';
 import restApi from '../../network/restApi';
 import { useStyles } from './useStyles';
+import { useAuthContext } from '../../contexts/AuthContext';
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [hasLoginFailed, setHasLoginFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const { login } = useAuthContext();
   const history = useHistory();
   const classes = useStyles();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      await restApi.authenticate(email, password);
+      await login(email, password);
+
       history.push(ROUTES.calendar);
     } catch (error: any) {
-      if ([401, 404].includes(error?.response?.status)) {
+      if ([401, 403].includes(error?.response?.status)) {
         setErrorMessage('The provided credentails are invalid.');
       } else {
         setErrorMessage('Internal error occurred. Please try again later.');

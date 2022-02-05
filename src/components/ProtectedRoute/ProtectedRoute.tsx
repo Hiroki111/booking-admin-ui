@@ -1,16 +1,15 @@
 import { Route, Redirect } from 'react-router-dom';
 
+import { useAuthContext } from '../../contexts/AuthContext';
 import { ROUTES, Route as RouteObj } from '../../routes';
 
 export function ProtectedRoute({ component: Component, ...rest }: RouteObj) {
-  // Update this with a context
-  const auth = { isAuthenticated: true };
-  return (
-    <Route
-      {...rest}
-      render={(props) => {
-        return auth.isAuthenticated ? <Component {...props} /> : <Redirect to={ROUTES.login} />;
-      }}
-    />
-  );
+  const { isFetchingUser, user } = useAuthContext();
+  if (isFetchingUser) {
+    return null;
+  } else if (!user) {
+    return <Redirect to={ROUTES.login} />;
+  }
+
+  return <Route {...rest} render={(props) => <Component {...props} />} />;
 }

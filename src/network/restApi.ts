@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 
 import { AuthenticateResponseBodyDto } from '../interfaces/authenticate';
+import { User } from '../interfaces/user';
 
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -8,7 +9,7 @@ const defaultHeaders = {
 };
 
 const restApi = {
-  authenticate: function (email: string, password: string): Promise<AxiosResponse<AuthenticateResponseBodyDto>> {
+  authenticate: function (email: string, password: string): Promise<AxiosResponse<User>> {
     return axios({
       method: 'POST',
       url: '/api/auth/login',
@@ -25,10 +26,10 @@ const restApi = {
     });
   },
 
-  checkLoginStatus: function (): Promise<AxiosResponse<string>> {
+  fetchLoggedInUser: function (): Promise<AxiosResponse<User>> {
     return axios({
       method: 'GET',
-      url: '/api/auth/checkToken',
+      url: '/api/auth/loggedInUser',
     });
   },
 };
