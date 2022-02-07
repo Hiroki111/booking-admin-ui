@@ -1,12 +1,12 @@
 import { useHistory } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, Typography, Grid } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import clsx from 'clsx';
 
 import { useStyles } from './useStyles';
 import { ROUTES } from '../../routes';
-import restApi from '../../network/restApi';
+import { useAuthContext } from '../../contexts/AuthContext';
 
 interface Props {
   isDrawerOpening: boolean;
@@ -16,13 +16,11 @@ interface Props {
 export function Calendar({ isDrawerOpening, handleDrawerOpen }: Props) {
   const classes = useStyles();
   const history = useHistory();
+  const { logout, user } = useAuthContext();
 
   async function handleClickLogout() {
     try {
-      const res = await restApi.logout();
-      if (res.status !== 200) {
-        throw new Error('logout failed');
-      }
+      await logout();
       history.push(ROUTES.login);
     } catch (error) {
       alert('Error logging out. Please try again later.');
@@ -41,12 +39,17 @@ export function Calendar({ isDrawerOpening, handleDrawerOpen }: Props) {
         >
           <MenuIcon />
         </IconButton>
-        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-          Dashboard
-        </Typography>
-        <IconButton className={classes.logout} onClick={handleClickLogout}>
-          <ExitToAppIcon color="inherit" />
-        </IconButton>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+            Booking
+          </Typography>
+          <Typography component="p" color="inherit" noWrap className={classes.title}>
+            {user?.name}
+            <IconButton className={classes.logout} onClick={handleClickLogout}>
+              <ExitToAppIcon color="inherit" />
+            </IconButton>
+          </Typography>
+        </Grid>
       </Toolbar>
     </AppBar>
   );

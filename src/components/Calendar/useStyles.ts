@@ -28,7 +28,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'none',
   },
   title: {
-    flexGrow: 1,
+    padding: '12px 0',
   },
   logout: {
     color: 'inherit',

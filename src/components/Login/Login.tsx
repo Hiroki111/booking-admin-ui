@@ -11,7 +11,6 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import { ROUTES } from '../../routes';
-import restApi from '../../network/restApi';
 import { useStyles } from './useStyles';
 import { useAuthContext } from '../../contexts/AuthContext';
 

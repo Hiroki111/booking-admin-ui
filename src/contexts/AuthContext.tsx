@@ -13,6 +13,7 @@ export interface AuthContextInterface {
   setIsFetchingUser: (isFetchingUser: boolean) => void;
   setUser: (user: User) => void;
   login: (email: string, password: string) => void;
+  logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextInterface | undefined>(undefined);
@@ -40,12 +41,18 @@ export function AuthContextProvider({ children }: Props) {
     setUser(res.data);
   }
 
+  async function logout() {
+    await restApi.logout();
+    setUser(null);
+  }
+
   const contextValue: AuthContextInterface = {
     isFetchingUser,
     user,
     setIsFetchingUser,
     setUser,
     login,
+    logout,
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
