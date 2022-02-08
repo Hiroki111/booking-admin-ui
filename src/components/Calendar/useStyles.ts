@@ -3,8 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 const drawerWidth = 240;
 
 export const useStyles = makeStyles((theme) => ({
-  toolbar: {
+  toolBar: {
     paddingRight: 24,
+    justifyContent: 'space-between',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -22,7 +23,7 @@ export const useStyles = makeStyles((theme) => ({
     }),
   },
   menuButton: {
-    marginRight: 36,
+    marginRight: 12,
   },
   menuButtonHidden: {
     display: 'none',
