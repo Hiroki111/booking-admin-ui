@@ -6,16 +6,16 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import clsx from 'clsx';
 
 import { useStyles } from './useStyles';
-import { ROUTES } from '../../routes';
-import { useAuthContext } from '../../contexts/AuthContext';
-import { useIsSmallWindow } from '../../hooks/window';
+import { ROUTES } from '../../../routes';
+import { useAuthContext } from '../../../contexts/AuthContext';
+import { useIsSmallWindow } from '../../../hooks/window';
 
 interface Props {
-  isDrawerOpening: boolean;
-  handleDrawerOpen: () => void;
+  isDrawerOpening?: boolean;
+  handleDrawerOpen?: () => void;
 }
 
-export function Calendar({ isDrawerOpening, handleDrawerOpen }: Props) {
+export function Header({ isDrawerOpening, handleDrawerOpen }: Props) {
   const classes = useStyles();
   const history = useHistory();
   const { logout, user } = useAuthContext();
@@ -24,7 +24,7 @@ export function Calendar({ isDrawerOpening, handleDrawerOpen }: Props) {
   async function handleClickLogout() {
     try {
       await logout();
-      history.push(ROUTES.login);
+      history.push(ROUTES.login as string);
     } catch (error) {
       alert('Error logging out. Please try again later.');
     }

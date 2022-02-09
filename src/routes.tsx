@@ -1,26 +1,23 @@
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteProps } from 'react-router-dom';
 
-import { Calendar } from './components/Calendar';
+import { Calendar } from './components/Home/Calendar';
 import { Login } from './components/Login';
 
-export interface Route {
-  path: string;
-  component: React.FC<RouteComponentProps<any>> | React.FC<any>;
-  exact?: boolean;
-}
-
-const calendar: Route = {
+const calendar: RouteProps = {
   path: '/',
   component: Calendar,
   exact: true,
 };
 
-const login: Route = {
+const login: RouteProps = {
   path: '/login',
   component: Login,
 };
 
-export const ROUTES = {
-  calendar: calendar.path,
-  login: login.path,
+// TODO: rename it
+export const ROUTES: Record<string, string> = {
+  calendar: calendar.path as string,
+  login: login.path as string,
 };
+
+export const PROTECTED_ROUTES: RouteProps[] = [calendar];

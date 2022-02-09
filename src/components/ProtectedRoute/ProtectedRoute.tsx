@@ -1,9 +1,9 @@
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, RouteProps } from 'react-router-dom';
 
 import { useAuthContext } from '../../contexts/AuthContext';
-import { ROUTES, Route as RouteObj } from '../../routes';
+import { ROUTES } from '../../routes';
 
-export function ProtectedRoute({ component: Component, ...rest }: RouteObj) {
+export function ProtectedRoute({ component: Component, ...rest }: RouteProps) {
   const { isFetchingUser, user } = useAuthContext();
   if (isFetchingUser) {
     return null;
@@ -11,5 +11,5 @@ export function ProtectedRoute({ component: Component, ...rest }: RouteObj) {
     return <Redirect to={ROUTES.login} />;
   }
 
-  return <Route {...rest} render={(props) => <Component {...props} />} />;
+  return <Route {...rest} component={Component} />;
 }
