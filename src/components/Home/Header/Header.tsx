@@ -6,7 +6,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import clsx from 'clsx';
 
 import { useStyles } from './useStyles';
-import { ROUTES } from '../../../routes';
+import { PATHS } from '../../../routes';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { useIsSmallWindow } from '../../../hooks/window';
 
@@ -24,7 +24,7 @@ export function Header({ isDrawerOpening, handleDrawerOpen }: Props) {
   async function handleClickLogout() {
     try {
       await logout();
-      history.push(ROUTES.login as string);
+      history.push(PATHS.login);
     } catch (error) {
       alert('Error logging out. Please try again later.');
     }

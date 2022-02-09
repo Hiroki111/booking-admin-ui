@@ -14,8 +14,7 @@ const login: RouteProps = {
   component: Login,
 };
 
-// TODO: rename it
-export const ROUTES: Record<string, string> = {
+export const PATHS: Record<string, string> = {
   calendar: calendar.path as string,
   login: login.path as string,
 };

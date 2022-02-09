@@ -10,7 +10,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { ROUTES } from '../../routes';
+import { PATHS } from '../../routes';
 import { useStyles } from './useStyles';
 import { useAuthContext } from '../../contexts/AuthContext';
 
@@ -28,7 +28,7 @@ export function Login() {
     try {
       await login(email, password);
 
-      history.push(ROUTES.calendar);
+      history.push(PATHS.calendar);
     } catch (error: any) {
       if ([401, 403].includes(error?.response?.status)) {
         setErrorMessage('The provided credentails are invalid.');
