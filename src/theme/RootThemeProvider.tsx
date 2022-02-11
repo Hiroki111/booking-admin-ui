@@ -1,10 +1,10 @@
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+import { ThemeProvider, createTheme, responsiveFontSizes } from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
 
 import './fonts.css';
 
-const theme = createTheme({
+let theme = createTheme({
   typography: {
     fontFamily: ['Open Sans'].join(','),
   },
@@ -14,6 +14,8 @@ const theme = createTheme({
     },
   },
 });
+
+theme = responsiveFontSizes(theme);
 
 export function RootThemeProvider({ children }: { children: JSX.Element | JSX.Element[] }) {
   return (
