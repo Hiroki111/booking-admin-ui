@@ -23,11 +23,10 @@ export const useStyles = makeStyles((theme) => ({
       width: theme.spacing(9),
     },
   },
-  toolbarIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar,
+  list: {
+    paddingTop: 58,
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: 66,
+    },
   },
 }));

@@ -7,13 +7,15 @@ import { useStyles } from './useStyles';
 
 export function Home() {
   const classes = useStyles();
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [isDrawerIconClicked, setIsDrawerIconClicked] = useState<boolean>(false);
 
   return (
-    <div className={classes.content}>
-      <Header isDrawerOpen={isDrawerOpen} onClickOpenDrawerIcon={() => setIsDrawerOpen(true)} />
-      <Sidebar isDrawerOpen={isDrawerOpen} onClickCloseDrawerIcon={() => setIsDrawerOpen(false)} />
-      <Body />
+    <div>
+      <Header onClickOpenDrawerIcon={() => setIsDrawerIconClicked(!isDrawerIconClicked)} />
+      <div className={classes.content}>
+        <Sidebar isDrawerIconClicked={isDrawerIconClicked} />
+        <Body />
+      </div>
     </div>
   );
 }

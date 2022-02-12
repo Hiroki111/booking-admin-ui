@@ -3,7 +3,6 @@ import { AppBar, Toolbar, IconButton, Typography, Grid, Avatar } from '@material
 import PeopleIcon from '@material-ui/icons/People';
 import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import clsx from 'clsx';
 
 import { useStyles } from './useStyles';
 import { PATHS } from '../../../routes';
@@ -11,11 +10,10 @@ import { useAuthContext } from '../../../contexts/AuthContext';
 import { useIsSmallWindow } from '../../../hooks/window';
 
 interface Props {
-  isDrawerOpen: boolean;
   onClickOpenDrawerIcon: () => void;
 }
 
-export function Header({ isDrawerOpen, onClickOpenDrawerIcon }: Props) {
+export function Header({ onClickOpenDrawerIcon }: Props) {
   const classes = useStyles();
   const history = useHistory();
   const { logout, user } = useAuthContext();
@@ -36,35 +34,34 @@ export function Header({ isDrawerOpen, onClickOpenDrawerIcon }: Props) {
     }
 
     const nameArray = user.name.trim().split(' ') || [];
-    let initials: string;
 
     if (nameArray.length === 0) {
-      initials = '';
+      return '';
     } else if (nameArray.length === 1) {
-      initials = nameArray[0].charAt(0).toUpperCase();
-    } else {
-      const firstChar = nameArray[0].charAt(0).toUpperCase();
-      const lastChar = nameArray[nameArray.length - 1].charAt(0).toUpperCase();
-      initials = `${firstChar}${lastChar}`;
+      return nameArray[0].charAt(0).toUpperCase();
     }
 
-    return initials;
+    const firstChar = nameArray[0].charAt(0).toUpperCase();
+    const lastChar = nameArray[nameArray.length - 1].charAt(0).toUpperCase();
+    return `${firstChar}${lastChar}`;
   }
 
   return (
-    <AppBar position="absolute" className={clsx(classes.appBar, isDrawerOpen && classes.appBarShift)}>
+    <AppBar position="absolute" className={classes.appBar}>
       <Toolbar className={classes.toolBar}>
         <Grid container>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={onClickOpenDrawerIcon}
-            className={clsx(classes.menuButton, isDrawerOpen && classes.menuButtonHidden)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap>
+          {isSmallWindow && (
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={onClickOpenDrawerIcon}
+              className={classes.menuButton}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             Booking
           </Typography>
         </Grid>
@@ -72,7 +69,7 @@ export function Header({ isDrawerOpen, onClickOpenDrawerIcon }: Props) {
           {isSmallWindow ? (
             <Avatar>{getAvatarContent()}</Avatar>
           ) : (
-            <Typography component="p" color="inherit" noWrap>
+            <Typography component="p" color="inherit" noWrap className={classes.title}>
               {user?.name}
               <IconButton className={classes.logout} onClick={handleClickLogout}>
                 <ExitToAppIcon color="inherit" />
