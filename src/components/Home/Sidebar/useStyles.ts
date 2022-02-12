@@ -24,9 +24,9 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   list: {
-    paddingTop: 58,
+    paddingTop: 64,
     [theme.breakpoints.up('sm')]: {
-      paddingTop: 66,
+      paddingTop: 72,
     },
   },
 }));
