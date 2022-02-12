@@ -28,9 +28,6 @@ export const useStyles = makeStyles((theme) => ({
   menuButtonHidden: {
     display: 'none',
   },
-  title: {
-    padding: '12px 0',
-  },
   logout: {
     color: 'inherit',
   },

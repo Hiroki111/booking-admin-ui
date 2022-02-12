@@ -11,11 +11,11 @@ import { useAuthContext } from '../../../contexts/AuthContext';
 import { useIsSmallWindow } from '../../../hooks/window';
 
 interface Props {
-  isDrawerOpening?: boolean;
-  handleDrawerOpen?: () => void;
+  isDrawerOpen: boolean;
+  onClickOpenDrawerIcon: () => void;
 }
 
-export function Header({ isDrawerOpening, handleDrawerOpen }: Props) {
+export function Header({ isDrawerOpen, onClickOpenDrawerIcon }: Props) {
   const classes = useStyles();
   const history = useHistory();
   const { logout, user } = useAuthContext();
@@ -52,19 +52,19 @@ export function Header({ isDrawerOpening, handleDrawerOpen }: Props) {
   }
 
   return (
-    <AppBar position="absolute" className={clsx(classes.appBar, isDrawerOpening && classes.appBarShift)}>
+    <AppBar position="absolute" className={clsx(classes.appBar, isDrawerOpen && classes.appBarShift)}>
       <Toolbar className={classes.toolBar}>
         <Grid container>
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, isDrawerOpening && classes.menuButtonHidden)}
+            onClick={onClickOpenDrawerIcon}
+            className={clsx(classes.menuButton, isDrawerOpen && classes.menuButtonHidden)}
           >
             <MenuIcon />
           </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+          <Typography component="h1" variant="h6" color="inherit" noWrap>
             Booking
           </Typography>
         </Grid>
@@ -72,7 +72,7 @@ export function Header({ isDrawerOpening, handleDrawerOpen }: Props) {
           {isSmallWindow ? (
             <Avatar>{getAvatarContent()}</Avatar>
           ) : (
-            <Typography component="p" color="inherit" noWrap className={classes.title}>
+            <Typography component="p" color="inherit" noWrap>
               {user?.name}
               <IconButton className={classes.logout} onClick={handleClickLogout}>
                 <ExitToAppIcon color="inherit" />

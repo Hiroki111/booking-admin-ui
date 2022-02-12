@@ -1,7 +1,7 @@
 import { Container } from '@material-ui/core';
 import { Switch, Route } from 'react-router-dom';
-import { PROTECTED_ROUTES } from '../../../routes';
 
+import { PROTECTED_ROUTES } from '../../../routes';
 import { useStyles } from './useStyles';
 
 export function Body() {
