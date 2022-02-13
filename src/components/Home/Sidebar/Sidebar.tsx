@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import PeopleIcon from '@material-ui/icons/People';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
@@ -8,7 +9,6 @@ import clsx from 'clsx';
 
 import { useStyles } from './useStyles';
 import { useIsSmallWindow } from '../../../hooks/window';
-import { useEffect, useState } from 'react';
 
 interface Props {
   isDrawerIconClicked: boolean;
@@ -18,10 +18,10 @@ export function Sidebar({ isDrawerIconClicked }: Props) {
   const classes = useStyles();
   const isSmallWindow = useIsSmallWindow();
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(!isSmallWindow);
-  const [isDrawerStatusInitialized, setIsDrawerStatusInitialized] = useState<boolean>(false);
+  const [isComponentMounted, setIsComponentMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsDrawerStatusInitialized(true);
+    setIsComponentMounted(true);
   }, []);
 
   useEffect(() => {
@@ -29,11 +29,19 @@ export function Sidebar({ isDrawerIconClicked }: Props) {
   }, [isSmallWindow]);
 
   useEffect(() => {
-    if (isDrawerStatusInitialized) {
-      setIsDrawerOpen(!isDrawerOpen && isDrawerStatusInitialized);
+    if (isComponentMounted) {
+      setIsDrawerOpen(!isDrawerOpen);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDrawerIconClicked]);
+
+  const listItems = [
+    { icon: () => <CalendarTodayIcon />, listItemText: 'Calendar' },
+    { icon: () => <ScheduleIcon />, listItemText: 'Bookings' },
+    { icon: () => <PeopleIcon />, listItemText: 'Customers' },
+    { icon: () => <PeopleAltOutlinedIcon />, listItemText: 'Staff' },
+    { icon: () => <WorkIcon />, listItemText: 'Services' },
+  ];
 
   return (
     <Drawer
@@ -44,36 +52,14 @@ export function Sidebar({ isDrawerIconClicked }: Props) {
       open={isDrawerOpen}
     >
       <List className={classes.list}>
-        <ListItem button>
-          <ListItemIcon>
-            <CalendarTodayIcon />
-          </ListItemIcon>
-          <ListItemText primary="Calendar" />
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon>
-            <ScheduleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Bookings" />
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Customers" />
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon>
-            <PeopleAltOutlinedIcon />
-          </ListItemIcon>
-          <ListItemText primary="Staff" />
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon>
-            <WorkIcon />
-          </ListItemIcon>
-          <ListItemText primary="Services" />
-        </ListItem>
+        {listItems.map((listItem, i) => (
+          <ListItem button key={i}>
+            <ListItemIcon>
+              <listItem.icon />
+            </ListItemIcon>
+            <ListItemText primary={listItem.listItemText} />
+          </ListItem>
+        ))}
       </List>
     </Drawer>
   );

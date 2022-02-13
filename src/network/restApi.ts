@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { AuthenticateResponseBodyDto } from '../interfaces/authenticate';
 import { User } from '../interfaces/user';
 
 const defaultHeaders = {
