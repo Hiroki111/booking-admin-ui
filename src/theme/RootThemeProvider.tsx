@@ -4,18 +4,16 @@ import grey from '@material-ui/core/colors/grey';
 
 import './fonts.css';
 
-export const breakpoints = {
-  values: {
-    xs: 0,
-    sm: 600,
-    md: 960,
-    lg: 1280,
-    xl: 1920,
+export const themeConfig = {
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
   },
-};
-
-let theme = createTheme({
-  breakpoints,
   typography: {
     fontFamily: ['Open Sans'].join(','),
   },
@@ -24,9 +22,9 @@ let theme = createTheme({
       main: grey[900],
     },
   },
-});
+};
 
-theme = responsiveFontSizes(theme);
+const theme = responsiveFontSizes(createTheme(themeConfig));
 
 export function RootThemeProvider({ children }: { children: JSX.Element | JSX.Element[] }) {
   return (
