@@ -1,10 +1,15 @@
-import { RouteComponentProps } from 'react-router-dom';
+import { Grid } from '@material-ui/core';
 
-interface Props extends RouteComponentProps {
-  isDrawerOpening?: boolean;
-  handleDrawerOpen?: () => void;
-}
+import { CalendarWidget } from './CalendarWidget';
+import { useStyles } from './useStyles';
 
-export function Calendar({ isDrawerOpening, handleDrawerOpen }: Props) {
-  return <div>calendar</div>;
+export function Calendar() {
+  const classes = useStyles();
+
+  return (
+    <Grid container direction="column">
+      <div>Top</div>
+      <CalendarWidget />
+    </Grid>
+  );
 }
