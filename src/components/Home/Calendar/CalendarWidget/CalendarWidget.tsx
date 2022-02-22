@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import FullCalendar, { EventContentArg } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -5,19 +6,30 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import { Paper } from '@material-ui/core';
 
+import { useFetchBookingsQuery } from '../../../../queries/booking';
+import { Booking } from '../../../../interfaces/booking';
+import { useStyles } from './useStyles';
+
 export function CalendarWidget() {
-  const mockEvents = [
-    {
-      title: 'event 1',
-      start: '2022-02-14T10:00:00',
-      end: '2022-02-14T12:00:00',
-    },
-    {
-      title: 'event 2',
-      start: '2022-02-18T10:00:00',
-      end: '2022-02-18T12:00:00',
-    },
-  ];
+  const classes = useStyles();
+  const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
+  const fetchBookingsQuery = useFetchBookingsQuery();
+  const bookings = fetchBookingsQuery.data || [];
+
+  useEffect(() => {
+    const calendarEvents = bookings?.map((booking) => convertBookingToCalendarEvent(booking));
+    setCalendarEvents(calendarEvents);
+  }, [bookings]);
+
+  function convertBookingToCalendarEvent(booking: Booking) {
+    const title = booking.services.map((service) => service.name).join(', ');
+
+    return {
+      title,
+      start: `${booking.date}T${booking.startTime}`,
+      end: `${booking.date}T${booking.endTime}`,
+    };
+  }
 
   const newButton = {
     new: {
@@ -38,10 +50,11 @@ export function CalendarWidget() {
 
   function renderEventContent(eventInfo: EventContentArg) {
     return (
-      <>
-        <b>{eventInfo?.timeText}</b>
-        <i>{eventInfo?.event?.title}</i>
-      </>
+      <div className={classes.eventContent}>
+        <i>
+          <b>{eventInfo?.timeText}</b> {eventInfo?.event?.title}
+        </i>
+      </div>
     );
   }
 
@@ -50,11 +63,16 @@ export function CalendarWidget() {
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
         initialView="dayGridMonth"
-        events={mockEvents}
+        events={calendarEvents}
         customButtons={newButton}
         headerToolbar={headerToolbar}
         dateClick={handleDateClick}
         eventContent={renderEventContent}
+        eventTimeFormat={{
+          hour: 'numeric',
+          minute: '2-digit',
+          meridiem: false,
+        }}
       />
     </Paper>
   );

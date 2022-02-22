@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
+import { Booking } from '../interfaces/booking';
 import { User } from '../interfaces/user';
 
 const defaultHeaders = {
@@ -30,6 +31,15 @@ const restApi = {
       method: 'GET',
       url: '/api/auth/loggedInUser',
     });
+  },
+
+  fetchBookings: async function (): Promise<Booking[]> {
+    const res: AxiosResponse<Booking[]> = await axios({
+      method: 'GET',
+      url: '/api/bookings',
+      headers: defaultHeaders,
+    });
+    return res.data;
   },
 };
 
