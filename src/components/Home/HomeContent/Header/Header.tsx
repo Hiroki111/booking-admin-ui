@@ -4,9 +4,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { useStyles } from './useStyles';
-import { PATHS } from '../../../routes';
-import { useAuthContext } from '../../../contexts/AuthContext';
-import { useIsSmallWindow } from '../../../hooks/window';
+import { PATHS } from '../../../../routes';
+import { useAuthContext } from '../../../../contexts/AuthContext';
+import { useIsSmallWindow } from '../../../../hooks/window';
 import { UserAvatar } from './UserAvatar';
 
 interface Props {

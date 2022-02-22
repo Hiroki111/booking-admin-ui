@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@material-ui/core';
 
 import { CalendarWidget } from './CalendarWidget';
-import { useFetchBookingsQuery } from '../../../queries/booking';
+import { useFetchBookingsQuery } from '../../../../../queries/booking';
 
 export function Calendar() {
   const fetchBookingsQuery = useFetchBookingsQuery();

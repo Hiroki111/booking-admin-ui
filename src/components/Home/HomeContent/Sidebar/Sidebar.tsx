@@ -8,7 +8,7 @@ import WorkIcon from '@material-ui/icons/Work';
 import clsx from 'clsx';
 
 import { useStyles } from './useStyles';
-import { useIsSmallWindow } from '../../../hooks/window';
+import { useIsSmallWindow } from '../../../../hooks/window';
 
 interface Props {
   isDrawerIconClicked: boolean;

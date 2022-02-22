@@ -1,6 +1,6 @@
 import { RouteProps } from 'react-router-dom';
 
-import { Calendar } from './components/Home/Calendar';
+import { Calendar } from './components/Home/HomeContent/Body/Calendar';
 import { Login } from './components/Login';
 
 const calendar: RouteProps = {

@@ -6,8 +6,8 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import { Paper } from '@material-ui/core';
 
-import { useFetchBookingsQuery } from '../../../../queries/booking';
-import { Booking } from '../../../../interfaces/booking';
+import { useFetchBookingsQuery } from '../../../../../../queries/booking';
+import { Booking } from '../../../../../../interfaces/booking';
 import { useStyles } from './useStyles';
 
 export function CalendarWidget() {

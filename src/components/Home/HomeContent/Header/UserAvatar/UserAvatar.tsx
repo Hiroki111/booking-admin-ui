@@ -3,7 +3,7 @@ import { Avatar, Popover, Typography, Divider } from '@material-ui/core';
 import PeopleIcon from '@material-ui/icons/People';
 
 import { useStyles } from './useStyles';
-import { useAuthContext } from '../../../../contexts/AuthContext';
+import { useAuthContext } from '../../../../../contexts/AuthContext';
 
 interface Props {
   onClickLogout: () => void;
