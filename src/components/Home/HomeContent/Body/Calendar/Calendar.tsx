@@ -2,7 +2,8 @@ import { Grid, Paper, Typography } from '@material-ui/core';
 
 import { CalendarWidget } from './CalendarWidget';
 import { useFetchBookingsQuery } from '../../../../../queries/booking';
-import { TopBar } from './TopBar';
+import { SearchCondition } from './SearchCondition';
+import { WarningAlert } from '../../../../../util/WarningAlert';
 
 export function Calendar() {
   const fetchBookingsQuery = useFetchBookingsQuery();
@@ -10,17 +11,13 @@ export function Calendar() {
   return (
     <Grid container direction="column">
       <Paper>
-        <TopBar />
+        <SearchCondition />
         {fetchBookingsQuery.isLoading && (
           <Typography component="p" color="inherit">
             Loading...
           </Typography>
         )}
-        {fetchBookingsQuery.isError && (
-          <Typography component="p" color="inherit">
-            Internal error occurred
-          </Typography>
-        )}
+        {fetchBookingsQuery.isError && <WarningAlert message={'It failed to load booking data'} />}
         {fetchBookingsQuery.isSuccess && <CalendarWidget />}
       </Paper>
     </Grid>

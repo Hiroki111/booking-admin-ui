@@ -14,7 +14,7 @@ interface StaffOption {
 
 const DEFAULT_STAFF_OPTION = { key: -1, label: 'ALL STAFF' } as StaffOption;
 
-export function TopBar() {
+export function SearchCondition() {
   const classes = useStyles();
   const fetchStaffListQuery = useFetchStaffListQuery();
   const [staffOptions, setStaffOptions] = useState<StaffOption[]>([DEFAULT_STAFF_OPTION]);
