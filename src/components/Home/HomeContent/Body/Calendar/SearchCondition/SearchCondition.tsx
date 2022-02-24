@@ -6,31 +6,27 @@ import clsx from 'clsx';
 import { useStyles } from './useStyles';
 import { useFetchStaffListQuery } from '../../../../../../queries/staff';
 import { WarningAlert } from '../../../../../../util/WarningAlert';
+import { ALL_STAFF, useCalendarContext } from '../../../../../../contexts/CalendarContext';
+import { Staff } from '../../../../../../interfaces/staff';
 
-interface StaffOption {
-  key: number;
-  label: string;
-}
-
-const DEFAULT_STAFF_OPTION = { key: -1, label: 'ALL STAFF' } as StaffOption;
+type StaffOption = Pick<Staff, 'id' | 'name'>;
 
 export function SearchCondition() {
   const classes = useStyles();
   const fetchStaffListQuery = useFetchStaffListQuery();
-  const [staffOptions, setStaffOptions] = useState<StaffOption[]>([DEFAULT_STAFF_OPTION]);
-  const [selectedStaff, setSelectedStaff] = useState<StaffOption | null>();
-  const [inputValue, setInputValue] = useState<string>(DEFAULT_STAFF_OPTION.label);
+  const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
+  const [inputValue, setInputValue] = useState<string>(ALL_STAFF.name);
+  const { selectedStaff, setSelectedStaff } = useCalendarContext();
 
   useEffect(() => {
     const staffList = fetchStaffListQuery.data || [];
     const options = [
-      DEFAULT_STAFF_OPTION,
+      ALL_STAFF,
       ...staffList
         .sort((staffA, staffB) => staffA.name.localeCompare(staffB.name))
-        .map((staff) => ({ key: staff.id, label: staff.name } as StaffOption)),
+        .map((staff) => ({ id: staff.id, name: staff.name } as StaffOption)),
     ];
     setStaffOptions(options);
-    setSelectedStaff(options[0]);
   }, [fetchStaffListQuery.data]);
 
   if (fetchStaffListQuery.isLoading) {
@@ -44,10 +40,12 @@ export function SearchCondition() {
       <Autocomplete
         value={selectedStaff}
         inputValue={inputValue}
-        onChange={(event: any, newSelectedStaff: StaffOption | null) => setSelectedStaff(newSelectedStaff)}
-        onInputChange={(event, newInputString) => setInputValue(newInputString)}
+        onChange={(event: React.ChangeEvent<{}>, newSelectedStaff: StaffOption | null) =>
+          setSelectedStaff(newSelectedStaff as Staff | null)
+        }
+        onInputChange={(event: React.ChangeEvent<{}>, newInputString: string) => setInputValue(newInputString)}
         options={staffOptions}
-        getOptionLabel={(option) => option.label}
+        getOptionLabel={(option) => option.name}
         style={{ width: 250 }}
         renderInput={(params) => <TextField {...params} label="Staff" variant="outlined" />}
       />
