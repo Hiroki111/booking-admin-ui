@@ -47,7 +47,9 @@ export function SearchCondition() {
         options={staffOptions}
         getOptionLabel={(option) => option.name}
         style={{ width: 250 }}
-        renderInput={(params) => <TextField {...params} label="Staff" variant="outlined" />}
+        renderInput={(params) => (
+          <TextField {...params} label={selectedStaff ? 'Selected Staff' : 'No Staff Selected'} variant="outlined" />
+        )}
       />
     </FormControl>
   );

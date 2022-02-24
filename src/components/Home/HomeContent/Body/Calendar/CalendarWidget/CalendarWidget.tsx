@@ -60,19 +60,21 @@ export function CalendarWidget() {
   }
 
   return (
-    <FullCalendar
-      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-      initialView="timeGridWeek"
-      events={calendarEvents}
-      customButtons={newButton}
-      headerToolbar={headerToolbar}
-      dateClick={handleDateClick}
-      eventContent={renderEventContent}
-      eventTimeFormat={{
-        hour: 'numeric',
-        minute: '2-digit',
-        meridiem: false,
-      }}
-    />
+    <div className={classes.calendarWidgetContainer}>
+      <FullCalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+        initialView="timeGridWeek"
+        events={calendarEvents}
+        customButtons={newButton}
+        headerToolbar={headerToolbar}
+        dateClick={handleDateClick}
+        eventContent={renderEventContent}
+        eventTimeFormat={{
+          hour: 'numeric',
+          minute: '2-digit',
+          meridiem: false,
+        }}
+      />
+    </div>
   );
 }
