@@ -2,7 +2,7 @@ import { Grid, Paper, Typography } from '@material-ui/core';
 
 import { CalendarWidget } from './CalendarWidget';
 import { useFetchBookingsQuery } from '../../../../../queries/booking';
-import { SearchCondition } from './SearchCondition';
+import { ToolBar } from './ToolBar';
 import { WarningAlert } from '../../../../../util/WarningAlert';
 import { CalendarContextProvider } from '../../../../../contexts/CalendarContext';
 
@@ -14,7 +14,7 @@ export function Calendar() {
     <CalendarContextProvider>
       <Grid container direction="column">
         <Paper>
-          <SearchCondition />
+          <ToolBar />
           {fetchBookingsQuery.isLoading && (
             <Typography component="p" color="inherit">
               Loading...

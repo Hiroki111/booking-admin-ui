@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import FullCalendar, { EventContentArg } from '@fullcalendar/react';
+import { useEffect, useState, createRef, LegacyRef } from 'react';
+import FullCalendar, { DatesSetArg, EventContentArg } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
@@ -13,8 +13,9 @@ import { useCalendarContext } from '../../../../../../contexts/CalendarContext';
 export function CalendarWidget() {
   const classes = useStyles();
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
-  const { selectedStaff, areAllStaffSelected } = useCalendarContext();
+  const { selectedStaff, areAllStaffSelected, setCalendarApi, setCalendarTitle } = useCalendarContext();
   const fetchBookingsQuery = useFetchBookingsQuery();
+  const calendarRef: LegacyRef<FullCalendar> | undefined = createRef();
 
   useEffect(() => {
     const bookings = fetchBookingsQuery.data || [];
@@ -24,6 +25,13 @@ export function CalendarWidget() {
     setCalendarEvents(calendarEvents);
   }, [fetchBookingsQuery.data, selectedStaff?.id, areAllStaffSelected]);
 
+  useEffect(() => {
+    if (!calendarRef?.current) {
+      return;
+    }
+    setCalendarApi(calendarRef.current.getApi());
+  }, [calendarRef, setCalendarApi]);
+
   function convertBookingToCalendarEvent(booking: Booking) {
     return {
       title: booking.services.map((service) => service.name).join(', '),
@@ -31,19 +39,6 @@ export function CalendarWidget() {
       end: `${booking.date}T${booking.endTime}`,
     };
   }
-
-  const newButton = {
-    new: {
-      text: 'new',
-      click: () => console.log('new event'),
-    },
-  };
-
-  const headerToolbar = {
-    left: 'prev,next today',
-    center: 'title',
-    right: 'dayGridMonth,timeGridWeek,timeGridDay new',
-  };
 
   function handleDateClick(dateInfo: DateClickArg) {
     console.log(dateInfo);
@@ -62,11 +57,12 @@ export function CalendarWidget() {
   return (
     <div className={classes.calendarWidgetContainer}>
       <FullCalendar
+        ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
         initialView="timeGridWeek"
         events={calendarEvents}
-        customButtons={newButton}
-        headerToolbar={headerToolbar}
+        datesSet={(arg: DatesSetArg) => setCalendarTitle(arg.view.title)}
+        headerToolbar={false}
         dateClick={handleDateClick}
         eventContent={renderEventContent}
         eventTimeFormat={{

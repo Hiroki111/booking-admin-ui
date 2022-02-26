@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
-import { FormControl, TextField } from '@material-ui/core';
+import { Button, ButtonGroup, Grid, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import clsx from 'clsx';
 
-import { useStyles } from './useStyles';
 import { useFetchStaffListQuery } from '../../../../../../queries/staff';
 import { WarningAlert } from '../../../../../../util/WarningAlert';
 import { ALL_STAFF, useCalendarContext } from '../../../../../../contexts/CalendarContext';
 import { Staff } from '../../../../../../interfaces/staff';
+import { ViewModeMenu } from './ViewModeMenu';
+import { useStyles } from './useStyles';
 
 type StaffOption = Pick<Staff, 'id' | 'name'>;
 
-export function SearchCondition() {
+export function ToolBar() {
   const classes = useStyles();
   const fetchStaffListQuery = useFetchStaffListQuery();
   const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
   const [inputValue, setInputValue] = useState<string>(ALL_STAFF.name);
-  const { selectedStaff, setSelectedStaff } = useCalendarContext();
+  const { selectedStaff, setSelectedStaff, calendarApi, calendarTitle } = useCalendarContext();
 
   useEffect(() => {
     const staffList = fetchStaffListQuery.data || [];
@@ -36,7 +36,7 @@ export function SearchCondition() {
   }
 
   return (
-    <FormControl className={clsx(classes.margin, classes.textField)} variant="filled">
+    <Grid container justifyContent="space-between" className={classes.toolbarContainer}>
       <Autocomplete
         value={selectedStaff}
         inputValue={inputValue}
@@ -51,6 +51,15 @@ export function SearchCondition() {
           <TextField {...params} label={selectedStaff ? 'Selected Staff' : 'No Staff Selected'} variant="outlined" />
         )}
       />
-    </FormControl>
+      <ButtonGroup color="primary">
+        <Button onClick={() => calendarApi?.prev()}>{'<'}</Button>
+        <Button>{calendarTitle}</Button>
+        <Button onClick={() => calendarApi?.next()}>{'>'}</Button>
+      </ButtonGroup>
+      <Button onClick={() => calendarApi?.today()} variant="outlined">
+        {'Today'}
+      </Button>
+      <ViewModeMenu />
+    </Grid>
   );
 }
