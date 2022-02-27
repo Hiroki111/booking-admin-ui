@@ -13,6 +13,6 @@ export const useStyles = makeStyles((theme) => ({
   selectedMenuItem: {
     ...hoverableOption(theme),
     color: theme.palette.common.white,
-    backgroundColor: theme.palette.info.main,
+    backgroundColor: theme.palette.primary.main,
   },
 }));

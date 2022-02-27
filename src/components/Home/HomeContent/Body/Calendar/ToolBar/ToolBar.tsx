@@ -46,7 +46,7 @@ export function ToolBar() {
         onInputChange={(event: React.ChangeEvent<{}>, newInputString: string) => setInputValue(newInputString)}
         options={staffOptions}
         getOptionLabel={(option) => option.name}
-        style={{ width: 250 }}
+        style={{ minWidth: 220 }}
         renderInput={(params) => (
           <TextField {...params} label={selectedStaff ? 'Selected Staff' : 'No Staff Selected'} variant="outlined" />
         )}
@@ -56,10 +56,13 @@ export function ToolBar() {
         <Button>{calendarTitle}</Button>
         <Button onClick={() => calendarApi?.next()}>{'>'}</Button>
       </ButtonGroup>
-      <Button onClick={() => calendarApi?.today()} variant="outlined">
-        {'Today'}
+      <Button onClick={() => calendarApi?.today()} className={classes.button} variant="outlined">
+        Today
       </Button>
       <ViewModeMenu />
+      <Button onClick={() => {}} className={classes.button} variant="contained" color="primary">
+        Add New
+      </Button>
     </Grid>
   );
 }
