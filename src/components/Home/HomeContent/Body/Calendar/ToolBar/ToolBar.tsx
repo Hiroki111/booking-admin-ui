@@ -1,33 +1,22 @@
-import { useEffect, useState } from 'react';
-import { Button, ButtonGroup, Grid, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { useRef } from 'react';
+import { Button, Grid } from '@material-ui/core';
 
 import { useFetchStaffListQuery } from '../../../../../../queries/staff';
 import { WarningAlert } from '../../../../../../util/WarningAlert';
-import { ALL_STAFF, useCalendarContext } from '../../../../../../contexts/CalendarContext';
-import { Staff } from '../../../../../../interfaces/staff';
+import { useCalendarContext } from '../../../../../../contexts/CalendarContext';
 import { ViewModeMenu } from './ViewModeMenu';
 import { useStyles } from './useStyles';
-
-type StaffOption = Pick<Staff, 'id' | 'name'>;
+import { StaffSelector } from './StaffSelector';
+import { DateNavigator } from './DateNavigator';
+import { ActionDrawer } from './ActionDrawer';
+import { useIsSmallWindow } from '../../../../../../hooks/window';
 
 export function ToolBar() {
   const classes = useStyles();
+  const toolbarRef: React.MutableRefObject<any> = useRef();
   const fetchStaffListQuery = useFetchStaffListQuery();
-  const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
-  const [inputValue, setInputValue] = useState<string>(ALL_STAFF.name);
-  const { selectedStaff, setSelectedStaff, calendarApi, calendarTitle } = useCalendarContext();
-
-  useEffect(() => {
-    const staffList = fetchStaffListQuery.data || [];
-    const options = [
-      ALL_STAFF,
-      ...staffList
-        .sort((staffA, staffB) => staffA.name.localeCompare(staffB.name))
-        .map((staff) => ({ id: staff.id, name: staff.name } as StaffOption)),
-    ];
-    setStaffOptions(options);
-  }, [fetchStaffListQuery.data]);
+  const { calendarApi } = useCalendarContext();
+  const isSmallWindow = useIsSmallWindow();
 
   if (fetchStaffListQuery.isLoading) {
     return null;
@@ -36,33 +25,37 @@ export function ToolBar() {
   }
 
   return (
-    <Grid container justifyContent="space-between" className={classes.toolbarContainer}>
-      <Autocomplete
-        value={selectedStaff}
-        inputValue={inputValue}
-        onChange={(event: React.ChangeEvent<{}>, newSelectedStaff: StaffOption | null) =>
-          setSelectedStaff(newSelectedStaff as Staff | null)
-        }
-        onInputChange={(event: React.ChangeEvent<{}>, newInputString: string) => setInputValue(newInputString)}
-        options={staffOptions}
-        getOptionLabel={(option) => option.name}
-        style={{ minWidth: 220 }}
-        renderInput={(params) => (
-          <TextField {...params} label={selectedStaff ? 'Selected Staff' : 'No Staff Selected'} variant="outlined" />
-        )}
-      />
-      <ButtonGroup color="primary">
-        <Button onClick={() => calendarApi?.prev()}>{'<'}</Button>
-        <Button>{calendarTitle}</Button>
-        <Button onClick={() => calendarApi?.next()}>{'>'}</Button>
-      </ButtonGroup>
-      <Button onClick={() => calendarApi?.today()} className={classes.button} variant="outlined">
-        Today
-      </Button>
-      <ViewModeMenu />
-      <Button onClick={() => {}} className={classes.button} variant="contained" color="primary">
-        Add New
-      </Button>
+    <Grid container justifyContent="space-between" className={classes.toolbarContainer} ref={toolbarRef}>
+      {isSmallWindow ? (
+        <>
+          <Grid item>
+            <DateNavigator />
+          </Grid>
+          <Grid item>
+            <ActionDrawer />
+          </Grid>
+        </>
+      ) : (
+        <>
+          <Grid item>
+            <StaffSelector />
+          </Grid>
+          <Grid item>
+            <DateNavigator />
+          </Grid>
+          <Grid item>
+            <Grid container className={classes.actionButtonContainer}>
+              <Button onClick={() => calendarApi?.today()} className={classes.button} variant="outlined">
+                Today
+              </Button>
+              <ViewModeMenu />
+              <Button onClick={() => {}} className={classes.button} variant="contained" color="primary">
+                Add New
+              </Button>
+            </Grid>
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 }

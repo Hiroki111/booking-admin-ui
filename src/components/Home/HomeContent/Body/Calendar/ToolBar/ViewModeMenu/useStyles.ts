@@ -6,6 +6,7 @@ export const useStyles = makeStyles((theme) => ({
   button: {
     textTransform: 'initial',
     width: '93px',
+    height: '56px',
   },
   dropdownIcon: {
     marginRight: '-6px',

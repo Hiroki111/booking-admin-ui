@@ -4,23 +4,12 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import { useStyles } from './useStyles';
 import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
-
-enum CalendarView {
-  Day = 'timeGridDay',
-  Week = 'timeGridWeek',
-  Month = 'dayGridMonth',
-}
-
-type CalendarViewKey = keyof typeof CalendarView;
+import { CalendarViewKey } from '../../../../../../../interfaces/calendar';
 
 export function ViewModeMenu() {
-  const VIEW_NAMES = Object.keys(CalendarView) as CalendarViewKey[];
-  const DEFAULT_VIEW = 'Week' as CalendarViewKey;
-
   const classes = useStyles();
-  const [selectedView, setSelectedView] = useState<CalendarViewKey>(DEFAULT_VIEW);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { calendarApi } = useCalendarContext();
+  const { calendarViewKeys, selectedView, updateCalendarView } = useCalendarContext();
 
   function handleClose(view: CalendarViewKey) {
     setAnchorEl(null);
@@ -28,8 +17,7 @@ export function ViewModeMenu() {
       return;
     }
 
-    setSelectedView(view);
-    calendarApi?.changeView(CalendarView[view]);
+    updateCalendarView(view);
   }
 
   return (
@@ -43,13 +31,13 @@ export function ViewModeMenu() {
         <ArrowDropDownIcon className={classes.dropdownIcon} />
       </Button>
       <Menu anchorEl={anchorEl} keepMounted open={!!anchorEl} onClose={() => handleClose(selectedView)}>
-        {VIEW_NAMES.map((viewName, i) => (
+        {calendarViewKeys.map((calendarViewKey) => (
           <MenuItem
-            key={i}
-            className={selectedView === viewName ? classes.selectedMenuItem : ''}
-            onClick={() => handleClose(viewName)}
+            key={calendarViewKey}
+            className={selectedView === calendarViewKey ? classes.selectedMenuItem : ''}
+            onClick={() => handleClose(calendarViewKey)}
           >
-            {viewName}
+            {calendarViewKey}
           </MenuItem>
         ))}
       </Menu>
