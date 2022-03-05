@@ -7,6 +7,7 @@ export const useStyles = makeStyles((theme) => ({
     textTransform: 'initial',
     width: '93px',
     height: '56px',
+    backgroundColor: 'white',
   },
   dropdownIcon: {
     marginRight: '-6px',

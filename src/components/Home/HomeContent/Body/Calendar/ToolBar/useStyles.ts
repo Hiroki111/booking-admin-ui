@@ -1,7 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles';
 
+import { TOOLBAR_HEIGHT } from '../../../../../../styles/const';
+
 export const useStyles = makeStyles((theme) => ({
   toolbarContainer: {
+    height: TOOLBAR_HEIGHT,
     padding: theme.spacing(1),
   },
   actionButtonContainer: {
@@ -13,6 +16,9 @@ export const useStyles = makeStyles((theme) => ({
     textTransform: 'initial',
     width: '92px',
     height: '56px',
+  },
+  whiteButton: {
+    backgroundColor: 'white',
   },
   addNewButton: {
     color: theme.palette.text.primary,

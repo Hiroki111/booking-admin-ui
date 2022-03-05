@@ -10,6 +10,7 @@ import { StaffSelector } from './StaffSelector';
 import { DateNavigator } from './DateNavigator';
 import { ActionDrawer } from './ActionDrawer';
 import { useIsSmallWindow } from '../../../../../../hooks/window';
+import clsx from 'clsx';
 
 export function ToolBar() {
   const classes = useStyles();
@@ -45,7 +46,11 @@ export function ToolBar() {
           </Grid>
           <Grid item>
             <Grid container className={classes.actionButtonContainer}>
-              <Button onClick={() => calendarApi?.today()} className={classes.button} variant="outlined">
+              <Button
+                onClick={() => calendarApi?.today()}
+                className={clsx(classes.button, classes.whiteButton)}
+                variant="outlined"
+              >
                 Today
               </Button>
               <ViewModeMenu />

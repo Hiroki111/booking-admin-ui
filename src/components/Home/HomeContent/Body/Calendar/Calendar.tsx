@@ -5,16 +5,18 @@ import { useFetchBookingsQuery } from '../../../../../queries/booking';
 import { ToolBar } from './ToolBar';
 import { WarningAlert } from '../../../../../util/WarningAlert';
 import { CalendarContextProvider } from '../../../../../contexts/CalendarContext';
+import { useStyles } from './useStyles';
 
 export function Calendar() {
   const fetchBookingsQuery = useFetchBookingsQuery();
+  const classes = useStyles();
 
   // TODO: Create CalendarContent component and move everything under CalendarContextProvider to there
   return (
     <CalendarContextProvider>
-      <Grid container direction="column">
+      <Grid container direction="column" classes={{ container: classes.gridRoot }}>
+        <ToolBar />
         <Paper>
-          <ToolBar />
           {fetchBookingsQuery.isLoading && (
             <Typography component="p" color="inherit">
               Loading...
