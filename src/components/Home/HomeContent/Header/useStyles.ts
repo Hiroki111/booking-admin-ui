@@ -31,4 +31,13 @@ export const useStyles = makeStyles((theme) => ({
   logout: {
     color: 'inherit',
   },
+  drawerPaper: {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: '240px',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
 }));

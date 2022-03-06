@@ -1,12 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-const drawerWidth = 240;
-
 export const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: drawerWidth,
+    width: '240px',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,

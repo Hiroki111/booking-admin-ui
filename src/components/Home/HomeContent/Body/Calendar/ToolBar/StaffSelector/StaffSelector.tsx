@@ -14,7 +14,7 @@ export function StaffSelector() {
   const fetchStaffListQuery = useFetchStaffListQuery();
   const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
   const [inputValue, setInputValue] = useState<string>(ALL_STAFF.name);
-  const { selectedStaff, setSelectedStaff, calendarApi, calendarTitle } = useCalendarContext();
+  const { selectedStaff, setSelectedStaff } = useCalendarContext();
 
   useEffect(() => {
     const options = createStaffOptions(fetchStaffListQuery.data || []);
