@@ -3,8 +3,8 @@ import { Button, Menu, MenuItem } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import { useStyles } from './useStyles';
-import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
-import { CalendarViewKey } from '../../../../../../../interfaces/calendar';
+import { useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
+import { CalendarViewKey } from '../../../../../../../../interfaces/calendar';
 
 export function ViewModeMenu() {
   const classes = useStyles();

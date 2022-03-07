@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-import { TOOLBAR_HEIGHT } from '../../../../../../styles/const';
+import { TOOLBAR_HEIGHT } from '../../../../../../../styles/const';
 
 export const useStyles = makeStyles((theme) => ({
   toolbarContainer: {

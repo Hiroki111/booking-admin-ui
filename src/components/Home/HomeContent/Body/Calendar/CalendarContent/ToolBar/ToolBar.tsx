@@ -1,15 +1,15 @@
 import { useRef } from 'react';
 import { Button, Grid } from '@material-ui/core';
 
-import { useFetchStaffListQuery } from '../../../../../../queries/staff';
-import { WarningAlert } from '../../../../../../util/WarningAlert';
-import { useCalendarContext } from '../../../../../../contexts/CalendarContext';
+import { useFetchStaffListQuery } from '../../../../../../../queries/staff';
+import { WarningAlert } from '../../../../../../../util/WarningAlert';
+import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
 import { ViewModeMenu } from './ViewModeMenu';
 import { useStyles } from './useStyles';
 import { StaffSelector } from './StaffSelector';
 import { DateNavigator } from './DateNavigator';
 import { ActionDrawer } from './ActionDrawer';
-import { useIsSmallWindow } from '../../../../../../hooks/window';
+import { useIsSmallWindow } from '../../../../../../../hooks/window';
 import clsx from 'clsx';
 
 export function ToolBar() {

@@ -9,8 +9,15 @@ export const useStyles = makeStyles((theme) => ({
   },
   floatingButton: {
     position: 'fixed',
+    zIndex: 1,
+  },
+  todayButton: {
     right: 40,
     bottom: 40,
-    zIndex: 1,
+    backgroundColor: 'white',
+  },
+  addNewButton: {
+    right: 40,
+    bottom: 100,
   },
 }));

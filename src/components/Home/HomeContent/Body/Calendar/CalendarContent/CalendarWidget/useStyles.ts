@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-import { SMALL_WINDOW_HEADER_HEIGHT, HEADER_HEIGHT, TOOLBAR_HEIGHT } from '../../../../../../styles/const';
+import { SMALL_WINDOW_HEADER_HEIGHT, HEADER_HEIGHT, TOOLBAR_HEIGHT } from '../../../../../../../styles/const';
 
 export const useStyles = makeStyles((theme) => ({
   calendarWidgetContainer: {

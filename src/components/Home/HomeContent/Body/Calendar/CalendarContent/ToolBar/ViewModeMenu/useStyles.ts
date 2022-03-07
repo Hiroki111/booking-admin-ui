@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-import { hoverableOption } from '../../../../../../../styles/sharedStyles';
+import { hoverableOption } from '../../../../../../../../styles/sharedStyles';
 
 export const useStyles = makeStyles((theme) => ({
   button: {

@@ -5,10 +5,10 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 
-import { useFetchBookingsQuery } from '../../../../../../queries/booking';
-import { Booking } from '../../../../../../interfaces/booking';
+import { useFetchBookingsQuery } from '../../../../../../../queries/booking';
+import { Booking } from '../../../../../../../interfaces/booking';
 import { useStyles } from './useStyles';
-import { useCalendarContext } from '../../../../../../contexts/CalendarContext';
+import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
 
 export function CalendarWidget() {
   const classes = useStyles();

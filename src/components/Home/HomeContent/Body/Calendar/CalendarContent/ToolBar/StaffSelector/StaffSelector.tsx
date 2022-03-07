@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 
-import { ALL_STAFF, useCalendarContext } from '../../../../../../../contexts/CalendarContext';
-import { Staff } from '../../../../../../../interfaces/staff';
-import { useFetchStaffListQuery } from '../../../../../../../queries/staff';
-import { StaffOption } from '../../../../../../../interfaces/calendar';
-import { createStaffOptions } from '../../../../../../../services/calendar';
+import { ALL_STAFF, useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
+import { Staff } from '../../../../../../../../interfaces/staff';
+import { useFetchStaffListQuery } from '../../../../../../../../queries/staff';
+import { StaffOption } from '../../../../../../../../interfaces/calendar';
+import { createStaffOptions } from '../../../../../../../../services/calendar';
 import { useStyles } from './useStyles';
 
 export function StaffSelector() {
