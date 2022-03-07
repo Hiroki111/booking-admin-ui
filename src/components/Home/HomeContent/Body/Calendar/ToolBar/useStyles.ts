@@ -6,6 +6,7 @@ export const useStyles = makeStyles((theme) => ({
   toolbarContainer: {
     height: TOOLBAR_HEIGHT,
     padding: theme.spacing(1),
+    flexWrap: 'initial',
   },
   actionButtonContainer: {
     '& button:not(:first-child)': {
@@ -14,7 +15,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   button: {
     textTransform: 'initial',
-    width: '92px',
     height: '56px',
   },
   whiteButton: {

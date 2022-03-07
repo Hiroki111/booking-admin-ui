@@ -5,7 +5,6 @@ import { hoverableOption } from '../../../../../../../styles/sharedStyles';
 export const useStyles = makeStyles((theme) => ({
   button: {
     textTransform: 'initial',
-    width: '93px',
     height: '56px',
     backgroundColor: 'white',
   },
