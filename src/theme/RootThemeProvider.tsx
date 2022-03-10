@@ -1,8 +1,20 @@
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider, createTheme, responsiveFontSizes } from '@material-ui/core/styles';
-import grey from '@material-ui/core/colors/grey';
-
+import CssBaseline from '@mui/material/CssBaseline';
+import {
+  ThemeProvider,
+  Theme,
+  StyledEngineProvider,
+  createTheme,
+  responsiveFontSizes,
+  adaptV4Theme,
+} from '@mui/material/styles';
 import './fonts.css';
+
+import { grey } from '@mui/material/colors';
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
 export const themeConfig = {
   breakpoints: {
@@ -24,13 +36,15 @@ export const themeConfig = {
   },
 };
 
-const theme = responsiveFontSizes(createTheme(themeConfig));
+const theme = responsiveFontSizes(createTheme(adaptV4Theme(themeConfig)));
 
 export function RootThemeProvider({ children }: { children: JSX.Element | JSX.Element[] }) {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }

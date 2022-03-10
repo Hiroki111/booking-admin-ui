@@ -1,6 +1,9 @@
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
+  avatar: {
+    cursor: 'pointer',
+  },
   popoverContent: {
     padding: 8,
     '& > p': {

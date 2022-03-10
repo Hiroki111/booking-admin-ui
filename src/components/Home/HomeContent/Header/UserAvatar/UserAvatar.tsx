@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Avatar, Popover, Typography, Divider } from '@material-ui/core';
-import PeopleIcon from '@material-ui/icons/People';
+import { Avatar, Popover, Typography, Divider } from '@mui/material';
+import PeopleIcon from '@mui/icons-material/People';
 
 import { useStyles } from './useStyles';
 import { useAuthContext } from '../../../../../contexts/AuthContext';
@@ -36,7 +36,10 @@ export function UserAvatar({ onClickLogout }: Props) {
 
   return (
     <>
-      <Avatar onClick={(event: React.MouseEvent<HTMLDivElement>) => setAnchorEl(event.currentTarget)}>
+      <Avatar
+        className={classes.avatar}
+        onClick={(event: React.MouseEvent<HTMLDivElement>) => setAnchorEl(event.currentTarget)}
+      >
         {getAvatarContent()}
       </Avatar>
       <Popover

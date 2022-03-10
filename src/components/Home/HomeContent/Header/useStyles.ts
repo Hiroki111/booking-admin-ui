@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import { HEADER_HEIGHT, SMALL_WINDOW_HEADER_HEIGHT } from '../../../../styles/const';
 
 export const useStyles = makeStyles((theme) => ({
@@ -7,7 +7,7 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
   },
   appBar: {
-    [theme.breakpoints.between(0, 'sm')]: {
+    [theme.breakpoints.between(0, 'md')]: {
       height: SMALL_WINDOW_HEADER_HEIGHT,
     },
     [theme.breakpoints.up('sm')]: {

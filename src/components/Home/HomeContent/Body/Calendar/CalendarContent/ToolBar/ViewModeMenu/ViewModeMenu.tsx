@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Button, Menu, MenuItem } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { Button, Menu, MenuItem } from '@mui/material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import { useStyles } from './useStyles';
 import { useCalendarContext } from '../../../../../../../../contexts/CalendarContext';

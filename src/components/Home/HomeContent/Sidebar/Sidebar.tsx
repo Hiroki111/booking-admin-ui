@@ -1,4 +1,4 @@
-import { Drawer } from '@material-ui/core';
+import { Drawer } from '@mui/material';
 import clsx from 'clsx';
 
 import { useIsSmallWindow } from '../../../../hooks/window';

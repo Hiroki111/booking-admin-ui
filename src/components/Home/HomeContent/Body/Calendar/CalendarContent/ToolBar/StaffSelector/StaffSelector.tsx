@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { TextField } from '@mui/material';
+import { Autocomplete } from '@mui/material';
 
 import { ALL_STAFF, useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
 import { Staff } from '../../../../../../../../interfaces/staff';

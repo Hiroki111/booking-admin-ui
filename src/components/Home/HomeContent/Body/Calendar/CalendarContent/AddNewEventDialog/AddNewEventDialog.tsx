@@ -1,15 +1,6 @@
 import { useState } from 'react';
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  DialogActions,
-  Grid,
-  TextField,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Button, Dialog, DialogTitle, DialogContent, IconButton, DialogActions, Grid, TextField } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
 import { Booking } from '../../../../../../../interfaces/booking';
@@ -42,7 +33,7 @@ export function AddNewEventDialog() {
     <Dialog onClose={() => {}} open maxWidth="lg" fullWidth>
       <Grid container justifyContent="space-between">
         <DialogTitle>Modal title</DialogTitle>
-        <IconButton className={classes.closeButton} onClick={() => setIsAddingNewEvent(false)}>
+        <IconButton className={classes.closeButton} onClick={() => setIsAddingNewEvent(false)} size="large">
           <CloseIcon />
         </IconButton>
       </Grid>

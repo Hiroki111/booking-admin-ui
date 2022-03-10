@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid } from '@mui/material';
 import clsx from 'clsx';
 
 import { useFetchStaffListQuery } from '../../../../../../../queries/staff';

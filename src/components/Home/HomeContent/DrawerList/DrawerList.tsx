@@ -1,9 +1,9 @@
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import PeopleIcon from '@material-ui/icons/People';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import ScheduleIcon from '@material-ui/icons/Schedule';
-import PeopleAltOutlinedIcon from '@material-ui/icons/PeopleAltOutlined';
-import WorkIcon from '@material-ui/icons/Work';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import PeopleIcon from '@mui/icons-material/People';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import WorkIcon from '@mui/icons-material/Work';
 
 import { useStyles } from './useStyles';
 

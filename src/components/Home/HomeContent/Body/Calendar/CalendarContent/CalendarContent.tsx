@@ -1,6 +1,6 @@
-import { Grid, Paper, Typography, Fab } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import NavigationIcon from '@material-ui/icons/Navigation';
+import { Grid, Paper, Typography, Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import NavigationIcon from '@mui/icons-material/Navigation';
 import clsx from 'clsx';
 
 import { useCalendarContext } from '../../../../../../contexts/CalendarContext';

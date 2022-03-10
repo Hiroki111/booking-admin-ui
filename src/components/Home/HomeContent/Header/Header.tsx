@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Typography, Grid, Drawer } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { AppBar, Toolbar, IconButton, Typography, Grid, Drawer } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 import { useStyles } from './useStyles';
 import { PATHS } from '../../../../routes';
@@ -39,6 +39,7 @@ export function Header() {
                 aria-label="open drawer"
                 onClick={() => setIsDrawerIconClicked(!isDrawerIconClicked)}
                 className={classes.menuButton}
+                size="large"
               >
                 <MenuIcon />
               </IconButton>
@@ -53,7 +54,7 @@ export function Header() {
             ) : (
               <Typography component="p" color="inherit" noWrap className={classes.title}>
                 {user?.name}
-                <IconButton className={classes.logout} onClick={handleClickLogout}>
+                <IconButton className={classes.logout} onClick={handleClickLogout} size="large">
                   <ExitToAppIcon color="inherit" />
                 </IconButton>
               </Typography>

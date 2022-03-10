@@ -1,4 +1,4 @@
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import { Switch, Route } from 'react-router-dom';
 
 import { PROTECTED_ROUTES } from '../../../../routes';

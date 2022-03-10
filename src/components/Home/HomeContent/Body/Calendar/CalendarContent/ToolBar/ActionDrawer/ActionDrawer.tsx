@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Avatar, Divider, Drawer, Grid, IconButton, List, ListItem, ListItemText, Typography } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import PeopleIcon from '@material-ui/icons/People';
-import CloseIcon from '@material-ui/icons/Close';
-import ViewDayOutlinedIcon from '@material-ui/icons/ViewDayOutlined';
-import ViewWeekOutlinedIcon from '@material-ui/icons/ViewWeekOutlined';
-import ViewComfyOutlinedIcon from '@material-ui/icons/ViewComfyOutlined';
+import { Avatar, Divider, Drawer, Grid, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import PeopleIcon from '@mui/icons-material/People';
+import CloseIcon from '@mui/icons-material/Close';
+import ViewDayOutlinedIcon from '@mui/icons-material/ViewDayOutlined';
+import ViewWeekOutlinedIcon from '@mui/icons-material/ViewWeekOutlined';
+import ViewComfyOutlinedIcon from '@mui/icons-material/ViewComfyOutlined';
 
 import { useStyles } from './useStyles';
 import { ALL_STAFF, useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
@@ -53,13 +53,18 @@ export function ActionDrawer() {
 
   return (
     <>
-      <IconButton onClick={() => setIsShowingDrawer(!isShowingDrawer)}>
+      <IconButton onClick={() => setIsShowingDrawer(!isShowingDrawer)} size="large">
         <MenuIcon />
       </IconButton>
-      <Drawer anchor={'right'} open={isShowingDrawer} onClose={() => setIsShowingDrawer(false)}>
+      <Drawer
+        classes={{ root: classes.drawerRoot }}
+        anchor={'right'}
+        open={isShowingDrawer}
+        onClose={() => setIsShowingDrawer(false)}
+      >
         <div className={classes.list}>
           <Grid container justifyContent="flex-end">
-            <IconButton onClick={() => setIsShowingDrawer(false)}>
+            <IconButton onClick={() => setIsShowingDrawer(false)} size="large">
               <CloseIcon />
             </IconButton>
           </Grid>
@@ -80,8 +85,8 @@ export function ActionDrawer() {
                       classes.iconButtonRoot,
                       selectedView === calendarViewItem.calendarViewKey ? classes.selectedItem : '',
                     ]),
-                    label: classes.iconButtonLabel,
                   }}
+                  size="large"
                 >
                   <calendarViewItem.icon />
                 </IconButton>

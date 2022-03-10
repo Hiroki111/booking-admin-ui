@@ -1,4 +1,4 @@
-import { ButtonGroup, Button } from '@material-ui/core';
+import { ButtonGroup, Button } from '@mui/material';
 
 import { useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
 import { useStyles } from './useStyles';
