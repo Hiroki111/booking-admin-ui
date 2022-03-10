@@ -7,6 +7,7 @@ import { useCalendarContext } from '../../../../../../contexts/CalendarContext';
 import { useIsSmallWindow } from '../../../../../../hooks/window';
 import { useFetchBookingsQuery } from '../../../../../../queries/booking';
 import { WarningAlert } from '../../../../../../util/WarningAlert';
+import { AddNewEventDialog } from './AddNewEventDialog';
 import { CalendarWidget } from './CalendarWidget';
 import { ToolBar } from './ToolBar';
 import { useStyles } from './useStyles';
@@ -15,7 +16,7 @@ export function CalendarContent() {
   const fetchBookingsQuery = useFetchBookingsQuery();
   const classes = useStyles();
   const isSmallWindow = useIsSmallWindow();
-  const { calendarApi } = useCalendarContext();
+  const { calendarApi, isAddingNewEvent, setIsAddingNewEvent } = useCalendarContext();
 
   return (
     <div className={classes.calendarContainer}>
@@ -41,11 +42,16 @@ export function CalendarContent() {
             <NavigationIcon />
             Today
           </Fab>
-          <Fab color="primary" className={clsx(classes.floatingButton, classes.addNewButton)}>
+          <Fab
+            color="primary"
+            className={clsx(classes.floatingButton, classes.addNewButton)}
+            onClick={() => setIsAddingNewEvent(true)}
+          >
             <AddIcon />
           </Fab>
         </>
       )}
+      {isAddingNewEvent && <AddNewEventDialog />}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Button, Grid } from '@material-ui/core';
+import clsx from 'clsx';
 
 import { useFetchStaffListQuery } from '../../../../../../../queries/staff';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
@@ -10,13 +11,12 @@ import { StaffSelector } from './StaffSelector';
 import { DateNavigator } from './DateNavigator';
 import { ActionDrawer } from './ActionDrawer';
 import { useIsSmallWindow } from '../../../../../../../hooks/window';
-import clsx from 'clsx';
 
 export function ToolBar() {
   const classes = useStyles();
   const toolbarRef: React.MutableRefObject<any> = useRef();
   const fetchStaffListQuery = useFetchStaffListQuery();
-  const { calendarApi } = useCalendarContext();
+  const { calendarApi, setIsAddingNewEvent } = useCalendarContext();
   const isSmallWindow = useIsSmallWindow();
 
   if (fetchStaffListQuery.isLoading) {
@@ -54,7 +54,12 @@ export function ToolBar() {
                 Today
               </Button>
               <ViewModeMenu />
-              <Button onClick={() => {}} className={classes.button} variant="contained" color="primary">
+              <Button
+                onClick={() => setIsAddingNewEvent(true)}
+                className={classes.button}
+                variant="contained"
+                color="primary"
+              >
                 Add New
               </Button>
             </Grid>

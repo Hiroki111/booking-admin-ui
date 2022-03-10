@@ -15,12 +15,14 @@ export interface CalendarContextInterface {
   calendarApi: CalendarApi | null;
   calendarTitle: string;
   selectedView: CalendarViewKey;
+  isAddingNewEvent: boolean;
   areAllStaffSelected: boolean;
   calendarViewKeys: CalendarViewKey[];
   setSelectedStaff: (staff: Staff | AllStaff | null) => void;
   setCalendarApi: (calendarApi: CalendarApi) => void;
   setCalendarTitle: (calendarTitle: string) => void;
   setSelectedView: (view: CalendarViewKey) => void;
+  setIsAddingNewEvent: (isAddingNewEvent: boolean) => void;
   updateCalendarView: (view: CalendarViewKey) => void;
 }
 
@@ -34,6 +36,7 @@ export function CalendarContextProvider({ children }: Props) {
   const [calendarApi, setCalendarApi] = useState<CalendarApi | null>(null);
   const [calendarTitle, setCalendarTitle] = useState<string>('');
   const [selectedView, setSelectedView] = useState<CalendarViewKey>(DEFAULT_CALENDAR_VIEW);
+  const [isAddingNewEvent, setIsAddingNewEvent] = useState<boolean>(false);
 
   const areAllStaffSelected = selectedStaff?.id === ALL_STAFF?.id;
   const calendarViewKeys = Object.keys(CalendarView) as CalendarViewKey[];
@@ -48,12 +51,14 @@ export function CalendarContextProvider({ children }: Props) {
     calendarApi,
     calendarTitle,
     selectedView,
+    isAddingNewEvent,
     areAllStaffSelected,
     calendarViewKeys,
     setSelectedStaff,
     setCalendarApi,
     setCalendarTitle,
     setSelectedView,
+    setIsAddingNewEvent,
     updateCalendarView,
   };
 
