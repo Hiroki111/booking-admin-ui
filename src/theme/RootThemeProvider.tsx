@@ -1,12 +1,5 @@
 import CssBaseline from '@mui/material/CssBaseline';
-import {
-  ThemeProvider,
-  Theme,
-  StyledEngineProvider,
-  createTheme,
-  responsiveFontSizes,
-  adaptV4Theme,
-} from '@mui/material/styles';
+import { ThemeProvider, Theme, StyledEngineProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import './fonts.css';
 
 import { grey } from '@mui/material/colors';
@@ -36,7 +29,7 @@ export const themeConfig = {
   },
 };
 
-const theme = responsiveFontSizes(createTheme(adaptV4Theme(themeConfig)));
+const theme = responsiveFontSizes(createTheme(themeConfig));
 
 export function RootThemeProvider({ children }: { children: JSX.Element | JSX.Element[] }) {
   return (
