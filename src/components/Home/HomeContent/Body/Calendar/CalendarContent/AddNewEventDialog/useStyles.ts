@@ -8,6 +8,14 @@ export const useStyles = makeStyles((theme) => ({
   dialogActions: {
     justifyContent: 'space-between',
   },
+  datepickerContainer: {
+    margin: '8px',
+    width: '85px',
+  },
+  timepickerContainer: {
+    margin: '8px',
+    width: '70px',
+  },
   textField: {
     margin: '8px',
   },
