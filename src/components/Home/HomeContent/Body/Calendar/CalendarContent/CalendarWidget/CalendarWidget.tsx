@@ -5,7 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 
-import { useFetchBookingsQuery } from '../../../../../../../queries/booking';
+import { useBookingsQuery } from '../../../../../../../queries/booking';
 import { Booking } from '../../../../../../../interfaces/booking';
 import { useStyles } from './useStyles';
 import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
@@ -14,7 +14,7 @@ export function CalendarWidget() {
   const classes = useStyles();
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
   const { selectedStaff, areAllStaffSelected, setCalendarApi, setCalendarTitle } = useCalendarContext();
-  const fetchBookingsQuery = useFetchBookingsQuery();
+  const fetchBookingsQuery = useBookingsQuery();
   const calendarRef: LegacyRef<FullCalendar> | undefined = createRef();
 
   useEffect(() => {

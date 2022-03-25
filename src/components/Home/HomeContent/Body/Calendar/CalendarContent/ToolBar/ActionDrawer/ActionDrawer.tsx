@@ -6,13 +6,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import ViewDayOutlinedIcon from '@mui/icons-material/ViewDayOutlined';
 import ViewWeekOutlinedIcon from '@mui/icons-material/ViewWeekOutlined';
 import ViewComfyOutlinedIcon from '@mui/icons-material/ViewComfyOutlined';
+import clsx from 'clsx';
 
 import { useStyles } from './useStyles';
 import { ALL_STAFF, useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
-import { useFetchStaffListQuery } from '../../../../../../../../queries/staff';
+import { useStaffListQuery } from '../../../../../../../../queries/staff';
 import { CalendarViewKey, StaffOption } from '../../../../../../../../interfaces/calendar';
 import { createStaffOptions } from '../../../../../../../../services/calendar';
-import clsx from 'clsx';
 import { Staff } from '../../../../../../../../interfaces/staff';
 
 export function ActionDrawer() {
@@ -20,7 +20,7 @@ export function ActionDrawer() {
   const [isShowingDrawer, setIsShowingDrawer] = useState(false);
   const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
   const { selectedView, selectedStaff, setSelectedStaff, updateCalendarView } = useCalendarContext();
-  const fetchStaffListQuery = useFetchStaffListQuery();
+  const staffListQuery = useStaffListQuery();
 
   const calendarViewItems = [
     { icon: () => <ViewDayOutlinedIcon />, calendarViewKey: 'Day' as CalendarViewKey },
@@ -29,9 +29,9 @@ export function ActionDrawer() {
   ];
 
   useEffect(() => {
-    const options = createStaffOptions(fetchStaffListQuery.data || []);
+    const options = createStaffOptions(staffListQuery.data || []);
     setStaffOptions(options);
-  }, [fetchStaffListQuery.data]);
+  }, [staffListQuery.data]);
 
   function getAvatarContent(staff: StaffOption) {
     if (!staff?.name || staff.id === ALL_STAFF.id) {

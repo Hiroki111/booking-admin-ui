@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Button, Grid } from '@mui/material';
 import clsx from 'clsx';
 
-import { useFetchStaffListQuery } from '../../../../../../../queries/staff';
+import { useStaffListQuery } from '../../../../../../../queries/staff';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
 import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
 import { ViewModeMenu } from './ViewModeMenu';
@@ -15,13 +15,13 @@ import { useIsSmallWindow } from '../../../../../../../hooks/window';
 export function ToolBar() {
   const classes = useStyles();
   const toolbarRef: React.MutableRefObject<any> = useRef();
-  const fetchStaffListQuery = useFetchStaffListQuery();
+  const staffListQuery = useStaffListQuery();
   const { calendarApi, setIsAddingNewEvent } = useCalendarContext();
   const isSmallWindow = useIsSmallWindow();
 
-  if (fetchStaffListQuery.isLoading) {
+  if (staffListQuery.isLoading) {
     return null;
-  } else if (fetchStaffListQuery.isError) {
+  } else if (staffListQuery.isError) {
     return <WarningAlert />;
   }
 

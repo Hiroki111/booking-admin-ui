@@ -4,22 +4,22 @@ import { Autocomplete } from '@mui/material';
 
 import { ALL_STAFF, useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
 import { Staff } from '../../../../../../../../interfaces/staff';
-import { useFetchStaffListQuery } from '../../../../../../../../queries/staff';
+import { useStaffListQuery } from '../../../../../../../../queries/staff';
 import { StaffOption } from '../../../../../../../../interfaces/calendar';
 import { createStaffOptions } from '../../../../../../../../services/calendar';
 import { useStyles } from './useStyles';
 
 export function StaffSelector() {
   const classes = useStyles();
-  const fetchStaffListQuery = useFetchStaffListQuery();
+  const staffListQuery = useStaffListQuery();
   const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
   const [inputValue, setInputValue] = useState<string>(ALL_STAFF.name);
   const { selectedStaff, setSelectedStaff } = useCalendarContext();
 
   useEffect(() => {
-    const options = createStaffOptions(fetchStaffListQuery.data || []);
+    const options = createStaffOptions(staffListQuery.data || []);
     setStaffOptions(options);
-  }, [fetchStaffListQuery.data]);
+  }, [staffListQuery.data]);
 
   return (
     <Autocomplete

@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 import { useCalendarContext } from '../../../../../../contexts/CalendarContext';
 import { useIsSmallWindow } from '../../../../../../hooks/window';
-import { useFetchBookingsQuery } from '../../../../../../queries/booking';
+import { useBookingsQuery } from '../../../../../../queries/booking';
 import { WarningAlert } from '../../../../../../util/WarningAlert';
 import { AddNewEventDialog } from './AddNewEventDialog';
 import { CalendarWidget } from './CalendarWidget';
@@ -13,7 +13,7 @@ import { ToolBar } from './ToolBar';
 import { useStyles } from './useStyles';
 
 export function CalendarContent() {
-  const fetchBookingsQuery = useFetchBookingsQuery();
+  const fetchBookingsQuery = useBookingsQuery();
   const classes = useStyles();
   const isSmallWindow = useIsSmallWindow();
   const { calendarApi, isAddingNewEvent, setIsAddingNewEvent } = useCalendarContext();

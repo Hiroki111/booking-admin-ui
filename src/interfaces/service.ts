@@ -1,3 +1,5 @@
+import { ServiceType } from './serviceType';
+
 export interface Service {
   id: number;
   minutes: number;
@@ -5,4 +7,5 @@ export interface Service {
   price: number;
   serviceTypeId: number;
   tax: number;
+  serviceType: ServiceType;
 }

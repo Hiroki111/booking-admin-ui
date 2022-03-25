@@ -7,6 +7,6 @@ export enum bookingQuries {
   fetchBookings = 'fetchBookings',
 }
 
-export function useFetchBookingsQuery(): UseQueryResult<Booking[]> {
+export function useBookingsQuery(): UseQueryResult<Booking[]> {
   return useQuery(bookingQuries.fetchBookings, restApi.fetchBookings);
 }
