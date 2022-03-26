@@ -188,7 +188,7 @@ export function AddNewEventDialog() {
               </Typography>
               <div className={classes.row}>
                 <TextField
-                  label="First Name"
+                  label="First name"
                   className={classes.textField}
                   value={booking.firstName}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -198,7 +198,7 @@ export function AddNewEventDialog() {
                   required
                 />
                 <TextField
-                  label="Last Name"
+                  label="Last name"
                   className={classes.textField}
                   value={booking.lastName}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -210,7 +210,7 @@ export function AddNewEventDialog() {
               </div>
               <div className={classes.row}>
                 <TextField
-                  label="Phone Number"
+                  label="Phone number"
                   className={classes.textField}
                   value={booking.phoneNumber}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
