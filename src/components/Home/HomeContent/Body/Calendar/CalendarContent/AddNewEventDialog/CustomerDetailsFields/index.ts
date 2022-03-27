@@ -1,0 +1,1 @@
+export { CustomerDetailsFields } from './CustomerDetailsFields';

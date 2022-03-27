@@ -15,7 +15,6 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import dayjs from 'dayjs';
 
-import { DateTimeFields } from './DateTimeFields';
 import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
 import { Booking } from '../../../../../../../interfaces/booking';
 import { Service } from '../../../../../../../interfaces/service';
@@ -25,7 +24,8 @@ import { useServicesQuery } from '../../../../../../../queries/service';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
 import { useStaffListQuery } from '../../../../../../../queries/staff';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../services/staff';
-import { useIsSmallWindow } from '../../../../../../../hooks/window';
+import { DateTimeFields } from './DateTimeFields';
+import { CustomerDetailsFields } from './CustomerDetailsFields';
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_BOOKING = {
@@ -45,6 +45,9 @@ const DEFAULT_BOOKING = {
 
 type ServiceOption = Pick<Service, 'id' | 'name' | 'serviceType' | 'price' | 'minutes'>;
 
+// TODO:
+//  This component is too long. Find a way to make it shorter.
+//  Implement validation for staff, based on the selected date/time/services
 export function AddNewEventDialog() {
   const classes = useStyles();
   const [booking, setBooking] = useState<Booking>(DEFAULT_BOOKING);
@@ -57,7 +60,6 @@ export function AddNewEventDialog() {
   const { setIsAddingNewEvent } = useCalendarContext();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
-  const isSmallWindow = useIsSmallWindow();
 
   useEffect(() => {
     const serviceOptions = convertServicesToServiceOptions(fetchServicesQuery?.data || ([] as Service[]));
@@ -145,58 +147,7 @@ export function AddNewEventDialog() {
               <Typography paragraph className={classes.dividerText}>
                 Customer details
               </Typography>
-              <Grid item container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="First name"
-                    value={booking.firstName}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setBooking({ ...booking, firstName: e.target.value })
-                    }
-                    variant="outlined"
-                    required
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="Last name"
-                    value={booking.lastName}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setBooking({ ...booking, lastName: e.target.value })
-                    }
-                    variant="outlined"
-                    required
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
-              <Grid item container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="Phone number"
-                    value={booking.phoneNumber}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setBooking({ ...booking, phoneNumber: e.target.value })
-                    }
-                    variant="outlined"
-                    required
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="Email"
-                    value={booking.email}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setBooking({ ...booking, email: e.target.value })
-                    }
-                    variant="outlined"
-                    required
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
+              <CustomerDetailsFields booking={booking} setBooking={setBooking} />
             </Grid>
           </Grid>
           <Divider orientation="vertical" flexItem className={classes.centralDivider} />
