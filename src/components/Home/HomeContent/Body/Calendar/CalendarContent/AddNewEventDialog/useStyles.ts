@@ -9,9 +9,7 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
   },
   fieldGroup: {
-    marginTop: '8px',
-    marginLeft: '16px',
-    width: '100%',
+    margin: '8px 16px 0 16px',
   },
   row: {
     display: 'flex',
@@ -22,24 +20,13 @@ export const useStyles = makeStyles((theme) => ({
     width: '30%',
     fontWeight: 'bold',
   },
-  dateContainer: {
-    '& > div': {
-      width: '110px',
-      marginRight: '8px',
-    },
-  },
-  timeContainer: {
-    '& > div': {
-      width: '100px',
-      marginRight: '8px',
-    },
-  },
   divBetweenStartAndEnd: {
     marginRight: '10px',
   },
   dividerText: {
     fontWeight: 'bold',
     textTransform: 'uppercase',
+    marginBottom: '4px',
   },
   datepickerContainer: {
     margin: '8px',
@@ -49,8 +36,11 @@ export const useStyles = makeStyles((theme) => ({
     margin: '10px',
     width: '70px',
   },
-  textField: {
-    marginRight: '8px',
-    width: '100%',
+  centralDivider: {
+    marginRight: '-1px',
+    display: 'initial',
+    [theme.breakpoints.down('md')]: {
+      display: 'none',
+    },
   },
 }));

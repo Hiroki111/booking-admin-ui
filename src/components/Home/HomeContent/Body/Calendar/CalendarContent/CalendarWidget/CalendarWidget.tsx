@@ -41,7 +41,7 @@ export function CalendarWidget() {
   }
 
   function handleDateClick(dateInfo: DateClickArg) {
-    console.log(dateInfo);
+    // console.log(dateInfo);
   }
 
   function renderEventContent(eventInfo: EventContentArg) {
