@@ -1,28 +1,23 @@
 import { Grid, TextField } from '@mui/material';
 
-import { Booking } from '../../../../../../../../interfaces/booking';
+import { Booking, BookingEditFieldObject } from '../../../../../../../../interfaces/booking';
 
 interface Props {
   booking: Booking;
   setBooking: (booking: Booking) => void;
 }
 
-interface FieldObj {
-  label: string;
-  fieldName: keyof Booking;
-}
-
 export function CustomerDetailsFields({ booking, setBooking }: Props) {
-  const upperRowFields: FieldObj[] = [
+  const upperRowFields: BookingEditFieldObject[] = [
     { label: 'First name', fieldName: 'firstName' },
     { label: 'Last name', fieldName: 'lastName' },
   ];
-  const lowerRowFields: FieldObj[] = [
+  const lowerRowFields: BookingEditFieldObject[] = [
     { label: 'Phone number', fieldName: 'phoneNumber' },
     { label: 'Email', fieldName: 'email' },
   ];
 
-  function renderCustomerDetailField(fieldObj: FieldObj) {
+  function renderCustomerDetailField(fieldObj: BookingEditFieldObject) {
     return (
       <Grid item xs={12} sm={6} key={fieldObj.fieldName}>
         <TextField

@@ -26,6 +26,7 @@ import { useStaffListQuery } from '../../../../../../../queries/staff';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../services/staff';
 import { DateTimeFields } from './DateTimeFields';
 import { CustomerDetailsFields } from './CustomerDetailsFields';
+import { ServiceFields } from './ServiceFields';
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_BOOKING = {
@@ -43,29 +44,19 @@ const DEFAULT_BOOKING = {
   services: [] as Service[],
 } as Booking;
 
-type ServiceOption = Pick<Service, 'id' | 'name' | 'serviceType' | 'price' | 'minutes'>;
-
 // TODO:
 //  This component is too long. Find a way to make it shorter.
 //  Implement validation for staff, based on the selected date/time/services
 export function AddNewEventDialog() {
   const classes = useStyles();
   const [booking, setBooking] = useState<Booking>(DEFAULT_BOOKING);
-  const [serviceOptions, setServiceOptions] = useState<ServiceOption[]>([]);
   const [staffOptions, setStaffOptions] = useState<Staff[]>([]);
-  const [selectedServiceOptions, setSelectedServiceOptions] = useState<ServiceOption[]>([]);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(
     staffOptions.find((staff) => staff.id === booking.staffId) || null,
   );
   const { setIsAddingNewEvent } = useCalendarContext();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
-
-  useEffect(() => {
-    const serviceOptions = convertServicesToServiceOptions(fetchServicesQuery?.data || ([] as Service[]));
-    serviceOptions.sort((a, b) => a.serviceType.name.localeCompare(b.serviceType.name));
-    setServiceOptions(serviceOptions);
-  }, [fetchServicesQuery?.data]);
 
   useEffect(() => {
     const selectedStaff = staffOptions.find((staffOption) => staffOption.id === booking?.staffId);
@@ -104,17 +95,7 @@ export function AddNewEventDialog() {
   useEffect(() => {
     const staffList = fetchStaffListQuery?.data || ([] as Staff[]);
     setStaffOptions(staffList);
-  }, [fetchStaffListQuery?.data, selectedServiceOptions]);
-
-  function convertServicesToServiceOptions(services: Service[]) {
-    return services.map((service) => ({
-      id: service.id,
-      name: service.name,
-      serviceType: service.serviceType,
-      price: service.price,
-      minutes: service.minutes,
-    })) as ServiceOption[];
-  }
+  }, [fetchStaffListQuery?.data]);
 
   if (fetchServicesQuery.isError || fetchStaffListQuery.isError) {
     return <WarningAlert message={'It failed to load data'} />;
@@ -156,51 +137,7 @@ export function AddNewEventDialog() {
               <Typography paragraph className={classes.dividerText}>
                 Service
               </Typography>
-              <Grid item container spacing={2}>
-                <Grid item xs={12}>
-                  <Autocomplete
-                    multiple
-                    options={serviceOptions}
-                    groupBy={(option) => option.serviceType.name}
-                    getOptionLabel={(option) => `${option.name} (${option.minutes} min)`}
-                    value={selectedServiceOptions}
-                    onChange={(event: React.SyntheticEvent<Element, Event>, value: ServiceOption[]) => {
-                      setSelectedServiceOptions(value);
-                      setBooking({ ...booking, services: value as Service[] });
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Selected services" variant="outlined" required />
-                    )}
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
-              <Grid item container spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    value={`${selectedServiceOptions.reduce(
-                      (totalPrice, serviceOption) => totalPrice + serviceOption.price,
-                      0,
-                    )} €`}
-                    label="Total price"
-                    variant="standard"
-                    disabled
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    value={`${selectedServiceOptions.reduce(
-                      (totalMinutes, serviceOption) => totalMinutes + serviceOption.minutes,
-                      0,
-                    )} min`}
-                    label="Required time"
-                    variant="standard"
-                    disabled
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
+              <ServiceFields booking={booking} setBooking={setBooking} services={fetchServicesQuery?.data || []} />
             </Grid>
             <Grid item container rowSpacing={2} className={classes.fieldGroup}>
               <Typography paragraph className={classes.dividerText}>

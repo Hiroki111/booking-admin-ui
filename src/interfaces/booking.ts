@@ -15,3 +15,8 @@ export interface Booking {
   staff: Staff;
   services: Service[];
 }
+
+export interface BookingEditFieldObject {
+  label: string;
+  fieldName: keyof Booking;
+}
