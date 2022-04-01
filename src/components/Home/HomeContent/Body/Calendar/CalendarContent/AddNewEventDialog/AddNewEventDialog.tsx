@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -7,9 +7,7 @@ import {
   IconButton,
   DialogActions,
   Grid,
-  TextField,
   Typography,
-  Autocomplete,
   Divider,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -23,10 +21,10 @@ import { useStyles } from './useStyles';
 import { useServicesQuery } from '../../../../../../../queries/service';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
 import { useStaffListQuery } from '../../../../../../../queries/staff';
-import { findTimeSlotByStartAndEndTime } from '../../../../../../../services/staff';
 import { DateTimeFields } from './DateTimeFields';
 import { CustomerDetailsFields } from './CustomerDetailsFields';
 import { ServiceFields } from './ServiceFields';
+import { StaffFields } from './StaffFields';
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_BOOKING = {
@@ -44,62 +42,17 @@ const DEFAULT_BOOKING = {
   services: [] as Service[],
 } as Booking;
 
-// TODO:
-//  This component is too long. Find a way to make it shorter.
-//  Implement validation for staff, based on the selected date/time/services
 export function AddNewEventDialog() {
   const classes = useStyles();
   const [booking, setBooking] = useState<Booking>(DEFAULT_BOOKING);
-  const [staffOptions, setStaffOptions] = useState<Staff[]>([]);
-  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(
-    staffOptions.find((staff) => staff.id === booking.staffId) || null,
-  );
   const { setIsAddingNewEvent } = useCalendarContext();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
 
-  useEffect(() => {
-    const selectedStaff = staffOptions.find((staffOption) => staffOption.id === booking?.staffId);
-    const staffAvailability = selectedStaff?.availableDates?.find(
-      (availableDate) => availableDate.date === booking.date,
-    );
-    if (!staffAvailability) {
-      // TODO Show warning: selectedStaff isn't available on ${booking.date}
-      setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
-      return;
-    }
-
-    const selectedStaffServiceIds = selectedStaff?.services.map((service) => service.id);
-    const selectedServiceIds = booking.services.map((service) => service.id);
-    if (!selectedServiceIds.every((serviceId) => selectedStaffServiceIds?.includes(serviceId))) {
-      // TODO Show warning: This staff can't do all the selected services
-      setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
-      return;
-    }
-
-    const timeslot = findTimeSlotByStartAndEndTime(
-      staffAvailability.availableTimeSlots,
-      booking.startTime,
-      booking.endTime,
-    );
-
-    if (!timeslot) {
-      // TODO Show warning: This staff doesn't have available time slot on ${booking.date} from ${booking.startTime} to ${booking.endTime}.
-      // Change the date, start/end time, or select a different staff
-      setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
-    } else {
-      setBooking({ ...booking, staffAvailabilityId: staffAvailability.id });
-    }
-  }, [setBooking, booking.staffId, booking.date, booking.startTime, booking.endTime, booking.services]);
-
-  useEffect(() => {
-    const staffList = fetchStaffListQuery?.data || ([] as Staff[]);
-    setStaffOptions(staffList);
-  }, [fetchStaffListQuery?.data]);
-
   if (fetchServicesQuery.isError || fetchStaffListQuery.isError) {
     return <WarningAlert message={'It failed to load data'} />;
-  } else if (fetchServicesQuery.isFetching || fetchStaffListQuery.isFetching) {
+  }
+  if (fetchServicesQuery.isFetching || fetchStaffListQuery.isFetching) {
     return (
       <Typography component="p" color="inherit">
         Loading...
@@ -143,21 +96,11 @@ export function AddNewEventDialog() {
               <Typography paragraph className={classes.dividerText}>
                 Staff
               </Typography>
-              <Grid item container spacing={2}>
-                <Grid item xs={12}>
-                  <Autocomplete
-                    options={staffOptions}
-                    getOptionLabel={(staff) => staff.name}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    value={selectedStaff}
-                    onChange={(e: React.SyntheticEvent<Element, Event>, value: Staff | null) => {
-                      setSelectedStaff(value);
-                      setBooking({ ...booking, staffId: value?.id || (null as unknown as number) });
-                    }}
-                    renderInput={(params) => <TextField {...params} variant="outlined" required />}
-                  />
-                </Grid>
-              </Grid>
+              <StaffFields
+                booking={booking}
+                setBooking={setBooking}
+                staffList={fetchStaffListQuery?.data || ([] as Staff[])}
+              />
             </Grid>
           </Grid>
         </Grid>
