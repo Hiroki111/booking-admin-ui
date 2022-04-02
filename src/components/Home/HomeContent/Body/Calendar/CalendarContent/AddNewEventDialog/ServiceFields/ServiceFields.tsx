@@ -1,4 +1,4 @@
-import { Grid, Autocomplete, TextField } from '@mui/material';
+import { Grid, Autocomplete, TextField, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 
 import { Booking } from '../../../../../../../../interfaces/booking';
@@ -51,32 +51,12 @@ export function ServiceFields({ booking, setBooking, services }: Props) {
           />
         </Grid>
       </Grid>
-      <Grid item container spacing={2}>
-        <Grid item xs={6}>
-          <TextField
-            value={`${selectedServiceOptions.reduce(
-              (totalPrice, serviceOption) => totalPrice + serviceOption.price,
-              0,
-            )} €`}
-            label="Total price"
-            variant="standard"
-            disabled
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            value={`${selectedServiceOptions.reduce(
-              (totalMinutes, serviceOption) => totalMinutes + serviceOption.minutes,
-              0,
-            )} min`}
-            label="Estimated time"
-            variant="standard"
-            disabled
-            fullWidth
-          />
-        </Grid>
-      </Grid>
+      <Typography paragraph textAlign="end" marginBottom="0" width="100%" paddingTop="16px">
+        Total price: {`${selectedServiceOptions.reduce((total, service) => total + service.price, 0)} €`}
+      </Typography>
+      <Typography paragraph textAlign="end" marginBottom="0" width="100%">
+        Estimated time: {`${selectedServiceOptions.reduce((total, service) => total + service.minutes, 0)} min`}
+      </Typography>
     </>
   );
 }
