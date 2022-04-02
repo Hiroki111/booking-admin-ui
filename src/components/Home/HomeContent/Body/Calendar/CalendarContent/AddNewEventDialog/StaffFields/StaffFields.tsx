@@ -1,4 +1,4 @@
-import { Grid, Autocomplete, TextField, Alert } from '@mui/material';
+import { Grid, Autocomplete, TextField } from '@mui/material';
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -42,7 +42,7 @@ export function StaffFields({ booking, setBooking, staffList }: Props) {
     const unavailableServices = booking.services.filter((service) => !selectedStaffServiceIds?.includes(service.id));
     if (unavailableServices.length) {
       newValidationMessages.push(
-        `${selectedStaff.name} can't do ${unavailableServices.map((service) => service.name).join(', ')}`,
+        `${selectedStaff.name} can't do ${unavailableServices.map((service) => service.name).join(', ')}.`,
       );
       setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
     }
@@ -73,17 +73,6 @@ export function StaffFields({ booking, setBooking, staffList }: Props) {
 
   return (
     <Grid item container spacing={2}>
-      {validationMessages.length > 0 && (
-        <Grid item xs={12}>
-          <Alert severity="error">
-            <ul className={classes.errorMessageList}>
-              {validationMessages.map((message, i) => (
-                <li key={i}>{message}</li>
-              ))}
-            </ul>
-          </Alert>
-        </Grid>
-      )}
       <Grid item xs={12}>
         <Autocomplete
           options={staffOptions}
@@ -95,7 +84,17 @@ export function StaffFields({ booking, setBooking, staffList }: Props) {
             setBooking({ ...booking, staffId: value?.id || (null as unknown as number) });
           }}
           renderInput={(params) => (
-            <TextField {...params} variant="outlined" required error={validationMessages.length > 0} />
+            <TextField
+              {...params}
+              variant="outlined"
+              required
+              error={validationMessages.length > 0}
+              helperText={validationMessages?.map((message, i) => (
+                <span key={i} className={classes.errorMessage}>
+                  {message}
+                </span>
+              ))}
+            />
           )}
         />
       </Grid>

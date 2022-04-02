@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MobileDatePicker, MobileTimePicker } from '@mui/lab';
-import { Grid, TextField, Alert } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -23,7 +23,7 @@ export function DateTimeFields({ booking, setBooking }: Props) {
 
   useEffect(() => {
     if (startTime >= endTime) {
-      setTimeValidationText('"Start at" must be before "End at"');
+      setTimeValidationText('This must be after "Start at" time');
       return;
     }
     setTimeValidationText('');
@@ -31,11 +31,6 @@ export function DateTimeFields({ booking, setBooking }: Props) {
 
   return (
     <Grid item container spacing={2}>
-      {timeValidationText.length > 0 && (
-        <Grid item xs={12}>
-          <Alert severity="error">{timeValidationText}</Alert>
-        </Grid>
-      )}
       <Grid item xs={12} sm={4}>
         <MobileDatePicker
           label="Date"
@@ -60,9 +55,7 @@ export function DateTimeFields({ booking, setBooking }: Props) {
               setStartTime(newStartTime);
             }
           }}
-          renderInput={(params) => (
-            <TextField variant="outlined" fullWidth {...params} error={timeValidationText.length > 0} />
-          )}
+          renderInput={(params) => <TextField variant="outlined" fullWidth {...params} />}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -76,7 +69,13 @@ export function DateTimeFields({ booking, setBooking }: Props) {
             }
           }}
           renderInput={(params) => (
-            <TextField variant="outlined" fullWidth {...params} error={timeValidationText.length > 0} />
+            <TextField
+              variant="outlined"
+              fullWidth
+              {...params}
+              error={timeValidationText.length > 0}
+              helperText={timeValidationText}
+            />
           )}
         />
       </Grid>
