@@ -23,7 +23,7 @@ export function DateTimeFields({ booking, setBooking }: Props) {
 
   useEffect(() => {
     if (startTime >= endTime) {
-      setTimeValidationText('This must be after "Start at" time');
+      setTimeValidationText('Booking end time must be after the start time');
       return;
     }
     setTimeValidationText('');

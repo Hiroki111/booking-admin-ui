@@ -42,7 +42,7 @@ export function StaffFields({ booking, setBooking, staffList }: Props) {
     const unavailableServices = booking.services.filter((service) => !selectedStaffServiceIds?.includes(service.id));
     if (unavailableServices.length) {
       newValidationMessages.push(
-        `${selectedStaff.name} can't do ${unavailableServices.map((service) => service.name).join(', ')}.`,
+        `${selectedStaff.name} can't do ${unavailableServices.map((service) => service.name).join(', ')}`,
       );
       setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
     }
