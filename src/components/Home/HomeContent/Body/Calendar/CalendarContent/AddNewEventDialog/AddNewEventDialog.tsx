@@ -35,7 +35,7 @@ const DEFAULT_BOOKING = {
   staffId: null as unknown as number,
   date: dayjs().format(DATE_FORMAT),
   startTime: '10:00:00',
-  endTime: '12:00:00',
+  endTime: '11:00:00',
   staffAvailabilityId: null as unknown as number,
   totalPrice: 0,
   staff: {} as Staff,

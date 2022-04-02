@@ -6,6 +6,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { Booking } from '../../../../../../../../interfaces/booking';
 import { Staff } from '../../../../../../../../interfaces/staff';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../../services/staff';
+import { useStyles } from './useStyles';
 
 dayjs.extend(customParseFormat);
 
@@ -16,8 +17,8 @@ interface Props {
 }
 
 export function StaffFields({ booking, setBooking, staffList }: Props) {
-  const [isInvalidStaffSelected, setIsInvalidStaffSelected] = useState<boolean>(false);
-  const [validationText, setValidationText] = useState<string>('');
+  const classes = useStyles();
+  const [validationMessages, setValidationMessages] = useState<string[]>([]);
   const [staffOptions, setStaffOptions] = useState<Staff[]>([]);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(
     staffOptions.find((staff) => staff.id === booking.staffId) || null,
@@ -28,20 +29,11 @@ export function StaffFields({ booking, setBooking, staffList }: Props) {
   }, [staffList]);
 
   useEffect(() => {
+    setValidationMessages([]);
+    const newValidationMessages = [];
+
     const selectedStaff = staffOptions.find((staffOption) => staffOption.id === booking?.staffId);
     if (!selectedStaff) {
-      setIsInvalidStaffSelected(false);
-      setValidationText('');
-      setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
-      return;
-    }
-
-    const staffAvailability = selectedStaff?.availableDates?.find(
-      (availableDate) => availableDate.date === booking.date,
-    );
-    if (!staffAvailability) {
-      setIsInvalidStaffSelected(true);
-      setValidationText(`${selectedStaff.name} isn't available on ${booking.date}`);
       setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
       return;
     }
@@ -49,41 +41,47 @@ export function StaffFields({ booking, setBooking, staffList }: Props) {
     const selectedStaffServiceIds = selectedStaff?.services.map((service) => service.id);
     const unavailableServices = booking.services.filter((service) => !selectedStaffServiceIds?.includes(service.id));
     if (unavailableServices.length) {
-      setIsInvalidStaffSelected(true);
-      setValidationText(
+      newValidationMessages.push(
         `${selectedStaff.name} can't do ${unavailableServices.map((service) => service.name).join(', ')}`,
       );
       setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
-      return;
     }
 
+    const staffAvailability = selectedStaff?.availableDates?.find(
+      (availableDate) => availableDate.date === booking.date,
+    );
     const timeslot = findTimeSlotByStartAndEndTime(
-      staffAvailability.availableTimeSlots,
+      staffAvailability?.availableTimeSlots || [],
       booking.startTime,
       booking.endTime,
     );
-    if (!timeslot) {
-      setIsInvalidStaffSelected(true);
-      setValidationText(
-        `${selectedStaff.name} doesn't have available time slot on ${booking.date} from ${dayjs(
-          booking.startTime,
-          'HH:mm:ss',
-        ).format('HH:mm')} to ${dayjs(booking.endTime, 'HH:mm:ss').format('HH:mm')}`,
+    if (!staffAvailability) {
+      newValidationMessages.push(`${selectedStaff.name} isn't available on ${booking.date}`);
+      setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
+    } else if (!timeslot) {
+      const startTimeStr = dayjs(booking.startTime, 'HH:mm:ss').format('HH:mm');
+      const endTimeStr = dayjs(booking.endTime, 'HH:mm:ss').format('HH:mm');
+      newValidationMessages.push(
+        `${selectedStaff.name} isn't available from ${startTimeStr} to ${endTimeStr} on ${booking.date}`,
       );
       setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
-      return;
+    } else {
+      setBooking({ ...booking, staffAvailabilityId: staffAvailability.id });
     }
-
-    setIsInvalidStaffSelected(false);
-    setValidationText('');
-    setBooking({ ...booking, staffAvailabilityId: staffAvailability.id });
-  }, [setBooking, booking.staffId, booking.date, booking.startTime, booking.endTime, booking.services]);
+    setValidationMessages([...newValidationMessages]);
+  }, [staffOptions, setBooking, booking.staffId, booking.date, booking.startTime, booking.endTime, booking.services]);
 
   return (
     <Grid item container spacing={2}>
-      {isInvalidStaffSelected && (
+      {validationMessages.length > 0 && (
         <Grid item xs={12}>
-          <Alert severity="error">{validationText}</Alert>
+          <Alert severity="error">
+            <ul className={classes.errorMessageList}>
+              {validationMessages.map((message, i) => (
+                <li key={i}>{message}</li>
+              ))}
+            </ul>
+          </Alert>
         </Grid>
       )}
       <Grid item xs={12}>
@@ -96,7 +94,9 @@ export function StaffFields({ booking, setBooking, staffList }: Props) {
             setSelectedStaff(value);
             setBooking({ ...booking, staffId: value?.id || (null as unknown as number) });
           }}
-          renderInput={(params) => <TextField {...params} variant="outlined" required error={isInvalidStaffSelected} />}
+          renderInput={(params) => (
+            <TextField {...params} variant="outlined" required error={validationMessages.length > 0} />
+          )}
         />
       </Grid>
     </Grid>

@@ -70,7 +70,7 @@ export function ServiceFields({ booking, setBooking, services }: Props) {
               (totalMinutes, serviceOption) => totalMinutes + serviceOption.minutes,
               0,
             )} min`}
-            label="Required time"
+            label="Estimated time"
             variant="standard"
             disabled
             fullWidth

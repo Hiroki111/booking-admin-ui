@@ -4,9 +4,21 @@ import { AvailableTimeSlotDto } from '../interfaces/staff';
 
 // not tested yet
 export function findTimeSlotByStartAndEndTime(timeslots: AvailableTimeSlotDto[], startTime: string, endTime: string) {
+  if (!timeslots?.length) {
+    return undefined;
+  }
   const start = dayjs(`2000-01-01 ${startTime}`);
   const end = dayjs(`2000-01-01 ${endTime}`);
   const totalMinutesRequired = end.diff(start, 'minute');
+
+  const earliestTimeInTimeslots = dayjs(`2000-01-01 ${timeslots[0].startTime}`);
+  const latestTimeInTimeslots = dayjs(`2000-01-01 ${timeslots[timeslots.length - 1].endTime}`);
+  if (start < earliestTimeInTimeslots) {
+    return undefined;
+  } else if (latestTimeInTimeslots < end) {
+    return undefined;
+  }
+
   const availableTimeSlot = timeslots.find((availableTimeSlot, i) =>
     hasEnoughLengthOfTimeslots(availableTimeSlot, timeslots, i, totalMinutesRequired, 0),
   );
