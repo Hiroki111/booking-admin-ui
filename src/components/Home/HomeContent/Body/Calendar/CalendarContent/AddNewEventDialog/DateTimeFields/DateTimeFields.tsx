@@ -55,7 +55,7 @@ export function DateTimeFields({ booking, setBooking }: Props) {
               setStartTime(newStartTime);
             }
           }}
-          renderInput={(params) => <TextField variant="outlined" fullWidth {...params} />}
+          renderInput={(params) => <TextField {...params} variant="outlined" fullWidth />}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -70,9 +70,9 @@ export function DateTimeFields({ booking, setBooking }: Props) {
           }}
           renderInput={(params) => (
             <TextField
+              {...params}
               variant="outlined"
               fullWidth
-              {...params}
               error={timeValidationText.length > 0}
               helperText={timeValidationText}
             />

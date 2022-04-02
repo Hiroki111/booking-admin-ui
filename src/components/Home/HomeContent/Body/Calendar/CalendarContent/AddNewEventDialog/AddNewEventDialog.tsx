@@ -61,7 +61,7 @@ export function AddNewEventDialog() {
   }
 
   return (
-    <Dialog onClose={() => {}} open maxWidth="lg" fullWidth>
+    <Dialog onClose={() => {}} open maxWidth="lg">
       <Grid container justifyContent="space-between">
         <DialogTitle>Add new booking</DialogTitle>
         <IconButton className={classes.closeButton} onClick={() => setIsAddingNewEvent(false)} size="large">
@@ -69,8 +69,8 @@ export function AddNewEventDialog() {
         </IconButton>
       </Grid>
       <DialogContent dividers>
-        <Grid container>
-          <Grid container spacing={2} item md={6} sm={12}>
+        <Grid container classes={{ root: classes.dialogContainer }}>
+          <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
             <Grid item container rowSpacing={2} className={classes.fieldGroup}>
               <Typography paragraph className={classes.dividerText}>
                 Date and time
@@ -85,7 +85,7 @@ export function AddNewEventDialog() {
             </Grid>
           </Grid>
           <Divider orientation="vertical" flexItem className={classes.centralDivider} />
-          <Grid container spacing={2} item md={6} sm={12}>
+          <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
             <Grid item container rowSpacing={2} className={classes.fieldGroup}>
               <Typography paragraph className={classes.dividerText}>
                 Service
