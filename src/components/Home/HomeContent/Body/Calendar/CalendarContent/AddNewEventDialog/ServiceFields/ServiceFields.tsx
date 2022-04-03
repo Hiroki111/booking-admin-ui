@@ -3,24 +3,25 @@ import { useState, useEffect } from 'react';
 
 import { Booking } from '../../../../../../../../interfaces/booking';
 import { Service } from '../../../../../../../../interfaces/service';
+import { useServicesQuery } from '../../../../../../../../queries/service';
 
 interface Props {
   booking: Booking;
   setBooking: (booking: Booking) => void;
-  services: Service[];
 }
 
 type ServiceOption = Pick<Service, 'id' | 'name' | 'serviceType' | 'price' | 'minutes'>;
 
-export function ServiceFields({ booking, setBooking, services }: Props) {
+export function ServiceFields({ booking, setBooking }: Props) {
   const [serviceOptions, setServiceOptions] = useState<ServiceOption[]>([]);
   const [selectedServiceOptions, setSelectedServiceOptions] = useState<ServiceOption[]>([]);
+  const fetchServicesQuery = useServicesQuery();
 
   useEffect(() => {
-    const serviceOptions = convertServicesToServiceOptions(services);
+    const serviceOptions = convertServicesToServiceOptions(fetchServicesQuery?.data || []);
     serviceOptions.sort((a, b) => a.serviceType.name.localeCompare(b.serviceType.name));
     setServiceOptions(serviceOptions);
-  }, [services, setServiceOptions]);
+  }, [fetchServicesQuery?.data, setServiceOptions]);
 
   function convertServicesToServiceOptions(services: Service[]) {
     return services.map((service) => ({
@@ -47,7 +48,6 @@ export function ServiceFields({ booking, setBooking, services }: Props) {
               setBooking({ ...booking, services: value as Service[] });
             }}
             renderInput={(params) => <TextField {...params} label="Selected services" variant="outlined" required />}
-            fullWidth
           />
         </Grid>
       </Grid>

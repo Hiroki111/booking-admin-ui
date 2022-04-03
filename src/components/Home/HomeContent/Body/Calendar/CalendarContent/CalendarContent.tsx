@@ -51,7 +51,7 @@ export function CalendarContent() {
           </Fab>
         </>
       )}
-      {isAddingNewEvent && <AddNewEventDialog />}
+      <AddNewEventDialog />
     </div>
   );
 }

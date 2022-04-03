@@ -45,23 +45,12 @@ const DEFAULT_BOOKING = {
 export function AddNewEventDialog() {
   const classes = useStyles();
   const [booking, setBooking] = useState<Booking>(DEFAULT_BOOKING);
-  const { setIsAddingNewEvent } = useCalendarContext();
+  const { isAddingNewEvent, setIsAddingNewEvent } = useCalendarContext();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
 
-  if (fetchServicesQuery.isError || fetchStaffListQuery.isError) {
-    return <WarningAlert message={'It failed to load data'} />;
-  }
-  if (fetchServicesQuery.isFetching || fetchStaffListQuery.isFetching) {
-    return (
-      <Typography component="p" color="inherit">
-        Loading...
-      </Typography>
-    );
-  }
-
   return (
-    <Dialog onClose={() => {}} open maxWidth="lg">
+    <Dialog open={isAddingNewEvent} maxWidth="lg">
       <Grid container justifyContent="space-between">
         <DialogTitle>Add new booking</DialogTitle>
         <IconButton className={classes.closeButton} onClick={() => setIsAddingNewEvent(false)} size="large">
@@ -69,6 +58,11 @@ export function AddNewEventDialog() {
         </IconButton>
       </Grid>
       <DialogContent dividers>
+        {(fetchServicesQuery.isError || fetchStaffListQuery.isError) && (
+          <WarningAlert
+            message={'It failed to load services and staff due to an internal error. Please try again later.'}
+          />
+        )}
         <Grid container classes={{ root: classes.dialogContainer }}>
           <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
             <Grid item container rowSpacing={2} className={classes.fieldGroup}>
@@ -90,17 +84,13 @@ export function AddNewEventDialog() {
               <Typography paragraph className={classes.dividerText}>
                 Service
               </Typography>
-              <ServiceFields booking={booking} setBooking={setBooking} services={fetchServicesQuery?.data || []} />
+              <ServiceFields booking={booking} setBooking={setBooking} />
             </Grid>
             <Grid item container rowSpacing={2} className={classes.fieldGroup}>
               <Typography paragraph className={classes.dividerText}>
                 Staff
               </Typography>
-              <StaffFields
-                booking={booking}
-                setBooking={setBooking}
-                staffList={fetchStaffListQuery?.data || ([] as Staff[])}
-              />
+              <StaffFields booking={booking} setBooking={setBooking} />
             </Grid>
           </Grid>
         </Grid>

@@ -7,17 +7,18 @@ import { Booking } from '../../../../../../../../interfaces/booking';
 import { Staff } from '../../../../../../../../interfaces/staff';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../../services/staff';
 import { useStyles } from './useStyles';
+import { useStaffListQuery } from '../../../../../../../../queries/staff';
 
 dayjs.extend(customParseFormat);
 
 interface Props {
   booking: Booking;
   setBooking: (booking: Booking) => void;
-  staffList: Staff[];
 }
 
-export function StaffFields({ booking, setBooking, staffList }: Props) {
+export function StaffFields({ booking, setBooking }: Props) {
   const classes = useStyles();
+  const fetchStaffListQuery = useStaffListQuery();
   const [validationMessages, setValidationMessages] = useState<string[]>([]);
   const [staffOptions, setStaffOptions] = useState<Staff[]>([]);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(
@@ -25,8 +26,8 @@ export function StaffFields({ booking, setBooking, staffList }: Props) {
   );
 
   useEffect(() => {
-    setStaffOptions(staffList);
-  }, [staffList]);
+    setStaffOptions(fetchStaffListQuery?.data || []);
+  }, [fetchStaffListQuery?.data]);
 
   useEffect(() => {
     setValidationMessages([]);
