@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { Booking } from '../interfaces/booking';
+import { Booking, CreateBookingRequestBody } from '../interfaces/booking';
 import { Service } from '../interfaces/service';
 import { Staff } from '../interfaces/staff';
 import { User } from '../interfaces/user';
@@ -58,6 +58,23 @@ const restApi = {
       url: '/api/services',
     });
     return res.data;
+  },
+
+  createBooking: async function (createBookingPayload: CreateBookingRequestBody): Promise<void> {
+    // Note: I haven't made this endpoint
+    try {
+      await axios({
+        method: 'POST',
+        url: '/api/bookings-admin',
+        data: createBookingPayload,
+        headers: defaultHeaders,
+      });
+    } catch (error: any) {
+      if (error.isAxiosError) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(error);
+    }
   },
 };
 

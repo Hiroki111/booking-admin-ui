@@ -20,3 +20,17 @@ export interface BookingEditFieldObject {
   label: string;
   fieldName: keyof Booking;
 }
+
+export interface CreateBookingRequestBody {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  totalPrice: number;
+  date: string;
+  startTime: string;
+  endTime: string;
+  staffAvailabilityId: number;
+  staffId: number;
+  serviceIds: number[];
+}

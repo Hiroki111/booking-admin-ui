@@ -25,6 +25,7 @@ import { DateTimeFields } from './DateTimeFields';
 import { CustomerDetailsFields } from './CustomerDetailsFields';
 import { ServiceFields } from './ServiceFields';
 import { StaffFields } from './StaffFields';
+import { useCreateBookingMutation } from '../../../../../../../queries/booking';
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_BOOKING = {
@@ -48,6 +49,15 @@ export function AddNewEventDialog() {
   const { isAddingNewEvent, setIsAddingNewEvent } = useCalendarContext();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
+  const createBookingMutation = useCreateBookingMutation();
+
+  function handleSubmitBooking() {
+    createBookingMutation.mutate({
+      ...booking,
+      // TODO: set the actual IDs
+      serviceIds: [],
+    });
+  }
 
   return (
     <Dialog open={isAddingNewEvent} maxWidth="lg">
@@ -99,7 +109,7 @@ export function AddNewEventDialog() {
         <Button autoFocus color="primary" onClick={() => setIsAddingNewEvent(false)}>
           Cancel
         </Button>
-        <Button autoFocus color="primary" variant="contained" onClick={() => {}}>
+        <Button autoFocus color="primary" variant="contained" onClick={handleSubmitBooking}>
           Save
         </Button>
       </DialogActions>
