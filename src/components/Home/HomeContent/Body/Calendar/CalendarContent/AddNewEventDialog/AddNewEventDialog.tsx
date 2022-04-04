@@ -9,6 +9,7 @@ import {
   Grid,
   Typography,
   Divider,
+  Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import dayjs from 'dayjs';
@@ -73,6 +74,7 @@ export function AddNewEventDialog() {
           />
         )}
         {createBookingMutation.error instanceof Error && <WarningAlert message={createBookingMutation.error.message} />}
+        {createBookingMutation.isSuccess && <Alert severity="success">Booking Saved</Alert>}
         <Grid container classes={{ root: classes.dialogContainer }}>
           <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
             <Grid item container rowSpacing={2} className={classes.fieldGroup}>
