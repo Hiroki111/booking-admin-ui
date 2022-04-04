@@ -70,7 +70,7 @@ const restApi = {
         headers: defaultHeaders,
       });
     } catch (error: any) {
-      if (error.isAxiosError) {
+      if (error.isAxiosError && error?.response?.data?.message) {
         throw new Error(error.response.data.message);
       }
       throw new Error(error);

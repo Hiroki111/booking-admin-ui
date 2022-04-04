@@ -54,8 +54,7 @@ export function AddNewEventDialog() {
   function handleSubmitBooking() {
     createBookingMutation.mutate({
       ...booking,
-      // TODO: set the actual IDs
-      serviceIds: [],
+      serviceIds: booking.services.map((service) => service.id),
     });
   }
 
@@ -73,6 +72,7 @@ export function AddNewEventDialog() {
             message={'It failed to load services and staff due to an internal error. Please try again later.'}
           />
         )}
+        {createBookingMutation.error instanceof Error && <WarningAlert message={createBookingMutation.error.message} />}
         <Grid container classes={{ root: classes.dialogContainer }}>
           <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
             <Grid item container rowSpacing={2} className={classes.fieldGroup}>
@@ -107,10 +107,16 @@ export function AddNewEventDialog() {
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
         <Button autoFocus color="primary" onClick={() => setIsAddingNewEvent(false)}>
-          Cancel
+          CANCEL
         </Button>
-        <Button autoFocus color="primary" variant="contained" onClick={handleSubmitBooking}>
-          Save
+        <Button
+          autoFocus
+          color="primary"
+          variant="contained"
+          disabled={createBookingMutation.isLoading}
+          onClick={handleSubmitBooking}
+        >
+          {!createBookingMutation.isLoading ? 'SAVE' : 'SUBMITTING...'}
         </Button>
       </DialogActions>
     </Dialog>
