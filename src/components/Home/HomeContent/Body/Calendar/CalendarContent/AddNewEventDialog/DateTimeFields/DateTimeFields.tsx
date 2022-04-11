@@ -26,8 +26,15 @@ export function DateTimeFields({ booking, setBooking }: Props) {
       setTimeValidationText('Booking end time must be after the start time');
       return;
     }
+
+    const estimatedServiceTime = booking.services.reduce((total, service) => total + service.minutes, 0) as number;
+    const timeslotLength = dayjs(endTime).diff(dayjs(startTime), 'minutes');
+    if (estimatedServiceTime > timeslotLength) {
+      setTimeValidationText(`It'll take ${estimatedServiceTime} min to complete the service(s)`);
+      return;
+    }
     setTimeValidationText('');
-  }, [startTime, endTime]);
+  }, [startTime, endTime, booking.services]);
 
   return (
     <Grid item container spacing={2}>

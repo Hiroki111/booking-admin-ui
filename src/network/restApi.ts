@@ -65,7 +65,7 @@ const restApi = {
     try {
       await axios({
         method: 'POST',
-        url: '/api/bookings-admin',
+        url: '/api/admin/bookings',
         data: createBookingPayload,
         headers: defaultHeaders,
       });

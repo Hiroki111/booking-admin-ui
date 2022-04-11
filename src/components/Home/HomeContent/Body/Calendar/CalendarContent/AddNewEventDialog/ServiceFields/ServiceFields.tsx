@@ -45,7 +45,11 @@ export function ServiceFields({ booking, setBooking }: Props) {
             value={selectedServiceOptions}
             onChange={(event: React.SyntheticEvent<Element, Event>, value: ServiceOption[]) => {
               setSelectedServiceOptions(value);
-              setBooking({ ...booking, services: value as Service[] });
+              setBooking({
+                ...booking,
+                services: value as Service[],
+                totalPrice: (value as Service[]).reduce((total, service) => total + service.price, 0),
+              });
             }}
             renderInput={(params) => <TextField {...params} label="Selected services" variant="outlined" required />}
           />
