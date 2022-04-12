@@ -30,25 +30,23 @@ export function StaffFields({ booking, setBooking }: Props) {
   }, [fetchStaffListQuery?.data]);
 
   useEffect(() => {
-    setValidationMessages([]);
-    const newValidationMessages = [];
+    const staffAvailability = selectedStaff?.availableDates?.find(
+      (availableDate) => availableDate.date === booking.date,
+    );
+    setBooking({ ...booking, staffAvailabilityId: staffAvailability?.id || (null as unknown as number) });
+  }, [selectedStaff]);
 
-    const selectedStaff = staffOptions.find((staffOption) => staffOption.id === booking?.staffId);
+  useEffect(() => {
+    setValidationMessages([]);
+    const selectedStaff = staffOptions.find((staffOption) => staffOption.id === booking.staffId);
     if (!selectedStaff) {
-      setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
       return;
     }
 
-    const selectedStaffServiceIds = selectedStaff?.services.map((service) => service.id);
+    const messages = [];
+    const selectedStaffServiceIds = selectedStaff.services.map((service) => service.id);
     const unavailableServices = booking.services.filter((service) => !selectedStaffServiceIds?.includes(service.id));
-    if (unavailableServices.length) {
-      newValidationMessages.push(
-        `${selectedStaff.name} can't do ${unavailableServices.map((service) => service.name).join(', ')}`,
-      );
-      setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
-    }
-
-    const staffAvailability = selectedStaff?.availableDates?.find(
+    const staffAvailability = selectedStaff.availableDates?.find(
       (availableDate) => availableDate.date === booking.date,
     );
     const timeslot = findTimeSlotByStartAndEndTime(
@@ -56,20 +54,19 @@ export function StaffFields({ booking, setBooking }: Props) {
       booking.startTime,
       booking.endTime,
     );
+
+    if (unavailableServices?.length) {
+      messages.push(`${selectedStaff.name} can't do ${unavailableServices.map((service) => service.name).join(', ')}`);
+    }
     if (!staffAvailability) {
-      newValidationMessages.push(`${selectedStaff.name} isn't available on ${booking.date}`);
-      setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
+      messages.push(`${selectedStaff.name} isn't available on ${booking.date}`);
     } else if (!timeslot) {
       const startTimeStr = dayjs(booking.startTime, 'HH:mm:ss').format('HH:mm');
       const endTimeStr = dayjs(booking.endTime, 'HH:mm:ss').format('HH:mm');
-      newValidationMessages.push(
-        `${selectedStaff.name} isn't available from ${startTimeStr} to ${endTimeStr} on ${booking.date}`,
-      );
-      setBooking({ ...booking, staffAvailabilityId: null as unknown as number });
-    } else {
-      setBooking({ ...booking, staffAvailabilityId: staffAvailability.id });
+      messages.push(`${selectedStaff.name} isn't available from ${startTimeStr} to ${endTimeStr} on ${booking.date}`);
     }
-    setValidationMessages([...newValidationMessages]);
+
+    setValidationMessages([...messages]);
   }, [staffOptions, setBooking, booking.staffId, booking.date, booking.startTime, booking.endTime, booking.services]);
 
   return (
