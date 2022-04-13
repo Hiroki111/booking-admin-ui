@@ -16,7 +16,7 @@ export function CalendarContent() {
   const fetchBookingsQuery = useBookingsQuery();
   const classes = useStyles();
   const isSmallWindow = useIsSmallWindow();
-  const { calendarApi, isAddingNewEvent, setIsAddingNewEvent } = useCalendarContext();
+  const { calendarApi, setIsAddingNewEvent } = useCalendarContext();
 
   return (
     <div className={classes.calendarContainer}>
