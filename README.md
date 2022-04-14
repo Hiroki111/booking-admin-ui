@@ -59,3 +59,64 @@ function initRoutes() {
 }
 
 initRoutes();
+
+
+// in each page...
+export function ExamplePage() {
+    const routes = useRoutes([
+        {
+            path: getRoute(ROUTES.example.blog.post.new),
+            component: ExamplePostNewPage,
+            exact: true,
+        },
+        {
+            path: `${getRoute(ROUTES.example.blog.post.translate)}/:translateId/:language`,
+            component: ExamplePostTranslatePage,
+            exact: true,
+        },
+        {
+            path: `${getRoute(ROUTES.example.blog.post.edit)}/:postId`,
+            component: ExamplePostEditPage,
+            exact: true,
+        },
+    ]);
+
+    return <Navigator routes={routes} />;
+}
+
+// Navigator 
+interface Props {
+    routes: RouteProps[];
+}
+
+export function Navigator({ routes }: Props) {
+    const validRoutes = routes.filter(Boolean);
+    let redirectTo = validRoutes[0] && validRoutes[0].path;
+
+    const queryParams = window.location.search || '';
+    redirectTo = `${redirectTo}${queryParams}`;
+
+    return (
+        <Switch>
+            {validRoutes.filter(Boolean).map((route: RouteProps) => (
+                <Route key={String(route.path)} {...route} />
+            ))}
+
+            {redirectTo && <Redirect to={redirectTo} />}
+        </Switch>
+    );
+}
+
+
+// each pages are
+
+export function getRootRoutes(): RouteProps[] {
+    return [
+        {
+            path: getRoute(ROUTES.cms),
+            component: ExamplePage,
+        }
+        // other obj here
+    ]
+}
+
