@@ -14,7 +14,6 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import dayjs from 'dayjs';
 
-import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
 import { Booking } from '../../../../../../../interfaces/booking';
 import { Service } from '../../../../../../../interfaces/service';
 import { Staff } from '../../../../../../../interfaces/staff';
@@ -27,6 +26,8 @@ import { CustomerDetailsFields } from './CustomerDetailsFields';
 import { ServiceFields } from './ServiceFields';
 import { StaffFields } from './StaffFields';
 import { useCreateBookingMutation } from '../../../../../../../queries/booking';
+import { PATHS } from '../../../../../../../routes';
+import { useHistory } from 'react-router-dom';
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_BOOKING = {
@@ -47,10 +48,10 @@ const DEFAULT_BOOKING = {
 export function AddNewEventDialog() {
   const classes = useStyles();
   const [booking, setBooking] = useState<Booking>(DEFAULT_BOOKING);
-  const { isAddingNewEvent, setIsAddingNewEvent } = useCalendarContext();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
   const createBookingMutation = useCreateBookingMutation();
+  const history = useHistory();
 
   function handleSubmitBooking() {
     createBookingMutation.mutate({
@@ -60,10 +61,10 @@ export function AddNewEventDialog() {
   }
 
   return (
-    <Dialog open={isAddingNewEvent} maxWidth="lg">
+    <Dialog open maxWidth="lg">
       <Grid container justifyContent="space-between">
         <DialogTitle>Add new booking</DialogTitle>
-        <IconButton className={classes.closeButton} onClick={() => setIsAddingNewEvent(false)} size="large">
+        <IconButton className={classes.closeButton} onClick={() => history.push(PATHS.calendar)} size="large">
           <CloseIcon />
         </IconButton>
       </Grid>
@@ -108,7 +109,7 @@ export function AddNewEventDialog() {
         </Grid>
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
-        <Button autoFocus color="primary" onClick={() => setIsAddingNewEvent(false)}>
+        <Button autoFocus color="primary" onClick={() => history.push(PATHS.calendar)}>
           CANCEL
         </Button>
         <Button

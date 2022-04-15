@@ -1,22 +1,19 @@
 import { RouteProps } from 'react-router-dom';
 
 import { Calendar } from './components/Home/HomeContent/Body/Calendar';
-import { Login } from './components/Login';
 
-const calendar: RouteProps = {
-  path: '/',
-  component: Calendar,
-  exact: true,
+export const PATHS = {
+  calendar: '/calendar',
+  calendarBookingEditId: '/calendar/booking/edit/:id',
+  login: '/login',
 };
 
-const login: RouteProps = {
-  path: '/login',
-  component: Login,
-};
+// Used under <Body/>
+export const MODULE_ROUTES: RouteProps[] = [
+  {
+    path: PATHS.calendar,
+    component: Calendar,
+  },
+];
 
-export const PATHS: Record<string, string> = {
-  calendar: calendar.path as string,
-  login: login.path as string,
-};
-
-export const PROTECTED_ROUTES: RouteProps[] = [calendar];
+export const PROTECTED_PATHS = [PATHS.calendar, PATHS.calendarBookingEditId];

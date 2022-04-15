@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router-dom';
 import { Grid, Paper, Typography, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import NavigationIcon from '@mui/icons-material/Navigation';
@@ -11,12 +12,17 @@ import { AddNewEventDialog } from './AddNewEventDialog';
 import { CalendarWidget } from './CalendarWidget';
 import { ToolBar } from './ToolBar';
 import { useStyles } from './useStyles';
+import { Route } from 'react-router-dom';
+import { PATHS } from '../../../../../../routes';
+import { getRouteWithParam } from '../../../../../../services/routing';
+import { NEW_BOOKING_ID } from '../../../../../../staticData/calendar';
 
 export function CalendarContent() {
   const fetchBookingsQuery = useBookingsQuery();
   const classes = useStyles();
   const isSmallWindow = useIsSmallWindow();
-  const { calendarApi, setIsAddingNewEvent } = useCalendarContext();
+  const { calendarApi } = useCalendarContext();
+  const history = useHistory();
 
   return (
     <div className={classes.calendarContainer}>
@@ -45,13 +51,13 @@ export function CalendarContent() {
           <Fab
             color="primary"
             className={clsx(classes.floatingButton, classes.addNewButton)}
-            onClick={() => setIsAddingNewEvent(true)}
+            onClick={() => history.push(getRouteWithParam(PATHS.calendarBookingEditId, { ':id': NEW_BOOKING_ID }))}
           >
             <AddIcon />
           </Fab>
         </>
       )}
-      <AddNewEventDialog />
+      <Route exact path={PATHS.calendarBookingEditId} component={AddNewEventDialog} />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router-dom';
 import { useRef } from 'react';
 import { Button, Grid } from '@mui/material';
 import clsx from 'clsx';
@@ -11,13 +12,17 @@ import { StaffSelector } from './StaffSelector';
 import { DateNavigator } from './DateNavigator';
 import { ActionDrawer } from './ActionDrawer';
 import { useIsSmallWindow } from '../../../../../../../hooks/window';
+import { PATHS } from '../../../../../../../routes';
+import { getRouteWithParam } from '../../../../../../../services/routing';
+import { NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
 
 export function ToolBar() {
   const classes = useStyles();
   const toolbarRef: React.MutableRefObject<any> = useRef();
   const staffListQuery = useStaffListQuery();
-  const { calendarApi, setIsAddingNewEvent } = useCalendarContext();
+  const { calendarApi } = useCalendarContext();
   const isSmallWindow = useIsSmallWindow();
+  const history = useHistory();
 
   if (staffListQuery.isLoading) {
     return null;
@@ -55,7 +60,7 @@ export function ToolBar() {
               </Button>
               <ViewModeMenu />
               <Button
-                onClick={() => setIsAddingNewEvent(true)}
+                onClick={() => history.push(getRouteWithParam(PATHS.calendarBookingEditId, { ':id': NEW_BOOKING_ID }))}
                 className={classes.button}
                 variant="contained"
                 color="primary"

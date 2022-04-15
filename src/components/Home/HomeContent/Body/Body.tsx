@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
 import { Switch, Route } from 'react-router-dom';
 
-import { PROTECTED_ROUTES } from '../../../../routes';
+import { MODULE_ROUTES } from '../../../../routes';
 import { useStyles } from './useStyles';
 
 export function Body() {
@@ -12,7 +12,7 @@ export function Body() {
       <div className={classes.appBarSpacer} />
       <Container maxWidth="lg" className={classes.container}>
         <Switch>
-          {PROTECTED_ROUTES.map(({ exact, path, component }) => (
+          {MODULE_ROUTES.map(({ exact, path, component }) => (
             <Route key={path as string} exact={exact} path={path} component={component} />
           ))}
         </Switch>
