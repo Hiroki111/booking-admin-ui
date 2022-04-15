@@ -12,28 +12,9 @@ export function getRoute(route: {} | string, params: {} = {}): string {
     );
 }
 
-export function getOldRoute(route: keyof typeof oldRoutes) {
-    return `${getRoute(ROUTES.oldBackoffice, { url: route })}`;
-}
-
-export function getOldBackofficeUrl(url: string, params: {} = {}): string {
-    const { OLD_BACKOFFICE_URL } = getStoreValue(stores.environment);
-    url = params ? `${url}?${stringify(params)}` : url;
-    return `${OLD_BACKOFFICE_URL}/${url}`;
-}
-
 export function useRoutes(allRoutes: RouteProps[]) {
     const [routes] = useState(allRoutes.filter(Boolean));
     return routes;
-}
-
-export function isActiveRoute(route, exact = true) {
-    return Boolean(
-        matchPath(window.location.pathname, {
-            path: route,
-            exact,
-        }),
-    );
 }
 
 function generateRoutes(routes, routeBase, key) {
