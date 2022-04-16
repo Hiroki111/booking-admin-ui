@@ -29,6 +29,37 @@ export function StaffFields({ booking, setBooking }: Props) {
     setStaffOptions(fetchStaffListQuery?.data || []);
   }, [fetchStaffListQuery?.data]);
 
+  // Filter staffOptions by date/time, services
+  useEffect(() => {
+    let filteredStaffOptions = fetchStaffListQuery?.data || [];
+
+    const selectedServiceIds = booking.services.map((service) => service.id);
+    filteredStaffOptions = filteredStaffOptions.filter((staff) => {
+      const staffServiceIds = staff.services.map((service) => service.id);
+      if (!selectedServiceIds.every((id) => staffServiceIds.includes(id))) {
+        return false;
+      }
+
+      const staffAvailability = staff.availableDates?.find((availableDate) => availableDate.date === booking.date);
+      if (!staffAvailability) {
+        return false;
+      }
+      const timeslot = findTimeSlotByStartAndEndTime(
+        staffAvailability?.availableTimeSlots || [],
+        booking.startTime,
+        booking.endTime,
+      );
+      return !!timeslot;
+    });
+
+    if (selectedStaff?.id && !filteredStaffOptions.map((staff) => staff.id).includes(selectedStaff.id)) {
+      filteredStaffOptions = [...filteredStaffOptions, selectedStaff];
+    }
+
+    setStaffOptions(filteredStaffOptions);
+  }, [fetchStaffListQuery?.data, selectedStaff, booking.date, booking.startTime, booking.endTime, booking.services]);
+
+  // Updated staffAvailabilityId
   useEffect(() => {
     const staffAvailability = selectedStaff?.availableDates?.find(
       (availableDate) => availableDate.date === booking.date,
@@ -36,9 +67,9 @@ export function StaffFields({ booking, setBooking }: Props) {
     setBooking({ ...booking, staffAvailabilityId: staffAvailability?.id || (null as unknown as number) });
   }, [selectedStaff]);
 
+  // Validate the selected staff
   useEffect(() => {
     setValidationMessages([]);
-    const selectedStaff = staffOptions.find((staffOption) => staffOption.id === booking.staffId);
     if (!selectedStaff) {
       return;
     }
@@ -76,6 +107,7 @@ export function StaffFields({ booking, setBooking }: Props) {
           options={staffOptions}
           getOptionLabel={(staff) => staff.name}
           isOptionEqualToValue={(option, value) => option.id === value.id}
+          noOptionsText={'No staff available for the selected date, time and services'}
           value={selectedStaff}
           onChange={(e: React.SyntheticEvent<Element, Event>, value: Staff | null) => {
             setSelectedStaff(value);
