@@ -1,7 +1,7 @@
 import { Route, Redirect, RouteProps } from 'react-router-dom';
 
 import { useAuthContext } from '../../contexts/AuthContext';
-import { PATHS } from '../../routes';
+import { PATHS } from '../../staticData/routes';
 
 export function ProtectedRoute({ component: Component, ...rest }: RouteProps) {
   const { isFetchingUser, user } = useAuthContext();

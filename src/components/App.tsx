@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 
-import { PATHS, PROTECTED_PATHS } from '../routes';
+import { PATHS, PROTECTED_PATHS } from '../staticData/routes';
 import { Home } from './Home';
 import { Login } from './Login';
 import { ProtectedRoute } from './ProtectedRoute';

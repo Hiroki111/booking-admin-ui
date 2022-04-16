@@ -12,7 +12,7 @@ import { StaffSelector } from './StaffSelector';
 import { DateNavigator } from './DateNavigator';
 import { ActionDrawer } from './ActionDrawer';
 import { useIsSmallWindow } from '../../../../../../../hooks/window';
-import { PATHS } from '../../../../../../../routes';
+import { PATHS } from '../../../../../../../staticData/routes';
 import { getRouteWithParam } from '../../../../../../../services/routing';
 import { NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
 

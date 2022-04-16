@@ -1,6 +1,6 @@
 import { RouteProps } from 'react-router-dom';
 
-import { Calendar } from './components/Home/HomeContent/Body/Calendar';
+import { Calendar } from '../components/Home/HomeContent/Body/Calendar';
 
 export const PATHS = {
   calendar: '/calendar',

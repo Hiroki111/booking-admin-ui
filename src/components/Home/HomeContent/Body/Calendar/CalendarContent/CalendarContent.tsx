@@ -13,7 +13,7 @@ import { CalendarWidget } from './CalendarWidget';
 import { ToolBar } from './ToolBar';
 import { useStyles } from './useStyles';
 import { Route } from 'react-router-dom';
-import { PATHS } from '../../../../../../routes';
+import { PATHS } from '../../../../../../staticData/routes';
 import { getRouteWithParam } from '../../../../../../services/routing';
 import { NEW_BOOKING_ID } from '../../../../../../staticData/calendar';
 

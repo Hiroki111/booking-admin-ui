@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
 import { Switch, Route } from 'react-router-dom';
 
-import { MODULE_ROUTES } from '../../../../routes';
+import { MODULE_ROUTES } from '../../../../staticData/routes';
 import { useStyles } from './useStyles';
 
 export function Body() {

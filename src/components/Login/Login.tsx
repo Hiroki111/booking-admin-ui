@@ -10,7 +10,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { PATHS } from '../../routes';
+import { PATHS } from '../../staticData/routes';
 import { useStyles } from './useStyles';
 import { useAuthContext } from '../../contexts/AuthContext';
 

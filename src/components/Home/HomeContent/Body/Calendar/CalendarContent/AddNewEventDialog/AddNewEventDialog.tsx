@@ -26,7 +26,7 @@ import { CustomerDetailsFields } from './CustomerDetailsFields';
 import { ServiceFields } from './ServiceFields';
 import { StaffFields } from './StaffFields';
 import { useCreateBookingMutation } from '../../../../../../../queries/booking';
-import { PATHS } from '../../../../../../../routes';
+import { PATHS } from '../../../../../../../staticData/routes';
 import { useHistory } from 'react-router-dom';
 
 export const DATE_FORMAT = 'YYYY-MM-DD';

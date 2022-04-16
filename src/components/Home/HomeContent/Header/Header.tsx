@@ -5,7 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 import { useStyles } from './useStyles';
-import { PATHS } from '../../../../routes';
+import { PATHS } from '../../../../staticData/routes';
 import { useAuthContext } from '../../../../contexts/AuthContext';
 import { useIsSmallWindow } from '../../../../hooks/window';
 import { UserAvatar } from './UserAvatar';
