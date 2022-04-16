@@ -59,14 +59,6 @@ export function StaffFields({ booking, setBooking }: Props) {
     setStaffOptions(filteredStaffOptions);
   }, [fetchStaffListQuery?.data, selectedStaff, booking.date, booking.startTime, booking.endTime, booking.services]);
 
-  // Updated staffAvailabilityId
-  useEffect(() => {
-    const staffAvailability = selectedStaff?.availableDates?.find(
-      (availableDate) => availableDate.date === booking.date,
-    );
-    setBooking({ ...booking, staffAvailabilityId: staffAvailability?.id || (null as unknown as number) });
-  }, [selectedStaff]);
-
   // Validate the selected staff
   useEffect(() => {
     setValidationMessages([]);
@@ -98,7 +90,16 @@ export function StaffFields({ booking, setBooking }: Props) {
     }
 
     setValidationMessages([...messages]);
-  }, [staffOptions, setBooking, booking.staffId, booking.date, booking.startTime, booking.endTime, booking.services]);
+  }, [
+    staffOptions,
+    setBooking,
+    selectedStaff,
+    booking.staffId,
+    booking.date,
+    booking.startTime,
+    booking.endTime,
+    booking.services,
+  ]);
 
   return (
     <Grid item container spacing={2}>
@@ -110,8 +111,15 @@ export function StaffFields({ booking, setBooking }: Props) {
           noOptionsText={'No staff available for the selected date, time and services'}
           value={selectedStaff}
           onChange={(e: React.SyntheticEvent<Element, Event>, value: Staff | null) => {
+            const staffAvailability = value?.availableDates?.find(
+              (availableDate) => availableDate.date === booking.date,
+            );
             setSelectedStaff(value);
-            setBooking({ ...booking, staffId: value?.id || (null as unknown as number) });
+            setBooking({
+              ...booking,
+              staffId: value?.id || (null as unknown as number),
+              staffAvailabilityId: staffAvailability?.id || (null as unknown as number),
+            });
           }}
           renderInput={(params) => (
             <TextField
