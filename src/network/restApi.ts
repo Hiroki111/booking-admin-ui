@@ -60,15 +60,15 @@ const restApi = {
     return res.data;
   },
 
-  createBooking: async function (createBookingPayload: CreateBookingRequestBody): Promise<void> {
-    // Note: I haven't made this endpoint
+  createBooking: async function (createBookingPayload: CreateBookingRequestBody): Promise<Booking> {
     try {
-      await axios({
+      const res: AxiosResponse<Booking> = await axios({
         method: 'POST',
         url: '/api/admin/bookings',
         data: createBookingPayload,
         headers: defaultHeaders,
       });
+      return res.data;
     } catch (error: any) {
       if (error.isAxiosError && error?.response?.data?.message) {
         throw new Error(error.response.data.message);

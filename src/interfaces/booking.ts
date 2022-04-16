@@ -2,6 +2,7 @@ import { Service } from './service';
 import { Staff } from './staff';
 
 export interface Booking {
+  id: number;
   firstName: string;
   lastName: string;
   phoneNumber: string;

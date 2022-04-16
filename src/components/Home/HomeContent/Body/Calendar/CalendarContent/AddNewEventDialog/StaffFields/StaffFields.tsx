@@ -25,10 +25,6 @@ export function StaffFields({ booking, setBooking }: Props) {
     staffOptions.find((staff) => staff.id === booking.staffId) || null,
   );
 
-  useEffect(() => {
-    setStaffOptions(fetchStaffListQuery?.data || []);
-  }, [fetchStaffListQuery?.data]);
-
   // Filter staffOptions by date/time, services
   useEffect(() => {
     let filteredStaffOptions = fetchStaffListQuery?.data || [];
