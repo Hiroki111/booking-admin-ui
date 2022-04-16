@@ -90,7 +90,7 @@ export function StaffFields({ booking, setBooking }: Props) {
     }
 
     setValidationMessages([...messages]);
-  }, [selectedStaff, booking.staffId, booking.date, booking.startTime, booking.endTime, booking.services]);
+  }, [selectedStaff, booking.date, booking.startTime, booking.endTime, booking.services]);
 
   return (
     <Grid item container spacing={2}>
