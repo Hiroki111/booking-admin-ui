@@ -4,8 +4,10 @@ import { Grid, TextField } from '@mui/material';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-import { DATE_FORMAT } from '../AddNewEventDialog';
 import { Booking } from '../../../../../../../../interfaces/booking';
+import { DATE_FORMAT, NEW_BOOKING_ID } from '../../../../../../../../staticData/calendar';
+import { useParams } from 'react-router-dom';
+import { useBookingQuery } from '../../../../../../../../queries/booking';
 
 dayjs.extend(customParseFormat);
 
@@ -20,8 +22,22 @@ export function DateTimeFields({ booking, setBooking }: Props) {
   const [startTime, setStartTime] = useState<Date>(dayjs(booking.startTime, 'HH:mm:ss').toDate());
   const [endTime, setEndTime] = useState<Date>(dayjs(booking.endTime, 'HH:mm:ss').toDate());
   const [timeValidationText, setTimeValidationText] = useState<string>('');
+  // I put these lines in 3 components. How do I avoid it?
+  const { id } = useParams<{ id: string }>();
+  const fetchBookingQuery = useBookingQuery(id);
+  const isCreatingBooking = id === String(NEW_BOOKING_ID);
 
   useEffect(() => {
+    if (!isCreatingBooking && fetchBookingQuery.data) {
+      setStartTime(dayjs(fetchBookingQuery.data.startTime, 'HH:mm:ss').toDate());
+      setEndTime(dayjs(fetchBookingQuery.data.endTime, 'HH:mm:ss').toDate());
+    }
+  }, [isCreatingBooking, fetchBookingQuery.data]);
+
+  useEffect(() => {
+    if (!booking?.services) {
+      return;
+    }
     if (startTime >= endTime) {
       setTimeValidationText('Booking end time must be after the start time');
       return;

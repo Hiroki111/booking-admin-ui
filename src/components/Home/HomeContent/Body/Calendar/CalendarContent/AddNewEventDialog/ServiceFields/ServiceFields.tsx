@@ -1,9 +1,12 @@
 import { Grid, Autocomplete, TextField, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { Booking } from '../../../../../../../../interfaces/booking';
 import { Service } from '../../../../../../../../interfaces/service';
+import { useBookingQuery } from '../../../../../../../../queries/booking';
 import { useServicesQuery } from '../../../../../../../../queries/service';
+import { NEW_BOOKING_ID } from '../../../../../../../../staticData/calendar';
 
 interface Props {
   booking: Booking;
@@ -16,12 +19,21 @@ export function ServiceFields({ booking, setBooking }: Props) {
   const [serviceOptions, setServiceOptions] = useState<ServiceOption[]>([]);
   const [selectedServiceOptions, setSelectedServiceOptions] = useState<ServiceOption[]>([]);
   const fetchServicesQuery = useServicesQuery();
+  const { id } = useParams<{ id: string }>();
+  const fetchBookingQuery = useBookingQuery(id);
+  const isCreatingBooking = id === String(NEW_BOOKING_ID);
 
   useEffect(() => {
     const serviceOptions = convertServicesToServiceOptions(fetchServicesQuery?.data || []);
     serviceOptions.sort((a, b) => a.serviceType.name.localeCompare(b.serviceType.name));
     setServiceOptions(serviceOptions);
-  }, [fetchServicesQuery?.data, setServiceOptions]);
+
+    if (!isCreatingBooking && fetchBookingQuery.data?.services) {
+      const serviceIds = fetchBookingQuery.data.services.map((service) => service.id);
+      const initialSelectedServiceOptions = serviceOptions.filter((service) => serviceIds.includes(service.id));
+      setSelectedServiceOptions(initialSelectedServiceOptions);
+    }
+  }, [fetchServicesQuery?.data, fetchBookingQuery.data?.services, isCreatingBooking, setServiceOptions]);
 
   function convertServicesToServiceOptions(services: Service[]) {
     return services.map((service) => ({

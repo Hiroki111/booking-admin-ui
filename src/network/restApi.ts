@@ -35,6 +35,15 @@ const restApi = {
     });
   },
 
+  fetchBooking: async function (id: string | number): Promise<Booking> {
+    const res: AxiosResponse<Booking> = await axios({
+      method: 'GET',
+      url: `/api/bookings/${id}`,
+      headers: defaultHeaders,
+    });
+    return res.data;
+  },
+
   fetchBookings: async function (): Promise<Booking[]> {
     const res: AxiosResponse<Booking[]> = await axios({
       method: 'GET',

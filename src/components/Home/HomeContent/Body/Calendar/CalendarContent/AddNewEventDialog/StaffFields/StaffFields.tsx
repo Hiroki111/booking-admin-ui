@@ -8,6 +8,9 @@ import { Staff } from '../../../../../../../../interfaces/staff';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../../services/staff';
 import { useStyles } from './useStyles';
 import { useStaffListQuery } from '../../../../../../../../queries/staff';
+import { useParams } from 'react-router-dom';
+import { useBookingQuery } from '../../../../../../../../queries/booking';
+import { NEW_BOOKING_ID } from '../../../../../../../../staticData/calendar';
 
 dayjs.extend(customParseFormat);
 
@@ -24,6 +27,17 @@ export function StaffFields({ booking, setBooking }: Props) {
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(
     staffOptions.find((staff) => staff.id === booking.staffId) || null,
   );
+  const { id } = useParams<{ id: string }>();
+  const fetchBookingQuery = useBookingQuery(id);
+  const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
+
+  useEffect(() => {
+    if (!isCreatingNewBooking && fetchBookingQuery.data?.staff && fetchStaffListQuery?.data) {
+      const initialStaff =
+        fetchStaffListQuery.data.find((staff) => staff.id === fetchBookingQuery.data?.staff?.id) || null;
+      setSelectedStaff(initialStaff);
+    }
+  }, [isCreatingNewBooking, fetchBookingQuery.data?.staff, fetchStaffListQuery?.data]);
 
   // Filter staffOptions by date/time, services
   useEffect(() => {
@@ -65,21 +79,34 @@ export function StaffFields({ booking, setBooking }: Props) {
     const messages = [];
     const selectedStaffServiceIds = selectedStaff.services.map((service) => service.id);
     const unavailableServices = booking.services.filter((service) => !selectedStaffServiceIds?.includes(service.id));
-    const staffAvailability = selectedStaff.availableDates?.find(
-      (availableDate) => availableDate.date === booking.date,
-    );
+    const staffAvailability = selectedStaff.availableDates?.find((availableDate) => {
+      if (isCreatingNewBooking) {
+        return availableDate.date === booking.date;
+      }
+      return availableDate.date === fetchBookingQuery.data?.date;
+    });
     const timeslot = findTimeSlotByStartAndEndTime(
       staffAvailability?.availableTimeSlots || [],
       booking.startTime,
       booking.endTime,
     );
+    let hasAvailableTimeslot;
+    if (isCreatingNewBooking) {
+      hasAvailableTimeslot = !!timeslot;
+    } else {
+      // TODO: This isn't working properly. Fix it
+      hasAvailableTimeslot =
+        !!timeslot ||
+        (fetchBookingQuery.data?.startTime === booking.startTime &&
+          fetchBookingQuery.data?.endTime === booking.endTime);
+    }
 
     if (unavailableServices?.length) {
       messages.push(`${selectedStaff.name} can't do ${unavailableServices.map((service) => service.name).join(', ')}`);
     }
     if (!staffAvailability) {
       messages.push(`${selectedStaff.name} isn't available on ${booking.date}`);
-    } else if (!timeslot) {
+    } else if (!hasAvailableTimeslot) {
       const startTimeStr = dayjs(booking.startTime, 'HH:mm:ss').format('HH:mm');
       const endTimeStr = dayjs(booking.endTime, 'HH:mm:ss').format('HH:mm');
       messages.push(`${selectedStaff.name} isn't available from ${startTimeStr} to ${endTimeStr} on ${booking.date}`);

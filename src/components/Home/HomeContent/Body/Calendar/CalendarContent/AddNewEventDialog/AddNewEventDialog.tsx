@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -12,11 +12,8 @@ import {
   Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import dayjs from 'dayjs';
 
 import { Booking } from '../../../../../../../interfaces/booking';
-import { Service } from '../../../../../../../interfaces/service';
-import { Staff } from '../../../../../../../interfaces/staff';
 import { useStyles } from './useStyles';
 import { useServicesQuery } from '../../../../../../../queries/service';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
@@ -25,33 +22,36 @@ import { DateTimeFields } from './DateTimeFields';
 import { CustomerDetailsFields } from './CustomerDetailsFields';
 import { ServiceFields } from './ServiceFields';
 import { StaffFields } from './StaffFields';
-import { useCreateBookingMutation } from '../../../../../../../queries/booking';
+import { useBookingQuery, useCreateBookingMutation } from '../../../../../../../queries/booking';
 import { PATHS } from '../../../../../../../staticData/routes';
-import { useHistory } from 'react-router-dom';
-
-export const DATE_FORMAT = 'YYYY-MM-DD';
-const DEFAULT_BOOKING = {
-  firstName: '',
-  lastName: '',
-  phoneNumber: '',
-  email: '',
-  staffId: null as unknown as number,
-  date: dayjs().format(DATE_FORMAT),
-  startTime: '10:00:00',
-  endTime: '11:00:00',
-  staffAvailabilityId: null as unknown as number,
-  totalPrice: 0,
-  staff: {} as Staff,
-  services: [] as Service[],
-} as Booking;
+import { useHistory, useParams } from 'react-router-dom';
+import { DEFAULT_BOOKING, NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
+import { getRouteWithParam } from '../../../../../../../services/routing';
 
 export function AddNewEventDialog() {
   const classes = useStyles();
   const [booking, setBooking] = useState<Booking>(DEFAULT_BOOKING);
+  const { id } = useParams<{ id: string }>();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
   const createBookingMutation = useCreateBookingMutation();
   const history = useHistory();
+  const isCreatingBooking = id === String(NEW_BOOKING_ID);
+  const fetchBookingQuery = useBookingQuery(id);
+
+  useEffect(() => {
+    if (isCreatingBooking) {
+      setBooking(DEFAULT_BOOKING);
+    } else if (fetchBookingQuery.data) {
+      setBooking(fetchBookingQuery.data);
+    }
+  }, [isCreatingBooking, fetchBookingQuery?.data]);
+
+  useEffect(() => {
+    if (isCreatingBooking && createBookingMutation.isSuccess && createBookingMutation.data.id) {
+      history.push(getRouteWithParam(PATHS.calendarBookingEditId, { ':id': createBookingMutation.data.id }));
+    }
+  }, [history, isCreatingBooking, createBookingMutation.isSuccess, createBookingMutation.data, id]);
 
   function handleSubmitBooking() {
     createBookingMutation.mutate({
@@ -63,7 +63,7 @@ export function AddNewEventDialog() {
   return (
     <Dialog open maxWidth="lg">
       <Grid container justifyContent="space-between">
-        <DialogTitle>Add new booking</DialogTitle>
+        <DialogTitle>{`${isCreatingBooking ? 'Add' : 'Edit'} Booking`}</DialogTitle>
         <IconButton className={classes.closeButton} onClick={() => history.push(PATHS.calendar)} size="large">
           <CloseIcon />
         </IconButton>
