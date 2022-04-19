@@ -1,4 +1,5 @@
 import { Service } from './service';
+import { Timeslot } from './timeslotSetting';
 
 export interface Staff {
   id: number;
@@ -12,10 +13,5 @@ export interface Staff {
 export interface AvailableDate {
   id: number;
   date: string;
-  availableTimeSlots: AvailableTimeSlotDto[];
-}
-
-export interface AvailableTimeSlotDto {
-  startTime: string;
-  endTime: string;
+  availableTimeSlots: Timeslot[];
 }

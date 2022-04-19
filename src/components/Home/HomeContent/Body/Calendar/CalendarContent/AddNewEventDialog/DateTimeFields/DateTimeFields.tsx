@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MobileDatePicker, MobileTimePicker } from '@mui/lab';
-import { Grid, TextField } from '@mui/material';
+import { Autocomplete, Grid, TextField } from '@mui/material';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -22,6 +22,10 @@ export function DateTimeFields({ booking, setBooking }: Props) {
   const [startTime, setStartTime] = useState<Date>(dayjs(booking.startTime, 'HH:mm:ss').toDate());
   const [endTime, setEndTime] = useState<Date>(dayjs(booking.endTime, 'HH:mm:ss').toDate());
   const [timeValidationText, setTimeValidationText] = useState<string>('');
+  const fetchTimeslotsQuery = useTimeslotsQuery();
+  const timeslots = (fetchTimeslotsQuery.data || []).map((timeslotString) =>
+    dayjs(timeslotString, 'HH:mm:ss').toDate(),
+  );
   // I put these lines in 3 components. How do I avoid it?
   const { id } = useParams<{ id: string }>();
   const fetchBookingQuery = useBookingQuery(id);
@@ -69,16 +73,18 @@ export function DateTimeFields({ booking, setBooking }: Props) {
         />
       </Grid>
       <Grid item xs={12} sm={4}>
-        <MobileTimePicker
-          label="Start at"
+        <Autocomplete
+          options={timeslots}
+          // options={[dayjs('11:00:00', 'HH:mm:ss').toDate(), dayjs('11:30:00', 'HH:mm:ss').toDate()]}
+          getOptionLabel={(time) => dayjs(time).format('HH:mm')}
           value={startTime}
-          onChange={(newStartTime: Date | null) => {
+          onChange={(e: React.SyntheticEvent<Element, Event>, newStartTime: Date | null) => {
             if (newStartTime) {
               setBooking({ ...booking, startTime: dayjs(newStartTime).format(TIME_FORMAT) });
               setStartTime(newStartTime);
             }
           }}
-          renderInput={(params) => <TextField {...params} variant="outlined" fullWidth />}
+          renderInput={(params) => <TextField {...params} label="Start at" variant="outlined" required />}
         />
       </Grid>
       <Grid item xs={12} sm={4}>

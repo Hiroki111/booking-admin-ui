@@ -69,6 +69,14 @@ const restApi = {
     return res.data;
   },
 
+  fetchTimeslots: async function (): Promise<Service[]> {
+    const res: AxiosResponse<Service[]> = await axios({
+      method: 'GET',
+      url: '/api/admin/timeslots',
+    });
+    return res.data;
+  },
+
   createBooking: async function (createBookingPayload: CreateBookingRequestBody): Promise<Booking> {
     try {
       const res: AxiosResponse<Booking> = await axios({
