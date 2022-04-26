@@ -8,6 +8,7 @@ import { Booking } from '../../../../../../../../interfaces/booking';
 import { DATE_FORMAT, NEW_BOOKING_ID } from '../../../../../../../../staticData/calendar';
 import { useParams } from 'react-router-dom';
 import { useBookingQuery } from '../../../../../../../../queries/booking';
+import { useTimeslotsQuery } from '../../../../../../../../queries/timeslotSetting';
 
 dayjs.extend(customParseFormat);
 
@@ -24,7 +25,7 @@ export function DateTimeFields({ booking, setBooking }: Props) {
   const [timeValidationText, setTimeValidationText] = useState<string>('');
   const fetchTimeslotsQuery = useTimeslotsQuery();
   const timeslots = (fetchTimeslotsQuery.data || []).map((timeslotString) =>
-    dayjs(timeslotString, 'HH:mm:ss').toDate(),
+    dayjs(timeslotString.startTime, 'HH:mm:ss').toDate(),
   );
   // I put these lines in 3 components. How do I avoid it?
   const { id } = useParams<{ id: string }>();

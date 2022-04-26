@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 
-import { AvailableTimeSlotDto } from '../interfaces/staff';
+import { Timeslot } from '../interfaces/timeslotSetting';
 
 // not tested yet
-export function findTimeSlotByStartAndEndTime(timeslots: AvailableTimeSlotDto[], startTime: string, endTime: string) {
+export function findTimeSlotByStartAndEndTime(timeslots: Timeslot[], startTime: string, endTime: string) {
   if (!timeslots?.length) {
     return undefined;
   }
@@ -28,8 +28,8 @@ export function findTimeSlotByStartAndEndTime(timeslots: AvailableTimeSlotDto[],
 
 // not tested yet
 export function hasEnoughLengthOfTimeslots(
-  currentTimeslot: AvailableTimeSlotDto,
-  allTimeslots: AvailableTimeSlotDto[],
+  currentTimeslot: Timeslot,
+  allTimeslots: Timeslot[],
   currentTimeslotIndex: number,
   totalMinutesRequired: number,
   accumlatedTimeslotLength: number,
