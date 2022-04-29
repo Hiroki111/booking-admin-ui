@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { MobileDatePicker, MobileTimePicker } from '@mui/lab';
+import { useEffect, useMemo, useState } from 'react';
+import { MobileDatePicker } from '@mui/lab';
 import { Autocomplete, Grid, TextField } from '@mui/material';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -17,16 +17,12 @@ interface Props {
   setBooking: (booking: Booking) => void;
 }
 
-const TIME_FORMAT = 'HH:mm:00';
-
 export function DateTimeFields({ booking, setBooking }: Props) {
-  const [startTime, setStartTime] = useState<Date>(dayjs(booking.startTime, 'HH:mm:ss').toDate());
-  const [endTime, setEndTime] = useState<Date>(dayjs(booking.endTime, 'HH:mm:ss').toDate());
+  const [startTime, setStartTime] = useState<string>(booking.startTime);
+  const [endTime, setEndTime] = useState<string>(booking.endTime);
   const [timeValidationText, setTimeValidationText] = useState<string>('');
   const fetchTimeslotsQuery = useTimeslotsQuery();
-  const timeslots = (fetchTimeslotsQuery.data || []).map((timeslotString) =>
-    dayjs(timeslotString.startTime, 'HH:mm:ss').toDate(),
-  );
+  const timeslots = useMemo(() => fetchTimeslotsQuery.data || [], [fetchTimeslotsQuery.data]);
   // I put these lines in 3 components. How do I avoid it?
   const { id } = useParams<{ id: string }>();
   const fetchBookingQuery = useBookingQuery(id);
@@ -34,28 +30,26 @@ export function DateTimeFields({ booking, setBooking }: Props) {
 
   useEffect(() => {
     if (!isCreatingBooking && fetchBookingQuery.data) {
-      setStartTime(dayjs(fetchBookingQuery.data.startTime, 'HH:mm:ss').toDate());
-      setEndTime(dayjs(fetchBookingQuery.data.endTime, 'HH:mm:ss').toDate());
+      setStartTime(fetchBookingQuery.data.startTime);
+      setEndTime(fetchBookingQuery.data.endTime);
     }
   }, [isCreatingBooking, fetchBookingQuery.data]);
 
   useEffect(() => {
-    if (!booking?.services) {
-      return;
-    }
-    if (startTime >= endTime) {
-      setTimeValidationText('Booking end time must be after the start time');
+    if (!timeslots?.length) {
       return;
     }
 
     const estimatedServiceTime = booking.services.reduce((total, service) => total + service.minutes, 0) as number;
-    const timeslotLength = dayjs(endTime).diff(dayjs(startTime), 'minutes');
-    if (estimatedServiceTime > timeslotLength) {
-      setTimeValidationText(`It'll take ${estimatedServiceTime} min to complete the service(s)`);
-      return;
+    const newEndTime = dayjs(startTime, 'HH:mm').add(estimatedServiceTime, 'minutes').format('HH:mm');
+    setEndTime(newEndTime);
+    const lastTimeslot = timeslots[timeslots.length - 1];
+    if (lastTimeslot.endTime < newEndTime) {
+      setTimeValidationText(`It must end by the end of the last timeslot (${lastTimeslot.endTime})`);
+    } else {
+      setTimeValidationText('');
     }
-    setTimeValidationText('');
-  }, [startTime, endTime, booking.services]);
+  }, [startTime, booking.services, timeslots]);
 
   return (
     <Grid item container spacing={2}>
@@ -75,38 +69,26 @@ export function DateTimeFields({ booking, setBooking }: Props) {
       </Grid>
       <Grid item xs={12} sm={4}>
         <Autocomplete
-          options={timeslots}
-          // options={[dayjs('11:00:00', 'HH:mm:ss').toDate(), dayjs('11:30:00', 'HH:mm:ss').toDate()]}
-          getOptionLabel={(time) => dayjs(time).format('HH:mm')}
+          options={timeslots.map((timeslot) => timeslot.startTime)}
           value={startTime}
-          onChange={(e: React.SyntheticEvent<Element, Event>, newStartTime: Date | null) => {
-            if (newStartTime) {
-              setBooking({ ...booking, startTime: dayjs(newStartTime).format(TIME_FORMAT) });
-              setStartTime(newStartTime);
+          onChange={(e: React.SyntheticEvent<Element, Event>, startTime: string | null) => {
+            if (startTime) {
+              setBooking({ ...booking, startTime });
+              setStartTime(startTime);
             }
           }}
           renderInput={(params) => <TextField {...params} label="Start at" variant="outlined" required />}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
-        <MobileTimePicker
+        <TextField
           label="End at"
+          variant="outlined"
           value={endTime}
-          onChange={(newEndTime: Date | null) => {
-            if (newEndTime) {
-              setBooking({ ...booking, endTime: dayjs(newEndTime).format(TIME_FORMAT) });
-              setEndTime(newEndTime);
-            }
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              fullWidth
-              error={timeValidationText.length > 0}
-              helperText={timeValidationText}
-            />
-          )}
+          helperText={timeValidationText}
+          error={timeValidationText.length > 0}
+          required
+          disabled
         />
       </Grid>
     </Grid>

@@ -1,15 +1,4 @@
-The last commit wasn't tested due to the PC failure
-
-
 ## TODO
-- start/end time should be dropdown boxes (every 30 minutes)
-Why?
- - there is no point of showing 24 hours
- - validation will be easier
- - no wrong end time
- - admin (probably) won't use this feature very often
-
-
 - booking edit modal: create a new booking -> the modal will update the same booking
 - booking edit modal's component name should be "EditBookingDialog"
 
