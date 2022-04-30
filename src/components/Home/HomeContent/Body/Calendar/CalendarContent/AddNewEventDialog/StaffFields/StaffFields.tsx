@@ -1,5 +1,5 @@
 import { Grid, Autocomplete, TextField } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -22,26 +22,16 @@ interface Props {
 export function StaffFields({ booking, setBooking }: Props) {
   const classes = useStyles();
   const fetchStaffListQuery = useStaffListQuery();
+  const allStaffList = useMemo(() => fetchStaffListQuery?.data || [], [fetchStaffListQuery?.data]);
   const [validationMessages, setValidationMessages] = useState<string[]>([]);
   const [staffOptions, setStaffOptions] = useState<Staff[]>([]);
-  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(
-    staffOptions.find((staff) => staff.id === booking.staffId) || null,
-  );
   const { id } = useParams<{ id: string }>();
   const fetchBookingQuery = useBookingQuery(id);
   const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
 
-  useEffect(() => {
-    if (!isCreatingNewBooking && fetchBookingQuery.data?.staff && fetchStaffListQuery?.data) {
-      const initialStaff =
-        fetchStaffListQuery.data.find((staff) => staff.id === fetchBookingQuery.data?.staff?.id) || null;
-      setSelectedStaff(initialStaff);
-    }
-  }, [isCreatingNewBooking, fetchBookingQuery.data?.staff, fetchStaffListQuery?.data]);
-
   // Filter staffOptions by date/time, services
   useEffect(() => {
-    let filteredStaffOptions = fetchStaffListQuery?.data || [];
+    let filteredStaffOptions = [...allStaffList];
 
     const selectedServiceIds = booking.services.map((service) => service.id);
     filteredStaffOptions = filteredStaffOptions.filter((staff) => {
@@ -62,16 +52,17 @@ export function StaffFields({ booking, setBooking }: Props) {
       return !!timeslot;
     });
 
-    if (selectedStaff?.id && !filteredStaffOptions.map((staff) => staff.id).includes(selectedStaff.id)) {
-      filteredStaffOptions = [...filteredStaffOptions, selectedStaff];
+    if (booking.staff?.id && !filteredStaffOptions.map((staff) => staff.id).includes(booking.staff.id)) {
+      filteredStaffOptions = [...filteredStaffOptions, booking.staff];
     }
 
     setStaffOptions(filteredStaffOptions);
-  }, [fetchStaffListQuery?.data, selectedStaff, booking.date, booking.startTime, booking.endTime, booking.services]);
+  }, [allStaffList, booking.staff, booking.date, booking.startTime, booking.endTime, booking.services]);
 
   // Validate the selected staff
   useEffect(() => {
     setValidationMessages([]);
+    const selectedStaff = allStaffList.find((staff) => staff.id === booking?.staff?.id) || null;
     if (!selectedStaff) {
       return;
     }
@@ -94,7 +85,6 @@ export function StaffFields({ booking, setBooking }: Props) {
     if (isCreatingNewBooking) {
       hasAvailableTimeslot = !!timeslot;
     } else {
-      // TODO: This isn't working properly. Fix it
       hasAvailableTimeslot =
         !!timeslot ||
         (fetchBookingQuery.data?.startTime === booking.startTime &&
@@ -113,22 +103,30 @@ export function StaffFields({ booking, setBooking }: Props) {
     }
 
     setValidationMessages([...messages]);
-  }, [selectedStaff, booking.date, booking.startTime, booking.endTime, booking.services]);
+  }, [
+    allStaffList,
+    fetchBookingQuery.data,
+    isCreatingNewBooking,
+    booking.staff,
+    booking.date,
+    booking.startTime,
+    booking.endTime,
+    booking.services,
+  ]);
 
   return (
     <Grid item container spacing={2}>
       <Grid item xs={12}>
         <Autocomplete
           options={staffOptions}
-          getOptionLabel={(staff) => staff.name}
+          getOptionLabel={(staff) => staff?.name || ''}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           noOptionsText={'No staff available for the selected date, time and services'}
-          value={selectedStaff}
+          value={booking.staff}
           onChange={(e: React.SyntheticEvent<Element, Event>, value: Staff | null) => {
             const staffAvailability = value?.availableDates?.find(
               (availableDate) => availableDate.date === booking.date,
             );
-            setSelectedStaff(value);
             setBooking({
               ...booking,
               staffId: value?.id || (null as unknown as number),

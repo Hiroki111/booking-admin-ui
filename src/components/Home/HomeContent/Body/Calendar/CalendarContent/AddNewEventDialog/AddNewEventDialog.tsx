@@ -36,22 +36,22 @@ export function AddNewEventDialog() {
   const fetchStaffListQuery = useStaffListQuery();
   const createBookingMutation = useCreateBookingMutation();
   const history = useHistory();
-  const isCreatingBooking = id === String(NEW_BOOKING_ID);
+  const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
   const fetchBookingQuery = useBookingQuery(id);
 
-  useEffect(() => {
-    if (isCreatingBooking) {
-      setBooking(DEFAULT_BOOKING);
-    } else if (fetchBookingQuery.data) {
-      setBooking(fetchBookingQuery.data);
-    }
-  }, [isCreatingBooking, fetchBookingQuery?.data]);
+  useEffect(() => () => setBooking(DEFAULT_BOOKING), []);
 
   useEffect(() => {
-    if (isCreatingBooking && createBookingMutation.isSuccess && createBookingMutation.data.id) {
+    if (!isCreatingNewBooking && fetchBookingQuery.data) {
+      setBooking(fetchBookingQuery.data);
+    }
+  }, [isCreatingNewBooking, fetchBookingQuery?.data]);
+
+  useEffect(() => {
+    if (isCreatingNewBooking && createBookingMutation.isSuccess && createBookingMutation.data.id) {
       history.push(getRouteWithParam(PATHS.calendarBookingEditId, { ':id': createBookingMutation.data.id }));
     }
-  }, [history, isCreatingBooking, createBookingMutation.isSuccess, createBookingMutation.data, id]);
+  }, [history, isCreatingNewBooking, createBookingMutation.isSuccess, createBookingMutation.data, id]);
 
   function handleSubmitBooking() {
     createBookingMutation.mutate({
@@ -63,7 +63,7 @@ export function AddNewEventDialog() {
   return (
     <Dialog open maxWidth="lg">
       <Grid container justifyContent="space-between">
-        <DialogTitle>{`${isCreatingBooking ? 'Add' : 'Edit'} Booking`}</DialogTitle>
+        <DialogTitle>{`${isCreatingNewBooking ? 'Add' : 'Edit'} Booking`}</DialogTitle>
         <IconButton className={classes.closeButton} onClick={() => history.push(PATHS.calendar)} size="large">
           <CloseIcon />
         </IconButton>

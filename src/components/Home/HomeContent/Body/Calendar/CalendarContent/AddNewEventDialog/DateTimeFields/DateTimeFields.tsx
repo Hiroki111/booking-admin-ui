@@ -5,9 +5,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import { Booking } from '../../../../../../../../interfaces/booking';
-import { DATE_FORMAT, NEW_BOOKING_ID } from '../../../../../../../../staticData/calendar';
-import { useParams } from 'react-router-dom';
-import { useBookingQuery } from '../../../../../../../../queries/booking';
+import { DATE_FORMAT } from '../../../../../../../../staticData/calendar';
 import { useTimeslotsQuery } from '../../../../../../../../queries/timeslotSetting';
 
 dayjs.extend(customParseFormat);
@@ -18,38 +16,28 @@ interface Props {
 }
 
 export function DateTimeFields({ booking, setBooking }: Props) {
-  const [startTime, setStartTime] = useState<string>(booking.startTime);
-  const [endTime, setEndTime] = useState<string>(booking.endTime);
   const [timeValidationText, setTimeValidationText] = useState<string>('');
   const fetchTimeslotsQuery = useTimeslotsQuery();
   const timeslots = useMemo(() => fetchTimeslotsQuery.data || [], [fetchTimeslotsQuery.data]);
-  // I put these lines in 3 components. How do I avoid it?
-  const { id } = useParams<{ id: string }>();
-  const fetchBookingQuery = useBookingQuery(id);
-  const isCreatingBooking = id === String(NEW_BOOKING_ID);
 
   useEffect(() => {
-    if (!isCreatingBooking && fetchBookingQuery.data) {
-      setStartTime(fetchBookingQuery.data.startTime);
-      setEndTime(fetchBookingQuery.data.endTime);
+    const estimatedServiceTime = booking.services.reduce((total, service) => total + service.minutes, 0) as number;
+    const endTime = dayjs(booking.startTime, 'HH:mm').add(estimatedServiceTime, 'minutes').format('HH:mm');
+    if (endTime === booking.endTime) {
+      return;
     }
-  }, [isCreatingBooking, fetchBookingQuery.data]);
+    setBooking({ ...booking, endTime });
+  }, [booking, setBooking]);
 
   useEffect(() => {
-    if (!timeslots?.length) {
+    const lastTimeslot = timeslots[timeslots.length - 1];
+    if (!lastTimeslot || booking.endTime <= lastTimeslot.endTime) {
+      setTimeValidationText('');
       return;
     }
 
-    const estimatedServiceTime = booking.services.reduce((total, service) => total + service.minutes, 0) as number;
-    const newEndTime = dayjs(startTime, 'HH:mm').add(estimatedServiceTime, 'minutes').format('HH:mm');
-    setEndTime(newEndTime);
-    const lastTimeslot = timeslots[timeslots.length - 1];
-    if (lastTimeslot.endTime < newEndTime) {
-      setTimeValidationText(`It must end by the end of the last timeslot (${lastTimeslot.endTime})`);
-    } else {
-      setTimeValidationText('');
-    }
-  }, [startTime, booking.services, timeslots]);
+    setTimeValidationText(`It must end by the end of the last timeslot (${lastTimeslot.endTime})`);
+  }, [booking.endTime, timeslots]);
 
   return (
     <Grid item container spacing={2}>
@@ -70,11 +58,10 @@ export function DateTimeFields({ booking, setBooking }: Props) {
       <Grid item xs={12} sm={4}>
         <Autocomplete
           options={timeslots.map((timeslot) => timeslot.startTime)}
-          value={startTime}
+          value={booking.startTime}
           onChange={(e: React.SyntheticEvent<Element, Event>, startTime: string | null) => {
             if (startTime) {
               setBooking({ ...booking, startTime });
-              setStartTime(startTime);
             }
           }}
           renderInput={(params) => <TextField {...params} label="Start at" variant="outlined" required />}
@@ -84,7 +71,7 @@ export function DateTimeFields({ booking, setBooking }: Props) {
         <TextField
           label="End at"
           variant="outlined"
-          value={endTime}
+          value={booking.endTime}
           helperText={timeValidationText}
           error={timeValidationText.length > 0}
           required
