@@ -103,7 +103,7 @@ export function AddNewEventDialog() {
               <Typography paragraph className={classes.dividerText}>
                 Staff
               </Typography>
-              <StaffFields booking={booking} setBooking={setBooking} />
+              <StaffFields booking={booking} setBooking={setBooking} isCreatingNewBooking={isCreatingNewBooking} />
             </Grid>
           </Grid>
         </Grid>

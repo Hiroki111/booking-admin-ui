@@ -10,16 +10,16 @@ import { useStyles } from './useStyles';
 import { useStaffListQuery } from '../../../../../../../../queries/staff';
 import { useParams } from 'react-router-dom';
 import { useBookingQuery } from '../../../../../../../../queries/booking';
-import { NEW_BOOKING_ID } from '../../../../../../../../staticData/calendar';
 
 dayjs.extend(customParseFormat);
 
 interface Props {
   booking: Booking;
   setBooking: (booking: Booking) => void;
+  isCreatingNewBooking: boolean;
 }
 
-export function StaffFields({ booking, setBooking }: Props) {
+export function StaffFields({ booking, setBooking, isCreatingNewBooking }: Props) {
   const classes = useStyles();
   const fetchStaffListQuery = useStaffListQuery();
   const allStaffList = useMemo(() => fetchStaffListQuery?.data || [], [fetchStaffListQuery?.data]);
@@ -27,14 +27,11 @@ export function StaffFields({ booking, setBooking }: Props) {
   const [staffOptions, setStaffOptions] = useState<Staff[]>([]);
   const { id } = useParams<{ id: string }>();
   const fetchBookingQuery = useBookingQuery(id);
-  const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
 
   // Filter staffOptions by date/time, services
   useEffect(() => {
-    let filteredStaffOptions = [...allStaffList];
-
     const selectedServiceIds = booking.services.map((service) => service.id);
-    filteredStaffOptions = filteredStaffOptions.filter((staff) => {
+    let filteredStaffOptions = allStaffList.filter((staff) => {
       const staffServiceIds = staff.services.map((service) => service.id);
       if (!selectedServiceIds.every((id) => staffServiceIds.includes(id))) {
         return false;
@@ -74,7 +71,7 @@ export function StaffFields({ booking, setBooking }: Props) {
       if (isCreatingNewBooking) {
         return availableDate.date === booking.date;
       }
-      return availableDate.date === fetchBookingQuery.data?.date;
+      return availableDate.date === fetchBookingQuery.data?.date || availableDate.date === booking.date;
     });
     const timeslot = findTimeSlotByStartAndEndTime(
       staffAvailability?.availableTimeSlots || [],
@@ -97,12 +94,12 @@ export function StaffFields({ booking, setBooking }: Props) {
     if (!staffAvailability) {
       messages.push(`${selectedStaff.name} isn't available on ${booking.date}`);
     } else if (!hasAvailableTimeslot) {
-      const startTimeStr = dayjs(booking.startTime, 'HH:mm:ss').format('HH:mm');
-      const endTimeStr = dayjs(booking.endTime, 'HH:mm:ss').format('HH:mm');
-      messages.push(`${selectedStaff.name} isn't available from ${startTimeStr} to ${endTimeStr} on ${booking.date}`);
+      messages.push(
+        `${selectedStaff.name} isn't available from ${booking.startTime} to ${booking.endTime} on ${booking.date}`,
+      );
     }
 
-    setValidationMessages([...messages]);
+    setValidationMessages(messages);
   }, [
     allStaffList,
     fetchBookingQuery.data,
@@ -140,7 +137,7 @@ export function StaffFields({ booking, setBooking }: Props) {
               required
               error={validationMessages.length > 0}
               helperText={validationMessages?.map((message, i) => (
-                <span key={i} className={classes.errorMessage}>
+                <span key={i} data-testid="staff-validation" className={classes.errorMessage}>
                   {message}
                 </span>
               ))}
