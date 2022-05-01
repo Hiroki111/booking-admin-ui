@@ -1,5 +1,4 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { set } from 'lodash';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -63,11 +62,11 @@ describe('StaffFields.tsx', () => {
     return `${staffName} can't do ${unavailableServices.map((service) => service.name).join(', ')}`;
   }
 
-  beforeEach(() => {
-    restApi.fetchStaffList.mockImplementation(() => [mockSelectedStaff]);
-  });
-
   describe('creating a new booking', () => {
+    beforeEach(() => {
+      restApi.fetchStaffList.mockImplementation(() => [mockSelectedStaff]);
+    });
+
     it('should render without warning messages', async () => {
       renderStaffFields(mockBooking);
 
@@ -106,13 +105,15 @@ describe('StaffFields.tsx', () => {
 
   describe('editing an existing booking', () => {
     it('should render without warning messages', async () => {
-      const selectedStaff = { ...mockSelectedStaff, availableDates: [] };
-      restApi.fetchStaffList.mockImplementation(() => [selectedStaff]);
-      restApi.fetchBooking.mockImplementation(() => mockBooking);
-      renderStaffFields(mockBooking, false);
+      const existingBooking = { ...mockBooking };
+      restApi.fetchStaffList.mockImplementation(() => [{ ...mockSelectedStaff, availableDates: [] }]);
+      restApi.fetchBooking.mockImplementation(() => existingBooking);
 
-      // Selected staff has no available date, but there should be no warning
-      // as long as the existing booking date (mockBooking) isn't edited
+      const editedBooking = { ...existingBooking };
+      renderStaffFields(editedBooking, false);
+
+      // Note that the selected staff has no available date.
+      // However, there should be no warning as long as the existing booking has the same values as edited booking
       await waitFor(() => {
         const message = screen.queryByTestId('staff-validation');
         expect(message).toBeNull();
@@ -121,11 +122,10 @@ describe('StaffFields.tsx', () => {
 
     it('should show a warning message by date', async () => {
       const existingBooking = { ...mockBooking, date: '2022-12-29' };
-      const editedBooking = { ...existingBooking, date: '2022-12-30' };
-      const selectedStaff = { ...mockSelectedStaff };
-      set(selectedStaff, 'availableDates[0].date', '2022-12-31');
-      restApi.fetchStaffList.mockImplementation(() => [selectedStaff]);
       restApi.fetchBooking.mockImplementation(() => existingBooking);
+      restApi.fetchStaffList.mockImplementation(() => [mockSelectedStaff]);
+
+      const editedBooking = { ...existingBooking, date: '2022-12-30' };
       renderStaffFields(editedBooking, false);
 
       const message = await screen.findByText(getDateWarningMessage(mockSelectedStaff.name, editedBooking));
@@ -134,9 +134,10 @@ describe('StaffFields.tsx', () => {
 
     it('should show a warning message by timeslot', async () => {
       const existingBooking = { ...mockBooking, endTime: '10:00' };
-      const editedBooking = { ...existingBooking, endTime: '10:05' };
-      restApi.fetchStaffList.mockImplementation(() => [mockSelectedStaff]);
       restApi.fetchBooking.mockImplementation(() => existingBooking);
+      restApi.fetchStaffList.mockImplementation(() => [mockSelectedStaff]);
+
+      const editedBooking = { ...existingBooking, endTime: '10:05' };
       renderStaffFields(editedBooking, false);
 
       const message = await screen.findByText(getTimeslotWarningMessage(mockSelectedStaff.name, editedBooking));
