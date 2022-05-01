@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { Booking, CreateBookingRequestBody } from '../interfaces/booking';
+import { Booking, CreateBookingRequestBody, UpdateBookingRequestBody } from '../interfaces/booking';
 import { Service } from '../interfaces/service';
 import { Staff } from '../interfaces/staff';
 import { User } from '../interfaces/user';
@@ -77,12 +77,29 @@ const restApi = {
     return res.data;
   },
 
-  createBooking: async function (createBookingPayload: CreateBookingRequestBody): Promise<Booking> {
+  createBooking: async function (payload: CreateBookingRequestBody): Promise<Booking> {
     try {
       const res: AxiosResponse<Booking> = await axios({
         method: 'POST',
         url: '/api/admin/bookings',
-        data: createBookingPayload,
+        data: payload,
+        headers: defaultHeaders,
+      });
+      return res.data;
+    } catch (error: any) {
+      if (error.isAxiosError && error?.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error(error);
+    }
+  },
+
+  updateBooking: async function (payload: UpdateBookingRequestBody): Promise<Booking> {
+    try {
+      const res: AxiosResponse<Booking> = await axios({
+        method: 'PUT',
+        url: `/api/admin/bookings/${payload.id}`,
+        data: payload,
         headers: defaultHeaders,
       });
       return res.data;

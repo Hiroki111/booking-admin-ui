@@ -116,17 +116,22 @@ export function StaffFields({ booking, setBooking, isCreatingNewBooking }: Props
       <Grid item xs={12}>
         <Autocomplete
           options={staffOptions}
-          getOptionLabel={(staff) => staff?.name || ''}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          noOptionsText={'No staff available for the selected date, time and services'}
+          getOptionLabel={(option: Staff) => option?.name || ''}
+          isOptionEqualToValue={(option: Staff, value: Staff) => option.id === value.id}
           value={booking.staff}
+          noOptionsText={'No staff available for the selected date, time and services'}
           onChange={(e: React.SyntheticEvent<Element, Event>, value: Staff | null) => {
+            if (!value) {
+              return;
+            }
+
             const staffAvailability = value?.availableDates?.find(
               (availableDate) => availableDate.date === booking.date,
             );
             setBooking({
               ...booking,
-              staffId: value?.id || (null as unknown as number),
+              staff: value,
+              staffId: value.id,
               staffAvailabilityId: staffAvailability?.id || (null as unknown as number),
             });
           }}

@@ -35,3 +35,7 @@ export interface CreateBookingRequestBody {
   staffId: number;
   serviceIds: number[];
 }
+
+export interface UpdateBookingRequestBody extends CreateBookingRequestBody {
+  id: number | string;
+}

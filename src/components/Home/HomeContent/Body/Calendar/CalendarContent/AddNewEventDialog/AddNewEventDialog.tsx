@@ -22,7 +22,7 @@ import { DateTimeFields } from './DateTimeFields';
 import { CustomerDetailsFields } from './CustomerDetailsFields';
 import { ServiceFields } from './ServiceFields';
 import { StaffFields } from './StaffFields';
-import { useBookingQuery, useCreateBookingMutation } from '../../../../../../../queries/booking';
+import { useBookingQuery, useSaveBookingMutation } from '../../../../../../../queries/booking';
 import { PATHS } from '../../../../../../../staticData/routes';
 import { useHistory, useParams } from 'react-router-dom';
 import { DEFAULT_BOOKING, NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
@@ -34,10 +34,10 @@ export function AddNewEventDialog() {
   const { id } = useParams<{ id: string }>();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
-  const createBookingMutation = useCreateBookingMutation();
   const history = useHistory();
   const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
   const fetchBookingQuery = useBookingQuery(id);
+  const saveBookingMutation = useSaveBookingMutation(id);
 
   useEffect(() => () => setBooking(DEFAULT_BOOKING), []);
 
@@ -48,13 +48,13 @@ export function AddNewEventDialog() {
   }, [isCreatingNewBooking, fetchBookingQuery?.data]);
 
   useEffect(() => {
-    if (isCreatingNewBooking && createBookingMutation.isSuccess && createBookingMutation.data.id) {
-      history.push(getRouteWithParam(PATHS.calendarBookingEditId, { ':id': createBookingMutation.data.id }));
+    if (isCreatingNewBooking && saveBookingMutation.isSuccess && saveBookingMutation.data.id) {
+      history.push(getRouteWithParam(PATHS.calendarBookingEditId, { ':id': saveBookingMutation.data.id }));
     }
-  }, [history, isCreatingNewBooking, createBookingMutation.isSuccess, createBookingMutation.data, id]);
+  }, [history, isCreatingNewBooking, saveBookingMutation.isSuccess, saveBookingMutation.data, id]);
 
   function handleSubmitBooking() {
-    createBookingMutation.mutate({
+    saveBookingMutation.mutate({
       ...booking,
       serviceIds: booking.services.map((service) => service.id),
     });
@@ -74,8 +74,8 @@ export function AddNewEventDialog() {
             message={'It failed to load services and staff due to an internal error. Please try again later.'}
           />
         )}
-        {createBookingMutation.error instanceof Error && <WarningAlert message={createBookingMutation.error.message} />}
-        {createBookingMutation.isSuccess && <Alert severity="success">Booking Saved</Alert>}
+        {saveBookingMutation.error instanceof Error && <WarningAlert message={saveBookingMutation.error.message} />}
+        {saveBookingMutation.isSuccess && <Alert severity="success">Booking Created</Alert>}
         <Grid container classes={{ root: classes.dialogContainer }}>
           <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
             <Grid item container rowSpacing={2} className={classes.fieldGroup}>
@@ -116,10 +116,10 @@ export function AddNewEventDialog() {
           autoFocus
           color="primary"
           variant="contained"
-          disabled={createBookingMutation.isLoading}
+          disabled={saveBookingMutation.isLoading}
           onClick={handleSubmitBooking}
         >
-          {!createBookingMutation.isLoading ? 'SAVE' : 'SUBMITTING...'}
+          {!saveBookingMutation.isLoading ? 'SAVE' : 'SUBMITTING...'}
         </Button>
       </DialogActions>
     </Dialog>
