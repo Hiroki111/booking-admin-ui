@@ -21,15 +21,13 @@ interface Props {
 
 export function StaffFields({ booking, setBooking, isCreatingNewBooking }: Props) {
   const classes = useStyles();
-  const fetchStaffListQuery = useStaffListQuery();
-  const allStaffList = useMemo(() => fetchStaffListQuery?.data || [], [fetchStaffListQuery?.data]);
   const [validationMessages, setValidationMessages] = useState<string[]>([]);
-  const [staffOptions, setStaffOptions] = useState<Staff[]>([]);
   const { id } = useParams<{ id: string }>();
   const fetchBookingQuery = useBookingQuery(id);
+  const fetchStaffListQuery = useStaffListQuery();
+  const allStaffList = useMemo(() => fetchStaffListQuery?.data || [], [fetchStaffListQuery?.data]);
 
-  // Filter staffOptions by date/time, services
-  useEffect(() => {
+  function filterStaff(allStaffList: Staff[], booking: Booking) {
     const selectedServiceIds = booking.services.map((service) => service.id);
     let filteredStaffOptions = allStaffList.filter((staff) => {
       const staffServiceIds = staff.services.map((service) => service.id);
@@ -53,8 +51,8 @@ export function StaffFields({ booking, setBooking, isCreatingNewBooking }: Props
       filteredStaffOptions = [...filteredStaffOptions, booking.staff];
     }
 
-    setStaffOptions(filteredStaffOptions);
-  }, [allStaffList, booking.staff, booking.date, booking.startTime, booking.endTime, booking.services]);
+    return filteredStaffOptions;
+  }
 
   // Validate the selected staff
   useEffect(() => {
@@ -115,24 +113,25 @@ export function StaffFields({ booking, setBooking, isCreatingNewBooking }: Props
     <Grid item container spacing={2}>
       <Grid item xs={12}>
         <Autocomplete
-          options={staffOptions}
+          options={allStaffList}
+          filterOptions={() => filterStaff(allStaffList, booking)}
           getOptionLabel={(option: Staff) => option?.name || ''}
           isOptionEqualToValue={(option: Staff, value: Staff) => option.id === value.id}
           value={booking.staff}
           noOptionsText={'No staff available for the selected date, time and services'}
-          onChange={(e: React.SyntheticEvent<Element, Event>, value: Staff | null) => {
-            if (!value) {
+          onChange={(e: React.SyntheticEvent<Element, Event>, newStaff: Staff | null) => {
+            const staffAvailability = newStaff?.availableDates?.find(
+              (availableDate) => availableDate.date === booking.date,
+            );
+            if (!newStaff || !staffAvailability) {
               return;
             }
 
-            const staffAvailability = value?.availableDates?.find(
-              (availableDate) => availableDate.date === booking.date,
-            );
             setBooking({
               ...booking,
-              staff: value,
-              staffId: value.id,
-              staffAvailabilityId: staffAvailability?.id || (null as unknown as number),
+              staff: newStaff,
+              staffId: newStaff.id,
+              staffAvailabilityId: staffAvailability.id,
             });
           }}
           renderInput={(params) => (
