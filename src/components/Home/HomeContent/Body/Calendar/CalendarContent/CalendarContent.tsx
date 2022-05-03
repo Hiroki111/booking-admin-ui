@@ -8,7 +8,7 @@ import { useCalendarContext } from '../../../../../../contexts/CalendarContext';
 import { useIsSmallWindow } from '../../../../../../hooks/window';
 import { useBookingsQuery } from '../../../../../../queries/booking';
 import { WarningAlert } from '../../../../../../util/WarningAlert';
-import { AddNewEventDialog } from './AddNewEventDialog';
+import { AddNewEventDialog } from './EditBookingDialog';
 import { CalendarWidget } from './CalendarWidget';
 import { ToolBar } from './ToolBar';
 import { useStyles } from './useStyles';
