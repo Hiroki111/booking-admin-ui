@@ -28,7 +28,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { DEFAULT_BOOKING, NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
 import { getRouteWithParam } from '../../../../../../../services/routing';
 
-export function AddNewEventDialog() {
+export function EditBookingDialog() {
   const classes = useStyles();
   const [booking, setBooking] = useState<Booking>(DEFAULT_BOOKING);
   const { id } = useParams<{ id: string }>();

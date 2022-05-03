@@ -1,1 +1,1 @@
-export { AddNewEventDialog } from './AddNewEventDialog';
+export { EditBookingDialog } from './EditBookingDialog';
