@@ -1,5 +1,6 @@
 import { Grid, Autocomplete, TextField } from '@mui/material';
 import { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -8,8 +9,8 @@ import { Staff } from '../../../../../../../../interfaces/staff';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../../services/staff';
 import { useStyles } from './useStyles';
 import { useStaffListQuery } from '../../../../../../../../queries/staff';
-import { useParams } from 'react-router-dom';
 import { useBookingQuery } from '../../../../../../../../queries/booking';
+import { Service } from '../../../../../../../../interfaces/service';
 
 dayjs.extend(customParseFormat);
 
@@ -19,13 +20,21 @@ interface Props {
   isCreatingNewBooking: boolean;
 }
 
+const DEFAULT_STAFF_OPTION = { id: -1, name: '', services: [] as Service[] } as Staff;
+
 export function StaffFields({ booking, setBooking, isCreatingNewBooking }: Props) {
   const classes = useStyles();
-  const [validationMessages, setValidationMessages] = useState<string[]>([]);
   const { id } = useParams<{ id: string }>();
   const fetchBookingQuery = useBookingQuery(id);
   const fetchStaffListQuery = useStaffListQuery();
-  const allStaffList = useMemo(() => fetchStaffListQuery?.data || [], [fetchStaffListQuery?.data]);
+  const [validationMessages, setValidationMessages] = useState<string[]>([]);
+  const [selectedStaff, setSelectedStaff] = useState<Staff>(DEFAULT_STAFF_OPTION);
+  const allStaffList = useMemo(() => {
+    if (!fetchStaffListQuery?.data) {
+      return [DEFAULT_STAFF_OPTION];
+    }
+    return [...fetchStaffListQuery.data, DEFAULT_STAFF_OPTION];
+  }, [fetchStaffListQuery?.data]);
 
   function filterStaff(allStaffList: Staff[], booking: Booking) {
     const selectedServiceIds = booking.services.map((service) => service.id);
@@ -53,6 +62,11 @@ export function StaffFields({ booking, setBooking, isCreatingNewBooking }: Props
 
     return filteredStaffOptions;
   }
+
+  useEffect(() => {
+    const initialStaff = allStaffList.find((staff) => staff.id === booking.staffId) || DEFAULT_STAFF_OPTION;
+    setSelectedStaff(initialStaff);
+  }, [allStaffList, booking.staffId]);
 
   // Validate the selected staff
   useEffect(() => {
@@ -117,7 +131,7 @@ export function StaffFields({ booking, setBooking, isCreatingNewBooking }: Props
           filterOptions={() => filterStaff(allStaffList, booking)}
           getOptionLabel={(option: Staff) => option?.name || ''}
           isOptionEqualToValue={(option: Staff, value: Staff) => option.id === value.id}
-          value={booking.staff}
+          value={selectedStaff}
           noOptionsText={'No staff available for the selected date, time and services'}
           onChange={(e: React.SyntheticEvent<Element, Event>, newStaff: Staff | null) => {
             const staffAvailability = newStaff?.availableDates?.find(
@@ -133,6 +147,7 @@ export function StaffFields({ booking, setBooking, isCreatingNewBooking }: Props
               staffId: newStaff.id,
               staffAvailabilityId: staffAvailability.id,
             });
+            setSelectedStaff(newStaff);
           }}
           renderInput={(params) => (
             <TextField

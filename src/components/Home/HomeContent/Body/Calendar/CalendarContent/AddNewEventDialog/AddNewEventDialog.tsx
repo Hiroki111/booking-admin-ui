@@ -75,7 +75,7 @@ export function AddNewEventDialog() {
           />
         )}
         {saveBookingMutation.error instanceof Error && <WarningAlert message={saveBookingMutation.error.message} />}
-        {saveBookingMutation.isSuccess && <Alert severity="success">Booking Created</Alert>}
+        {saveBookingMutation.isSuccess && <Alert severity="success">Booking Saved</Alert>}
         <Grid container classes={{ root: classes.dialogContainer }}>
           <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
             <Grid item container rowSpacing={2} className={classes.fieldGroup}>
