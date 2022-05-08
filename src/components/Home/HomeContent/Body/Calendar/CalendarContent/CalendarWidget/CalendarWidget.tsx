@@ -12,12 +12,14 @@ import { useCalendarContext } from '../../../../../../../contexts/CalendarContex
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
 import { UseUrlQuery } from '../../../../../../../hooks/url';
 import { useStyles } from './useStyles';
+import { CalendarView, CalendarViewKey } from '../../../../../../../interfaces/calendar';
 
 export function CalendarWidget() {
   const classes = useStyles();
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
   const { selectedStaff, areAllStaffSelected, setCalendarApi, setCalendarTitle } = useCalendarContext();
   const urlQuery = UseUrlQuery();
+  const initialView = getInitialCalendarView(urlQuery.get('view') as CalendarViewKey);
   const year = urlQuery.get('year') || dayjs().format('YYYY');
   const month = urlQuery.get('month') || dayjs().format('MM');
   const day = dayjs().format('DD');
@@ -38,6 +40,15 @@ export function CalendarWidget() {
     }
     setCalendarApi(calendarRef.current.getApi());
   }, [calendarRef, setCalendarApi]);
+
+  function getInitialCalendarView(calendarViewKey: CalendarViewKey | null) {
+    if (calendarViewKey === 'Day') {
+      return CalendarView.Day;
+    } else if (calendarViewKey === 'Month') {
+      return CalendarView.Month;
+    }
+    return CalendarView.Week;
+  }
 
   function convertBookingToCalendarEvent(booking: Booking) {
     return {
@@ -68,7 +79,7 @@ export function CalendarWidget() {
         ref={calendarRef}
         initialDate={`${year}-${month}-${day}`}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-        initialView="timeGridWeek"
+        initialView={initialView}
         events={calendarEvents}
         datesSet={(arg: DatesSetArg) => setCalendarTitle(arg.view.title)}
         headerToolbar={false}

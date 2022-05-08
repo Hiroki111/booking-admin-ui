@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { CalendarViewKey } from '../interfaces/calendar';
 
 interface PathParam {
   [pathName: string]: string;
@@ -23,6 +24,13 @@ export function getUrlWithYearAndMonth(date: Date) {
   const month = dayjs(date).format('MM');
   searchParams.set('year', year);
   searchParams.set('month', month);
+
+  return `${window.location.pathname}?${searchParams.toString()}`;
+}
+
+export function getUrlWithCalendarView(view: CalendarViewKey) {
+  const searchParams = new URLSearchParams(window.location.search);
+  searchParams.set('view', view);
 
   return `${window.location.pathname}?${searchParams.toString()}`;
 }
