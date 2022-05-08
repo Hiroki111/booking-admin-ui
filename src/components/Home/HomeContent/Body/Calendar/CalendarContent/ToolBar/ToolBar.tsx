@@ -13,7 +13,7 @@ import { DateNavigator } from './DateNavigator';
 import { ActionDrawer } from './ActionDrawer';
 import { useIsSmallWindow } from '../../../../../../../hooks/window';
 import { PATHS } from '../../../../../../../staticData/routes';
-import { getRouteWithParam } from '../../../../../../../services/routing';
+import { getPathWithParam, getUrlWithYearAndMonth } from '../../../../../../../services/routing';
 import { NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
 
 export function ToolBar() {
@@ -52,7 +52,13 @@ export function ToolBar() {
           <Grid item>
             <Grid container className={classes.actionButtonContainer}>
               <Button
-                onClick={() => calendarApi?.today()}
+                onClick={() => {
+                  if (!calendarApi) {
+                    return;
+                  }
+                  calendarApi.today();
+                  history.push(getUrlWithYearAndMonth(new Date()));
+                }}
                 className={clsx(classes.button, classes.whiteButton)}
                 variant="outlined"
               >
@@ -60,7 +66,9 @@ export function ToolBar() {
               </Button>
               <ViewModeMenu />
               <Button
-                onClick={() => history.push(getRouteWithParam(PATHS.calendarBookingEditId, { ':id': NEW_BOOKING_ID }))}
+                onClick={() =>
+                  history.push(getPathWithParam(PATHS.calendarBookingEditId, { ':id': String(NEW_BOOKING_ID) }))
+                }
                 className={classes.button}
                 variant="contained"
                 color="primary"

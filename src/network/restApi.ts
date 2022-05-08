@@ -44,10 +44,10 @@ const restApi = {
     return res.data;
   },
 
-  fetchBookings: async function (): Promise<Booking[]> {
+  fetchBookings: async function (year: string, month: string): Promise<Booking[]> {
     const res: AxiosResponse<Booking[]> = await axios({
       method: 'GET',
-      url: '/api/bookings',
+      url: `/api/admin/bookings?year=${year}&month=${month}`,
       headers: defaultHeaders,
     });
     return res.data;

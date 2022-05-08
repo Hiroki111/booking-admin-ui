@@ -26,7 +26,7 @@ import { useBookingQuery, useSaveBookingMutation } from '../../../../../../../qu
 import { PATHS } from '../../../../../../../staticData/routes';
 import { useHistory, useParams } from 'react-router-dom';
 import { DEFAULT_BOOKING, NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
-import { getRouteWithParam } from '../../../../../../../services/routing';
+import { getPathWithParam } from '../../../../../../../services/routing';
 
 export function EditBookingDialog() {
   const classes = useStyles();
@@ -49,7 +49,7 @@ export function EditBookingDialog() {
 
   useEffect(() => {
     if (isCreatingNewBooking && saveBookingMutation.isSuccess && saveBookingMutation.data.id) {
-      history.push(getRouteWithParam(PATHS.calendarBookingEditId, { ':id': saveBookingMutation.data.id }));
+      history.push(getPathWithParam(PATHS.calendarBookingEditId, { ':id': String(saveBookingMutation.data.id) }));
     }
   }, [history, isCreatingNewBooking, saveBookingMutation.isSuccess, saveBookingMutation.data, id]);
 
@@ -60,11 +60,20 @@ export function EditBookingDialog() {
     });
   }
 
+  function handleCancel() {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (!searchParams.toString()?.length) {
+      history.push(PATHS.calendar);
+      return;
+    }
+    history.push(`${PATHS.calendar}?${searchParams.toString()}`);
+  }
+
   return (
     <Dialog open maxWidth="lg">
       <Grid container justifyContent="space-between">
         <DialogTitle>{`${isCreatingNewBooking ? 'Add' : 'Edit'} Booking`}</DialogTitle>
-        <IconButton className={classes.closeButton} onClick={() => history.push(PATHS.calendar)} size="large">
+        <IconButton className={classes.closeButton} onClick={handleCancel} size="large">
           <CloseIcon />
         </IconButton>
       </Grid>
@@ -109,7 +118,7 @@ export function EditBookingDialog() {
         </Grid>
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
-        <Button autoFocus color="primary" onClick={() => history.push(PATHS.calendar)}>
+        <Button autoFocus color="primary" onClick={handleCancel}>
           CANCEL
         </Button>
         <Button

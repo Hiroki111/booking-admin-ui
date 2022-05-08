@@ -16,8 +16,10 @@ export function useBookingQuery(id: string | number): UseQueryResult<Booking> {
   });
 }
 
-export function useBookingsQuery(): UseQueryResult<Booking[]> {
-  return useQuery(bookingQuries.fetchBookings, restApi.fetchBookings);
+export function useBookingsQuery(year: string, month: string): UseQueryResult<Booking[]> {
+  return useQuery([bookingQuries.fetchBookings, year, month], () => restApi.fetchBookings(year, month), {
+    enabled: Boolean(year) && Boolean(month),
+  });
 }
 
 export function useSaveBookingMutation(id: string | number) {

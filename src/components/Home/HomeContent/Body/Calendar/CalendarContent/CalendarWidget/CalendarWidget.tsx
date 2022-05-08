@@ -4,17 +4,24 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
+import dayjs from 'dayjs';
 
 import { useBookingsQuery } from '../../../../../../../queries/booking';
 import { Booking } from '../../../../../../../interfaces/booking';
-import { useStyles } from './useStyles';
 import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
+import { WarningAlert } from '../../../../../../../util/WarningAlert';
+import { UseUrlQuery } from '../../../../../../../hooks/url';
+import { useStyles } from './useStyles';
 
 export function CalendarWidget() {
   const classes = useStyles();
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
   const { selectedStaff, areAllStaffSelected, setCalendarApi, setCalendarTitle } = useCalendarContext();
-  const fetchBookingsQuery = useBookingsQuery();
+  const urlQuery = UseUrlQuery();
+  const year = urlQuery.get('year') || dayjs().format('YYYY');
+  const month = urlQuery.get('month') || dayjs().format('MM');
+  const day = dayjs().format('DD');
+  const fetchBookingsQuery = useBookingsQuery(year, month);
   const calendarRef: LegacyRef<FullCalendar> | undefined = createRef();
 
   useEffect(() => {
@@ -56,8 +63,10 @@ export function CalendarWidget() {
 
   return (
     <div className={classes.calendarWidgetContainer}>
+      {fetchBookingsQuery.isError && <WarningAlert message={'It failed to load booking data'} />}
       <FullCalendar
         ref={calendarRef}
+        initialDate={`${year}-${month}-${day}`}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
         initialView="timeGridWeek"
         events={calendarEvents}
