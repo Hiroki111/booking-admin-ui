@@ -1,5 +1,6 @@
 import { useEffect, useState, createRef, LegacyRef } from 'react';
-import FullCalendar, { DatesSetArg, EventContentArg } from '@fullcalendar/react';
+import { useHistory } from 'react-router-dom';
+import FullCalendar, { DatesSetArg, EventClickArg, EventContentArg } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
@@ -13,6 +14,8 @@ import { WarningAlert } from '../../../../../../../util/WarningAlert';
 import { UseUrlQueryParams } from '../../../../../../../hooks/url';
 import { useStyles } from './useStyles';
 import { CalendarView, CalendarViewKey } from '../../../../../../../interfaces/calendar';
+import { getPathWithParam } from '../../../../../../../services/routing';
+import { PATHS } from '../../../../../../../staticData/routes';
 
 export function CalendarWidget() {
   const classes = useStyles();
@@ -25,6 +28,7 @@ export function CalendarWidget() {
   const day = dayjs().format('DD');
   const fetchBookingsQuery = useBookingsQuery(year, month);
   const calendarRef: LegacyRef<FullCalendar> | undefined = createRef();
+  const history = useHistory();
 
   useEffect(() => {
     const bookings = fetchBookingsQuery.data || [];
@@ -52,6 +56,7 @@ export function CalendarWidget() {
 
   function convertBookingToCalendarEvent(booking: Booking) {
     return {
+      id: booking.id,
       title: booking.services.map((service) => service.name).join(', '),
       start: `${booking.date}T${booking.startTime}`,
       end: `${booking.date}T${booking.endTime}`,
@@ -60,6 +65,11 @@ export function CalendarWidget() {
 
   function handleDateClick(dateInfo: DateClickArg) {
     // console.log(dateInfo);
+  }
+
+  function handleEventClick(eventInfo: EventClickArg) {
+    console.log({ eventInfo: eventInfo.event.id });
+    history.push(getPathWithParam(PATHS.calendarBookingEditId, { ':id': eventInfo.event.id }));
   }
 
   function renderEventContent(eventInfo: EventContentArg) {
@@ -84,6 +94,7 @@ export function CalendarWidget() {
         datesSet={(arg: DatesSetArg) => setCalendarTitle(arg.view.title)}
         headerToolbar={false}
         dateClick={handleDateClick}
+        eventClick={handleEventClick}
         eventContent={renderEventContent}
         eventTimeFormat={{
           hour: 'numeric',
