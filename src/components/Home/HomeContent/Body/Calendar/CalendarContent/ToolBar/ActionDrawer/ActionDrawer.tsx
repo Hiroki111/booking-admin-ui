@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Avatar, Divider, Drawer, Grid, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import PeopleIcon from '@mui/icons-material/People';
@@ -14,13 +15,19 @@ import { useStaffListQuery } from '../../../../../../../../queries/staff';
 import { CalendarViewKey, StaffOption } from '../../../../../../../../interfaces/calendar';
 import { createStaffOptions } from '../../../../../../../../services/calendar';
 import { Staff } from '../../../../../../../../interfaces/staff';
+import { getUrlWithCalendarView } from '../../../../../../../../services/routing';
+import { UseUrlQueryParams } from '../../../../../../../../hooks/url';
+import { DEFAULT_CALENDAR_VIEW_KEY } from '../../../../../../../../staticData/calendar';
 
 export function ActionDrawer() {
   const classes = useStyles();
   const [isShowingDrawer, setIsShowingDrawer] = useState(false);
   const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
-  const { selectedView, selectedStaff, setSelectedStaff, updateCalendarView } = useCalendarContext();
+  const { selectedStaff, setSelectedStaff, updateCalendarView } = useCalendarContext();
+  const urlQueryParams = UseUrlQueryParams();
+  const selectedView = (urlQueryParams.get('view') as CalendarViewKey) || DEFAULT_CALENDAR_VIEW_KEY;
   const staffListQuery = useStaffListQuery();
+  const history = useHistory();
 
   const calendarViewItems = [
     { icon: () => <ViewDayOutlinedIcon />, calendarViewKey: 'Day' as CalendarViewKey },
@@ -77,7 +84,10 @@ export function ActionDrawer() {
                 key={i}
                 item
                 className={classes.viewListItem}
-                onClick={() => updateCalendarView(calendarViewItem.calendarViewKey)}
+                onClick={() => {
+                  updateCalendarView(calendarViewItem.calendarViewKey);
+                  history.push(getUrlWithCalendarView(calendarViewItem.calendarViewKey));
+                }}
               >
                 <IconButton
                   classes={{

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
-export function UseUrlQuery() {
+export function UseUrlQueryParams() {
   const { search } = useLocation();
 
   return useMemo(() => new URLSearchParams(search), [search]);

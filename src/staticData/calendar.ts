@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 
 import { Booking } from '../interfaces/booking';
+import { CalendarViewKey } from '../interfaces/calendar';
 import { Service } from '../interfaces/service';
 import { Staff } from '../interfaces/staff';
 
@@ -22,3 +23,5 @@ export const DEFAULT_BOOKING = {
   staff: {} as Staff,
   services: [] as Service[],
 } as Booking;
+
+export const DEFAULT_CALENDAR_VIEW_KEY = 'Week' as CalendarViewKey;

@@ -10,7 +10,7 @@ import { useBookingsQuery } from '../../../../../../../queries/booking';
 import { Booking } from '../../../../../../../interfaces/booking';
 import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
-import { UseUrlQuery } from '../../../../../../../hooks/url';
+import { UseUrlQueryParams } from '../../../../../../../hooks/url';
 import { useStyles } from './useStyles';
 import { CalendarView, CalendarViewKey } from '../../../../../../../interfaces/calendar';
 
@@ -18,10 +18,10 @@ export function CalendarWidget() {
   const classes = useStyles();
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
   const { selectedStaff, areAllStaffSelected, setCalendarApi, setCalendarTitle } = useCalendarContext();
-  const urlQuery = UseUrlQuery();
-  const initialView = getInitialCalendarView(urlQuery.get('view') as CalendarViewKey);
-  const year = urlQuery.get('year') || dayjs().format('YYYY');
-  const month = urlQuery.get('month') || dayjs().format('MM');
+  const urlQueryParams = UseUrlQueryParams();
+  const initialView = getInitialCalendarView(urlQueryParams.get('view') as CalendarViewKey);
+  const year = urlQueryParams.get('year') || dayjs().format('YYYY');
+  const month = urlQueryParams.get('month') || dayjs().format('MM');
   const day = dayjs().format('DD');
   const fetchBookingsQuery = useBookingsQuery(year, month);
   const calendarRef: LegacyRef<FullCalendar> | undefined = createRef();
