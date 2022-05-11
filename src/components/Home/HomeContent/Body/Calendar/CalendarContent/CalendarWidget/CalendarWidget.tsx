@@ -68,7 +68,6 @@ export function CalendarWidget() {
   }
 
   function handleEventClick(eventInfo: EventClickArg) {
-    console.log({ eventInfo: eventInfo.event.id });
     history.push(getPathWithParam(PATHS.calendarBookingEditId, { ':id': eventInfo.event.id }));
   }
 
