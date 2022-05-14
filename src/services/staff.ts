@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 
 import { Timeslot } from '../interfaces/timeslotSetting';
 
-// not tested yet
 export function findTimeSlotByStartAndEndTime(timeslots: Timeslot[], startTime: string, endTime: string) {
   if (!timeslots?.length) {
     return undefined;
@@ -19,14 +18,20 @@ export function findTimeSlotByStartAndEndTime(timeslots: Timeslot[], startTime: 
     return undefined;
   }
 
-  const availableTimeSlot = timeslots.find((availableTimeSlot, i) =>
-    hasEnoughLengthOfTimeslots(availableTimeSlot, timeslots, i, totalMinutesRequired, 0),
-  );
+  const availableTimeSlot = timeslots
+    .filter((availableTimeSlot) => {
+      return (
+        startTime <= availableTimeSlot.startTime ||
+        (availableTimeSlot.startTime <= startTime && startTime < availableTimeSlot.endTime)
+      );
+    })
+    .find((availableTimeSlot, i) =>
+      hasEnoughLengthOfTimeslots(availableTimeSlot, timeslots, i, totalMinutesRequired, 0),
+    );
 
   return availableTimeSlot;
 }
 
-// not tested yet
 export function hasEnoughLengthOfTimeslots(
   currentTimeslot: Timeslot,
   allTimeslots: Timeslot[],
