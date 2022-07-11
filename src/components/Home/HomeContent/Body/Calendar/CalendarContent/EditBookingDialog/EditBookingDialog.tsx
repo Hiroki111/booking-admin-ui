@@ -36,16 +36,16 @@ export function EditBookingDialog() {
   const fetchStaffListQuery = useStaffListQuery();
   const history = useHistory();
   const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
-  const fetchBookingQuery = useBookingQuery(id);
+  const { data: existingBooking } = useBookingQuery(id);
   const saveBookingMutation = useSaveBookingMutation(id);
 
   useEffect(() => () => setBooking(DEFAULT_BOOKING), []);
 
   useEffect(() => {
-    if (!isCreatingNewBooking && fetchBookingQuery.data) {
-      setBooking(fetchBookingQuery.data);
+    if (!isCreatingNewBooking && existingBooking) {
+      setBooking(existingBooking);
     }
-  }, [isCreatingNewBooking, fetchBookingQuery?.data]);
+  }, [isCreatingNewBooking, existingBooking]);
 
   useEffect(() => {
     if (isCreatingNewBooking && saveBookingMutation.isSuccess && saveBookingMutation.data.id) {
@@ -112,7 +112,7 @@ export function EditBookingDialog() {
               <Typography paragraph className={classes.dividerText}>
                 Staff
               </Typography>
-              <StaffFields booking={booking} setBooking={setBooking} isCreatingNewBooking={isCreatingNewBooking} />
+              <StaffFields booking={booking} setBooking={setBooking} />
             </Grid>
           </Grid>
         </Grid>

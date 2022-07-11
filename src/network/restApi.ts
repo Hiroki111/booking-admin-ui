@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Booking, CreateBookingRequestBody, UpdateBookingRequestBody } from '../interfaces/booking';
 import { Service } from '../interfaces/service';
 import { Staff } from '../interfaces/staff';
+import { StaffAvailability } from '../interfaces/staffAvailability';
 import { User } from '../interfaces/user';
 
 const defaultHeaders = {
@@ -56,9 +57,25 @@ const restApi = {
   fetchStaffList: async function (): Promise<Staff[]> {
     const res: AxiosResponse<Staff[]> = await axios({
       method: 'GET',
-      url: '/api/staff',
+      url: '/api/admin/staff',
+      headers: defaultHeaders,
     });
     return res.data;
+  },
+
+  fetchStaffAvailability: async function (
+    staffId: number,
+    date: string,
+    availableBookingId: number,
+  ): Promise<StaffAvailability> {
+    const res: AxiosResponse<{ data: StaffAvailability[] }> = await axios({
+      method: 'GET',
+      url: `/api/admin/staff-availabilities?staffId=${staffId}&date=${date}&availableBookingId=${availableBookingId}`,
+    });
+    if (!res.data.data.length) {
+      return {} as StaffAvailability;
+    }
+    return res.data.data[0];
   },
 
   fetchServices: async function (): Promise<Service[]> {

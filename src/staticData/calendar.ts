@@ -10,6 +10,7 @@ export const NEW_BOOKING_ID = -1;
 export const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const DEFAULT_BOOKING = {
+  id: NEW_BOOKING_ID,
   firstName: '',
   lastName: '',
   phoneNumber: '',

@@ -12,24 +12,23 @@ export function findTimeSlotByStartAndEndTime(timeslots: Timeslot[], startTime: 
 
   const earliestTimeInTimeslots = dayjs(`2000-01-01 ${timeslots[0].startTime}`);
   const latestTimeInTimeslots = dayjs(`2000-01-01 ${timeslots[timeslots.length - 1].endTime}`);
-  if (start < earliestTimeInTimeslots) {
-    return undefined;
-  } else if (latestTimeInTimeslots < end) {
+  if (start < earliestTimeInTimeslots || latestTimeInTimeslots < end) {
     return undefined;
   }
 
-  const availableTimeSlot = timeslots
-    .filter((availableTimeSlot) => {
-      return (
-        startTime <= availableTimeSlot.startTime ||
-        (availableTimeSlot.startTime <= startTime && startTime < availableTimeSlot.endTime)
-      );
-    })
-    .find((availableTimeSlot, i) =>
-      hasEnoughLengthOfTimeslots(availableTimeSlot, timeslots, i, totalMinutesRequired, 0),
-    );
+  const indexOfStartingTimeslot = timeslots.findIndex(
+    (availableTimeSlot) =>
+      startTime === availableTimeSlot.startTime ||
+      (availableTimeSlot.startTime <= startTime && startTime < availableTimeSlot.endTime),
+  );
 
-  return availableTimeSlot;
+  if (indexOfStartingTimeslot === -1) {
+    return undefined;
+  }
+
+  return timeslots.find((availableTimeSlot) =>
+    hasEnoughLengthOfTimeslots(availableTimeSlot, timeslots, indexOfStartingTimeslot, totalMinutesRequired, 0),
+  );
 }
 
 export function hasEnoughLengthOfTimeslots(

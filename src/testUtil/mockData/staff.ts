@@ -1,5 +1,4 @@
 import { Staff } from '../../interfaces/staff';
-import { createMockAvailableDate } from './availableDate';
 import { createMockService } from './service';
 
 const mockStaff: Staff = {
@@ -8,7 +7,6 @@ const mockStaff: Staff = {
   profilePhotoUrl: null,
   title: null,
   services: [createMockService()],
-  availableDates: [createMockAvailableDate()],
 };
 
 export function createMockStaff(params?: Partial<Staff>) {
