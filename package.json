@@ -82,5 +82,8 @@
       "prettier --write --ignore-unknown",
       "eslint src/**/*.{js,ts,tsx,json}"
     ]
+  },
+  "resolutions": {
+    "mini-css-extract-plugin": "2.4.5"
   }
 }
