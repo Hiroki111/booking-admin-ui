@@ -1,6 +1,4 @@
 ## TODO
-- On server side, make sure that double-booking won't occur
-
 - On Booking edit dialog, show an error message when a double-booking was occurring
 
 - Create a view file for timeslots
