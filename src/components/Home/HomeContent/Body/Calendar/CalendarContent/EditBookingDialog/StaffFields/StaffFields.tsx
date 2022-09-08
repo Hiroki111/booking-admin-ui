@@ -57,20 +57,15 @@ export function StaffFields({ booking, setBooking }: Props) {
   const validationMessages = Object.values(validation).filter((message) => Boolean(message));
 
   function filterStaff(allStaffList: Staff[], booking: Booking) {
-    const selectedServiceIds = booking.services.map((service) => service.id);
-    const filteredStaffOptions = allStaffList.filter((staff) => {
-      const staffServiceIds = staff.services.map((service) => service.id);
-      return (
-        selectedServiceIds.every((id) => staffServiceIds.includes(id)) &&
-        staff.name.toLocaleLowerCase().includes(staffNameInputValue.toLocaleLowerCase())
-      );
-    });
+    const filteredStaffList = allStaffList.filter((staff) =>
+      staff.name.toLocaleLowerCase().includes(staffNameInputValue.toLocaleLowerCase()),
+    );
 
-    if (booking.staff?.id && !filteredStaffOptions.map((staff) => staff.id).includes(booking.staff.id)) {
-      filteredStaffOptions.push(booking.staff);
+    if (booking.staff?.id && !filteredStaffList.map((staff) => staff.id).includes(booking.staff.id)) {
+      filteredStaffList.push(booking.staff);
     }
 
-    return filteredStaffOptions;
+    return filteredStaffList;
   }
 
   useEffect(() => {

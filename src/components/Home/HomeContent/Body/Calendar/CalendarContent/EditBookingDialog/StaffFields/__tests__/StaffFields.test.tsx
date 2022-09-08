@@ -16,6 +16,8 @@ jest.mock('../../../../../../../../../network/restApi', () => ({
   fetchStaffAvailability: jest.fn(),
 }));
 
+// NOTE: I haven't found how to test the contents of filterOptions in Autocomplete
+// Idealy, it should be tested that filterOptions always have "booking.staff" if it's present
 describe('StaffFields.tsx', () => {
   const restApi = require('../../../../../../../../../network/restApi');
   const availableMockService = createMockService({ id: 1, name: 'available' });
