@@ -56,7 +56,7 @@ export function StaffFields({ booking, setBooking }: Props) {
 
   const validationMessages = Object.values(validation).filter((message) => Boolean(message));
 
-  function filterStaff(allStaffList: Staff[], booking: Booking) {
+  function filterAndSortStaff(allStaffList: Staff[], booking: Booking) {
     const filteredStaffList = allStaffList.filter((staff) =>
       staff.name.toLocaleLowerCase().includes(staffNameInputValue.toLocaleLowerCase()),
     );
@@ -65,7 +65,7 @@ export function StaffFields({ booking, setBooking }: Props) {
       filteredStaffList.push(booking.staff);
     }
 
-    return filteredStaffList;
+    return filteredStaffList.sort((a: Staff, b: Staff) => a.name.localeCompare(b.name));
   }
 
   useEffect(() => {
@@ -139,7 +139,7 @@ export function StaffFields({ booking, setBooking }: Props) {
         <Autocomplete
           options={allStaffList}
           inputValue={staffNameInputValue}
-          filterOptions={() => filterStaff(allStaffList, booking)}
+          filterOptions={() => filterAndSortStaff(allStaffList, booking)}
           getOptionLabel={(option: Staff) => option?.name || ''}
           isOptionEqualToValue={(option: Staff, value: Staff) => option.id === value.id}
           value={selectedStaff}
