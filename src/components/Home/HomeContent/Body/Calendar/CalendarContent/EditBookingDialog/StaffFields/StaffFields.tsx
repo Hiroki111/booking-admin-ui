@@ -11,6 +11,7 @@ import { Service } from '../../../../../../../../interfaces/service';
 import { useStaffAvailabilityQuery } from '../../../../../../../../queries/staffAvailability';
 import { WarningAlert } from '../../../../../../../../util/WarningAlert';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../../services/staff';
+import { DEFAULT_BOOKING } from '../../../../../../../../staticData/calendar';
 
 dayjs.extend(customParseFormat);
 
@@ -146,6 +147,12 @@ export function StaffFields({ booking, setBooking }: Props) {
           noOptionsText={'No staff available for the selected services'}
           onChange={(e: React.SyntheticEvent<Element, Event>, newStaff: Staff | null) => {
             if (!newStaff) {
+              setBooking({
+                ...booking,
+                staff: { ...DEFAULT_BOOKING.staff },
+                staffId: DEFAULT_BOOKING.staffId,
+              });
+              setSelectedStaff({ ...DEFAULT_STAFF_OPTION });
               return;
             }
 
