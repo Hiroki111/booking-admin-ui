@@ -15,13 +15,17 @@ export const DEFAULT_BOOKING = {
   lastName: '',
   phoneNumber: '',
   email: '',
-  staffId: null as unknown as number,
+  staffId: -1,
   date: dayjs().format(DATE_FORMAT),
   startTime: '10:00',
   endTime: '11:00',
   staffAvailabilityId: null as unknown as number,
   totalPrice: 0,
-  staff: {} as Staff,
+  staff: {
+    id: -1,
+    name: '',
+    services: [] as Service[],
+  } as Staff,
   services: [] as Service[],
 } as Booking;
 

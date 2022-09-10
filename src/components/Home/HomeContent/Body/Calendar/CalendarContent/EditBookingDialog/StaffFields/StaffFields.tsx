@@ -7,7 +7,6 @@ import { Booking } from '../../../../../../../../interfaces/booking';
 import { Staff } from '../../../../../../../../interfaces/staff';
 import { useStyles } from './useStyles';
 import { useStaffListQuery } from '../../../../../../../../queries/staff';
-import { Service } from '../../../../../../../../interfaces/service';
 import { useStaffAvailabilityQuery } from '../../../../../../../../queries/staffAvailability';
 import { WarningAlert } from '../../../../../../../../util/WarningAlert';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../../services/staff';
@@ -25,12 +24,6 @@ interface StaffFieldsValidation {
   date: string | null;
 }
 
-const DEFAULT_STAFF_OPTION = {
-  id: -1,
-  name: '',
-  services: [] as Service[],
-} as Staff;
-
 const INITIAL_VALIDATION = {
   service: null,
   date: null,
@@ -38,8 +31,9 @@ const INITIAL_VALIDATION = {
 
 export function StaffFields({ booking, setBooking }: Props) {
   const classes = useStyles();
+  const defaultStaff = { ...DEFAULT_BOOKING.staff };
   const [staffNameInputValue, setStaffNameInputValue] = useState('');
-  const [selectedStaff, setSelectedStaff] = useState<Staff>(DEFAULT_STAFF_OPTION);
+  const [selectedStaff, setSelectedStaff] = useState<Staff>(defaultStaff);
   const [validation, setValidation] = useState<StaffFieldsValidation>(INITIAL_VALIDATION);
   const { data: staffList, isError: isLoadingStaffListFailed } = useStaffListQuery();
   const {
@@ -49,17 +43,21 @@ export function StaffFields({ booking, setBooking }: Props) {
   } = useStaffAvailabilityQuery(selectedStaff.id, booking.date, booking.id);
 
   const allStaffList = useMemo(() => {
+    // NOTE: Without including defaultStaff in allStaffList,
+    // Autocomplet will warn that the selected value can't be found in the options
     if (!staffList) {
-      return [DEFAULT_STAFF_OPTION];
+      return [defaultStaff];
     }
-    return [...staffList, DEFAULT_STAFF_OPTION];
+    return [...staffList, defaultStaff];
   }, [staffList]);
 
   const validationMessages = Object.values(validation).filter((message) => Boolean(message));
 
   function filterAndSortStaff(allStaffList: Staff[], booking: Booking) {
-    const filteredStaffList = allStaffList.filter((staff) =>
-      staff.name.toLocaleLowerCase().includes(staffNameInputValue.toLocaleLowerCase()),
+    const filteredStaffList = allStaffList.filter(
+      (staff) =>
+        staff.name.toLocaleLowerCase().includes(staffNameInputValue.toLocaleLowerCase()) &&
+        staff.id !== defaultStaff.id,
     );
 
     if (booking.staff?.id && !filteredStaffList.map((staff) => staff.id).includes(booking.staff.id)) {
@@ -70,13 +68,13 @@ export function StaffFields({ booking, setBooking }: Props) {
   }
 
   useEffect(() => {
-    const initialStaff = allStaffList.find((staff) => staff.id === booking.staffId) || DEFAULT_STAFF_OPTION;
+    const initialStaff = allStaffList.find((staff) => staff.id === booking.staffId) || defaultStaff;
     setSelectedStaff(initialStaff);
   }, [allStaffList, booking.staffId]);
 
   useEffect(() => {
     setValidation((validation) => ({ ...validation, service: null }));
-    if (selectedStaff.id === DEFAULT_STAFF_OPTION.id) {
+    if (selectedStaff.id === defaultStaff.id) {
       return;
     }
 
@@ -93,7 +91,7 @@ export function StaffFields({ booking, setBooking }: Props) {
 
   useEffect(() => {
     setValidation((validation) => ({ ...validation, date: null }));
-    if (isLoadingStaffAvailability || selectedStaff.id === DEFAULT_STAFF_OPTION.id) {
+    if (isLoadingStaffAvailability || selectedStaff.id === defaultStaff.id) {
       return;
     }
 
@@ -152,7 +150,7 @@ export function StaffFields({ booking, setBooking }: Props) {
                 staff: { ...DEFAULT_BOOKING.staff },
                 staffId: DEFAULT_BOOKING.staffId,
               });
-              setSelectedStaff({ ...DEFAULT_STAFF_OPTION });
+              setSelectedStaff({ ...defaultStaff });
               return;
             }
 
