@@ -1,6 +1,4 @@
 ## TODO
-- On Booking edit dialog, show an error message when a double-booking was occurring
-
 - Create a view file for timeslots
 
 - Change fetch___Query into { data: ___ } for the sake of consistency

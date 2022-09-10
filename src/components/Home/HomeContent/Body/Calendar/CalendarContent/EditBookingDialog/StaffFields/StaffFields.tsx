@@ -60,7 +60,10 @@ export function StaffFields({ booking, setBooking }: Props) {
         staff.id !== defaultStaff.id,
     );
 
-    if (booking.staff?.id && !filteredStaffList.map((staff) => staff.id).includes(booking.staff.id)) {
+    if (
+      booking.staff.id !== defaultStaff.id &&
+      !filteredStaffList.map((staff) => staff.id).includes(booking.staff.id)
+    ) {
       filteredStaffList.push(booking.staff);
     }
 

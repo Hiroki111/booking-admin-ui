@@ -39,8 +39,6 @@ export function EditBookingDialog() {
   const { data: existingBooking } = useBookingQuery(id);
   const saveBookingMutation = useSaveBookingMutation(id);
 
-  useEffect(() => () => setBooking(DEFAULT_BOOKING), []);
-
   useEffect(() => {
     if (!isCreatingNewBooking && existingBooking) {
       setBooking(existingBooking);
@@ -69,6 +67,20 @@ export function EditBookingDialog() {
     history.push(`${PATHS.calendar}?${searchParams.toString()}`);
   }
 
+  function getSubmissionError(error: any) {
+    let message = 'Please try again later.';
+    if (error?.details && typeof error.details === 'object') {
+      const keys = Object.keys(error.details);
+      message = keys.map((key) => `${key}: ${error.details[key]}`).join(', ');
+    } else if (error?.message) {
+      message = error.message;
+    }
+    return {
+      message,
+      title: 'Error occurred',
+    };
+  }
+
   return (
     <Dialog open maxWidth="lg">
       <Grid container justifyContent="space-between">
@@ -83,7 +95,9 @@ export function EditBookingDialog() {
             message={'It failed to load services and staff due to an internal error. Please try again later.'}
           />
         )}
-        {saveBookingMutation.error instanceof Error && <WarningAlert message={saveBookingMutation.error.message} />}
+        {saveBookingMutation.error instanceof Error && (
+          <WarningAlert {...getSubmissionError(saveBookingMutation.error)} />
+        )}
         {saveBookingMutation.isSuccess && <Alert severity="success">Booking Saved</Alert>}
         <Grid container classes={{ root: classes.dialogContainer }}>
           <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
