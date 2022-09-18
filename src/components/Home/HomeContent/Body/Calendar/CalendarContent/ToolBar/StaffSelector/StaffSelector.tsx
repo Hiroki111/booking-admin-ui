@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { TextField } from '@mui/material';
 import { Autocomplete } from '@mui/material';
 
-import { ALL_STAFF, useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
+import { AllStaff, ALL_STAFF, useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
 import { Staff } from '../../../../../../../../interfaces/staff';
 import { useStaffListQuery } from '../../../../../../../../queries/staff';
 import { StaffOption } from '../../../../../../../../interfaces/calendar';
@@ -31,6 +31,7 @@ export function StaffSelector() {
       }
       onInputChange={(event: React.ChangeEvent<{}>, newInputString: string) => setInputValue(newInputString)}
       options={staffOptions}
+      isOptionEqualToValue={(option: StaffOption, value: Staff | AllStaff) => option.id === value.id}
       getOptionLabel={(option) => option.name}
       style={{ minWidth: 220 }}
       renderInput={(params) => (
