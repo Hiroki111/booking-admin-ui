@@ -58,7 +58,7 @@ export function EditBookingDialog() {
     if (saveBookingMutation.isSuccess) {
       refetch();
     }
-  }, [saveBookingMutation.isSuccess]);
+  }, [saveBookingMutation.isSuccess, refetch]);
 
   function handleSubmitBooking() {
     saveBookingMutation.mutate({
