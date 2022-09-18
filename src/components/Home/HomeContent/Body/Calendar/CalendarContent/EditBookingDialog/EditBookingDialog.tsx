@@ -12,6 +12,7 @@ import {
   Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { Booking } from '../../../../../../../interfaces/booking';
 import { useStyles } from './useStyles';
@@ -22,11 +23,11 @@ import { DateTimeFields } from './DateTimeFields';
 import { CustomerDetailsFields } from './CustomerDetailsFields';
 import { ServiceFields } from './ServiceFields';
 import { StaffFields } from './StaffFields';
-import { useBookingQuery, useSaveBookingMutation } from '../../../../../../../queries/booking';
+import { useBookingQuery, useBookingsQuery, useSaveBookingMutation } from '../../../../../../../queries/booking';
 import { PATHS } from '../../../../../../../staticData/routes';
-import { useHistory, useParams } from 'react-router-dom';
 import { DEFAULT_BOOKING, NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
 import { getPathWithParam } from '../../../../../../../services/routing';
+import { UseCalendarState } from '../../../../../../../hooks/calendar';
 
 export function EditBookingDialog() {
   const classes = useStyles();
@@ -38,6 +39,8 @@ export function EditBookingDialog() {
   const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
   const { data: existingBooking } = useBookingQuery(id);
   const saveBookingMutation = useSaveBookingMutation(id);
+  const { year, month } = UseCalendarState();
+  const { refetch } = useBookingsQuery(year, month);
 
   useEffect(() => {
     if (!isCreatingNewBooking && existingBooking) {
@@ -46,10 +49,16 @@ export function EditBookingDialog() {
   }, [isCreatingNewBooking, existingBooking]);
 
   useEffect(() => {
-    if (isCreatingNewBooking && saveBookingMutation.isSuccess && saveBookingMutation.data.id) {
+    if (isCreatingNewBooking && saveBookingMutation.isSuccess && saveBookingMutation.data?.id) {
       history.push(getPathWithParam(PATHS.calendarBookingEditId, { ':id': String(saveBookingMutation.data.id) }));
     }
   }, [history, isCreatingNewBooking, saveBookingMutation.isSuccess, saveBookingMutation.data, id]);
+
+  useEffect(() => {
+    if (saveBookingMutation.isSuccess) {
+      refetch();
+    }
+  }, [saveBookingMutation.isSuccess]);
 
   function handleSubmitBooking() {
     saveBookingMutation.mutate({
@@ -137,6 +146,7 @@ export function EditBookingDialog() {
         </Button>
         <Button
           autoFocus
+          data-testid="submit-booking"
           color="primary"
           variant="contained"
           disabled={saveBookingMutation.isLoading}

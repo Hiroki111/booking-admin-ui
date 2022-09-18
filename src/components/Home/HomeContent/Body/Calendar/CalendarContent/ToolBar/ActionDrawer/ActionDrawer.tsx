@@ -16,16 +16,14 @@ import { CalendarViewKey, StaffOption } from '../../../../../../../../interfaces
 import { createStaffOptions } from '../../../../../../../../services/calendar';
 import { Staff } from '../../../../../../../../interfaces/staff';
 import { getUrlWithCalendarView } from '../../../../../../../../services/routing';
-import { UseUrlQueryParams } from '../../../../../../../../hooks/url';
-import { DEFAULT_CALENDAR_VIEW_KEY } from '../../../../../../../../staticData/calendar';
+import { UseCalendarState } from '../../../../../../../../hooks/calendar';
 
 export function ActionDrawer() {
   const classes = useStyles();
   const [isShowingDrawer, setIsShowingDrawer] = useState(false);
   const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
   const { selectedStaff, setSelectedStaff, updateCalendarView } = useCalendarContext();
-  const urlQueryParams = UseUrlQueryParams();
-  const selectedView = (urlQueryParams.get('view') as CalendarViewKey) || DEFAULT_CALENDAR_VIEW_KEY;
+  const { calendarViewKey } = UseCalendarState();
   const staffListQuery = useStaffListQuery();
   const history = useHistory();
 
@@ -93,7 +91,7 @@ export function ActionDrawer() {
                   classes={{
                     root: clsx([
                       classes.iconButtonRoot,
-                      selectedView === calendarViewItem.calendarViewKey ? classes.selectedItem : '',
+                      calendarViewKey === calendarViewItem.calendarViewKey ? classes.selectedItem : '',
                     ]),
                   }}
                   size="large"
