@@ -4,10 +4,6 @@
   It's annoying to see "___ can't do ___" or "___ isn't available on ___"
   -> But this approach won't show all the staff
 
-- Day view doesn't persisit
-
-- Show Day view -> move to 2 months ahead/before -> booking data isn't fetched
-
 - Create a view file for timeslots
 
 - Change fetch___Query into { data: ___ } for the sake of consistency
