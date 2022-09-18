@@ -18,12 +18,14 @@ export function getPathWithParam(path: string, pathParam: PathParam) {
   return newPath;
 }
 
-export function getUrlWithYearAndMonth(date: Date) {
+export function getUrlWithDate(date: Date) {
   const searchParams = new URLSearchParams(window.location.search);
   const year = dayjs(date).format('YYYY');
   const month = dayjs(date).format('MM');
+  const day = dayjs(date).format('DD');
   searchParams.set('year', year);
   searchParams.set('month', month);
+  searchParams.set('day', day);
 
   return `${window.location.pathname}?${searchParams.toString()}`;
 }

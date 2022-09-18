@@ -13,7 +13,7 @@ import { DateNavigator } from './DateNavigator';
 import { ActionDrawer } from './ActionDrawer';
 import { useIsSmallWindow } from '../../../../../../../hooks/window';
 import { PATHS } from '../../../../../../../staticData/routes';
-import { getPathWithParam, getUrlWithYearAndMonth } from '../../../../../../../services/routing';
+import { getPathWithParam, getUrlWithDate } from '../../../../../../../services/routing';
 import { NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
 
 export function ToolBar() {
@@ -57,7 +57,7 @@ export function ToolBar() {
                     return;
                   }
                   calendarApi.today();
-                  history.push(getUrlWithYearAndMonth(new Date()));
+                  history.push(getUrlWithDate(new Date()));
                 }}
                 className={clsx(classes.button, classes.whiteButton)}
                 variant="outlined"

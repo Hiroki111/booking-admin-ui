@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import { useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
 import { useStyles } from './useStyles';
-import { getUrlWithYearAndMonth } from '../../../../../../../../services/routing';
+import { getUrlWithDate } from '../../../../../../../../services/routing';
 
 export function DateNavigator() {
   const classes = useStyles();
@@ -20,7 +20,7 @@ export function DateNavigator() {
       calendarApi.next();
     }
 
-    history.push(getUrlWithYearAndMonth(calendarApi.getDate()));
+    history.push(getUrlWithDate(calendarApi.getDate()));
   }
 
   return (
