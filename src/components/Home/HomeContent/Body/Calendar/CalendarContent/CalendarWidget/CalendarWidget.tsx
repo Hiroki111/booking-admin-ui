@@ -14,11 +14,12 @@ import { useStyles } from './useStyles';
 import { getPathWithParam } from '../../../../../../../services/routing';
 import { PATHS } from '../../../../../../../staticData/routes';
 import { UseCalendarState } from '../../../../../../../hooks/calendar';
+import { CalendarView } from '../../../../../../../interfaces/calendar';
 
 export function CalendarWidget() {
   const classes = useStyles();
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
-  const { selectedStaff, areAllStaffSelected, setCalendarApi, setCalendarTitle } = useCalendarContext();
+  const { selectedStaff, areAllStaffSelected, calendarApi, setCalendarApi, setCalendarTitle } = useCalendarContext();
   const { year, month, day, calendarView } = UseCalendarState();
   const fetchBookingsQuery = useBookingsQuery(year, month);
   const calendarRef: LegacyRef<FullCalendar> | undefined = createRef();
@@ -27,7 +28,7 @@ export function CalendarWidget() {
   useEffect(() => {
     const bookings = fetchBookingsQuery.data || [];
     const calendarEvents = bookings
-      ?.filter((booking) => booking.staff.id === selectedStaff?.id || areAllStaffSelected)
+      .filter((booking) => booking.staff.id === selectedStaff?.id || areAllStaffSelected)
       .map((booking) => convertBookingToCalendarEvent(booking));
     setCalendarEvents(calendarEvents);
   }, [fetchBookingsQuery.data, selectedStaff?.id, areAllStaffSelected]);
@@ -59,9 +60,18 @@ export function CalendarWidget() {
   function renderEventContent(eventInfo: EventContentArg) {
     return (
       <div className={classes.eventContent}>
-        <i>
-          <b>{eventInfo?.timeText}</b> {eventInfo?.event?.title}
-        </i>
+        {calendarApi?.view?.type === CalendarView.Month && (
+          <span>
+            <b>{eventInfo?.timeText}</b>{' '}
+          </span>
+        )}
+        {eventInfo?.event?.title}
+        {calendarApi?.view?.type !== CalendarView.Month && (
+          <span>
+            {' '}
+            <b>{eventInfo?.timeText}</b>
+          </span>
+        )}
       </div>
     );
   }
