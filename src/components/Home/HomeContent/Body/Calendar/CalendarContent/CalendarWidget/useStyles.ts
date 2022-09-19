@@ -16,6 +16,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   eventContent: {
     overflow: 'hidden',
+    whiteSpace: 'nowrap',
     '&:hover': {
       cursor: 'pointer',
     },
