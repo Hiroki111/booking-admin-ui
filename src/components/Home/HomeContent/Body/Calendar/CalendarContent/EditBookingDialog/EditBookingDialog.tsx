@@ -31,7 +31,11 @@ import { UseCalendarState } from '../../../../../../../hooks/calendar';
 
 export function EditBookingDialog() {
   const classes = useStyles();
-  const [booking, setBooking] = useState<Booking>(DEFAULT_BOOKING);
+  const { year, month, day } = UseCalendarState();
+  const [booking, setBooking] = useState<Booking>({
+    ...DEFAULT_BOOKING,
+    date: `${year}-${month}-${day}`,
+  });
   const { id } = useParams<{ id: string }>();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
@@ -39,7 +43,6 @@ export function EditBookingDialog() {
   const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
   const { data: existingBooking } = useBookingQuery(id);
   const saveBookingMutation = useSaveBookingMutation(id);
-  const { year, month } = UseCalendarState();
   const { refetch } = useBookingsQuery(year, month);
 
   useEffect(() => {

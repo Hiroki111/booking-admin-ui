@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Route } from 'react-router-dom';
 
@@ -23,12 +24,19 @@ describe('EditBookingDialog.tsx', () => {
     jest.clearAllMocks();
   });
 
-  function renderEditBookingDialog(bookingId: number = NEW_BOOKING_ID) {
+  function renderEditBookingDialog(bookingId: number = NEW_BOOKING_ID, date?: Date) {
+    let pathName = PATHS.calendarBookingEditId.replace(':id', String(bookingId));
+    if (date) {
+      const year = dayjs(date).format('YYYY');
+      const month = dayjs(date).format('MM');
+      const day = dayjs(date).format('DD');
+      pathName = `${pathName}?year=${year}&month=${month}&day=${day}`;
+    }
     renderWithBaseWrapper(
       <Route path={PATHS.calendarBookingEditId}>
         <EditBookingDialog />
       </Route>,
-      { pathName: PATHS.calendarBookingEditId.replace(':id', String(bookingId)) },
+      { pathName },
     );
   }
 
@@ -92,5 +100,17 @@ describe('EditBookingDialog.tsx', () => {
     clickSubmitButton();
 
     await waitFor(() => expect(mockedPush).not.toHaveBeenCalled());
+  });
+
+  it('should use the date in URL as the default booking date', async () => {
+    const dateInUrl = '2022-12-31';
+
+    restApi.createBooking = jest.fn();
+    renderEditBookingDialog(NEW_BOOKING_ID, new Date(dateInUrl));
+    clickSubmitButton();
+
+    await waitFor(() =>
+      expect(restApi.createBooking).toHaveBeenCalledWith(expect.objectContaining({ date: dateInUrl })),
+    );
   });
 });
