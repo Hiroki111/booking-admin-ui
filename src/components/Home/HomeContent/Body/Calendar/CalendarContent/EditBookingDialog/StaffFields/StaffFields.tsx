@@ -8,7 +8,6 @@ import { Staff } from '../../../../../../../../interfaces/staff';
 import { useStyles } from './useStyles';
 import { useStaffListQuery } from '../../../../../../../../queries/staff';
 import { useStaffAvailabilityQuery } from '../../../../../../../../queries/staffAvailability';
-import { WarningAlert } from '../../../../../../../../util/WarningAlert';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../../services/staff';
 import { DEFAULT_BOOKING } from '../../../../../../../../staticData/calendar';
 
@@ -29,18 +28,19 @@ const INITIAL_VALIDATION = {
   date: null,
 };
 
+// TODO: ESLint is warning of missing dependencies
 export function StaffFields({ booking, setBooking }: Props) {
   const classes = useStyles();
   const defaultStaff = { ...DEFAULT_BOOKING.staff };
   const [staffNameInputValue, setStaffNameInputValue] = useState('');
   const [selectedStaff, setSelectedStaff] = useState<Staff>(defaultStaff);
   const [validation, setValidation] = useState<StaffFieldsValidation>(INITIAL_VALIDATION);
-  const { data: staffList, isError: isLoadingStaffListFailed } = useStaffListQuery();
-  const {
-    data: staffAvailability,
-    isLoading: isLoadingStaffAvailability,
-    isError: isLoadingStaffAvailabilityFailed,
-  } = useStaffAvailabilityQuery(selectedStaff.id, booking.date, booking.id);
+  const { data: staffList } = useStaffListQuery();
+  const { data: staffAvailability, isLoading: isLoadingStaffAvailability } = useStaffAvailabilityQuery(
+    selectedStaff.id,
+    booking.date,
+    booking.id,
+  );
 
   const allStaffList = useMemo(() => {
     // NOTE: Without including defaultStaff in allStaffList,
@@ -130,10 +130,6 @@ export function StaffFields({ booking, setBooking }: Props) {
     booking.endTime,
     setBooking,
   ]);
-
-  if (isLoadingStaffAvailabilityFailed || isLoadingStaffListFailed) {
-    return <WarningAlert message={'It failed to load staff data'} />;
-  }
 
   return (
     <Grid item container spacing={2}>

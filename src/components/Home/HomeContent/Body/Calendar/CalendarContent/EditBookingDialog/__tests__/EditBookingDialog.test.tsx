@@ -113,4 +113,40 @@ describe('EditBookingDialog.tsx', () => {
       expect(restApi.createBooking).toHaveBeenCalledWith(expect.objectContaining({ date: dateInUrl })),
     );
   });
+
+  it('should show an error when it fails to fetch services', async () => {
+    console.error = jest.fn();
+    restApi.fetchServices = jest.fn().mockRejectedValue('Failed');
+    renderEditBookingDialog();
+
+    await waitFor(() =>
+      expect(screen.getByTestId('fetching-data-failed-alert')).toHaveTextContent(
+        'It failed to load data due to an internal error. Please try again later.',
+      ),
+    );
+  });
+
+  it('should show an error when it fails to fetch staff', async () => {
+    console.error = jest.fn();
+    restApi.fetchStaffList = jest.fn().mockRejectedValue('Failed');
+    renderEditBookingDialog();
+
+    await waitFor(() =>
+      expect(screen.getByTestId('fetching-data-failed-alert')).toHaveTextContent(
+        'It failed to load data due to an internal error. Please try again later.',
+      ),
+    );
+  });
+
+  it('should show an error when it fails to fetch staff availabilities', async () => {
+    console.error = jest.fn();
+    restApi.fetchStaffAvailability = jest.fn().mockRejectedValue('Failed');
+    renderEditBookingDialog();
+
+    await waitFor(() =>
+      expect(screen.getByTestId('fetching-data-failed-alert')).toHaveTextContent(
+        'It failed to load data due to an internal error. Please try again later.',
+      ),
+    );
+  });
 });

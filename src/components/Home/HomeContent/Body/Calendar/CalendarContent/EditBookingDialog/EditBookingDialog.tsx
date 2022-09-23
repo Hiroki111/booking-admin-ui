@@ -28,6 +28,7 @@ import { PATHS } from '../../../../../../../staticData/routes';
 import { DEFAULT_BOOKING, NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
 import { getPathWithParam } from '../../../../../../../services/routing';
 import { UseCalendarState } from '../../../../../../../hooks/calendar';
+import { useStaffAvailabilityQuery } from '../../../../../../../queries/staffAvailability';
 
 export function EditBookingDialog() {
   const classes = useStyles();
@@ -39,6 +40,7 @@ export function EditBookingDialog() {
   const { id } = useParams<{ id: string }>();
   const fetchServicesQuery = useServicesQuery();
   const fetchStaffListQuery = useStaffListQuery();
+  const fetchStaffAvailabilityQuery = useStaffAvailabilityQuery(booking.staff.id, booking.date, booking.id);
   const history = useHistory();
   const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
   const { data: existingBooking } = useBookingQuery(id);
@@ -102,9 +104,13 @@ export function EditBookingDialog() {
         </IconButton>
       </Grid>
       <DialogContent dividers>
-        {(fetchServicesQuery.isError || fetchStaffListQuery.isError) && (
+        {(fetchServicesQuery.isError || fetchStaffListQuery.isError || fetchStaffAvailabilityQuery.isError) && (
           <WarningAlert
-            message={'It failed to load services and staff due to an internal error. Please try again later.'}
+            message={
+              <div data-testid="fetching-data-failed-alert">
+                It failed to load data due to an internal error. Please try again later.
+              </div>
+            }
           />
         )}
         {saveBookingMutation.error instanceof Error && (

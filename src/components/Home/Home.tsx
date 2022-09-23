@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { HomeContent } from './HomeContent/HomeContent';
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: false,

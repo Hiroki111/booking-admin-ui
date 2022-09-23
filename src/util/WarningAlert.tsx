@@ -2,7 +2,7 @@ import { Alert, AlertTitle } from '@mui/material';
 
 interface Props {
   title?: string;
-  message?: string;
+  message?: string | JSX.Element;
 }
 
 export function WarningAlert({

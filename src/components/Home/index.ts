@@ -1,1 +1,1 @@
-export { Home } from './Home';
+export { Home, queryClient } from './Home';

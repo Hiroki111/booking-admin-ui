@@ -1,11 +1,12 @@
 import { ReactElement } from 'react';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClientProvider } from 'react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { render } from '@testing-library/react';
 import { LocalizationProvider } from '@mui/lab';
 import AdapterDayjs from '@mui/lab/AdapterDayjs';
 
 import { RootThemeProvider } from '../../theme/RootThemeProvider';
+import { queryClient } from '../../components/Home';
 
 interface RenderOption {
   pathName?: string;
@@ -16,7 +17,7 @@ export function renderWithBaseWrapper(ui: ReactElement, option?: RenderOption) {
     return (
       <RootThemeProvider>
         <MemoryRouter initialEntries={[option?.pathName || '/']}>
-          <QueryClientProvider client={new QueryClient()}>
+          <QueryClientProvider client={queryClient}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>{children}</LocalizationProvider>
           </QueryClientProvider>
         </MemoryRouter>
