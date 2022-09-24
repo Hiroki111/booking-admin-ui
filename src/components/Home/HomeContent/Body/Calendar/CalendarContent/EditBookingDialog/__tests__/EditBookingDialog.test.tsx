@@ -10,6 +10,7 @@ import { renderWithBaseWrapper } from '../../../../../../../../testUtil/helper/r
 import { createMockBooking } from '../../../../../../../../testUtil/mockData/booking';
 import { getDelayedPromise } from '../../../../../../../../testUtil/helper/async';
 import { getPathWithParam } from '../../../../../../../../services/routing';
+import { BookingRequestError } from '../../../../../../../../network/error';
 
 const mockedPush = jest.fn();
 jest.mock('../../../../../../../../network/restApi');
@@ -176,5 +177,27 @@ describe('EditBookingDialog.tsx', () => {
     clickCancelButton();
 
     await waitFor(() => expect(mockedPush).toHaveBeenCalledWith(`${PATHS.calendar}?year=2023&month=01&day=31`));
+  });
+
+  it('should render error.details when submission fails', async () => {
+    console.error = jest.fn();
+    restApi.createBooking = jest
+      .fn()
+      .mockRejectedValue(new BookingRequestError('Submission failed', { email: 'email is missing', code: 123456 }));
+    renderEditBookingDialog();
+    clickSubmitButton();
+
+    await waitFor(() =>
+      expect(screen.getByTestId('submission-failed-alert')).toHaveTextContent(`email: email is missing, code: 123456`),
+    );
+  });
+
+  it('should render error.message when submission fails', async () => {
+    console.error = jest.fn();
+    restApi.createBooking = jest.fn().mockRejectedValue(new BookingRequestError('Submission failed'));
+    renderEditBookingDialog();
+    clickSubmitButton();
+
+    await waitFor(() => expect(screen.getByTestId('submission-failed-alert')).toHaveTextContent(`Submission failed`));
   });
 });

@@ -82,7 +82,7 @@ export function EditBookingDialog() {
     history.push(`${PATHS.calendar}?${searchParams.toString()}`);
   }
 
-  function getSubmissionError(error: any) {
+  function getSubmissionErrorMessage(error: any) {
     let message = 'Please try again later.';
     if (error?.details && typeof error.details === 'object') {
       const keys = Object.keys(error.details);
@@ -90,10 +90,7 @@ export function EditBookingDialog() {
     } else if (error?.message) {
       message = error.message;
     }
-    return {
-      message,
-      title: 'Error occurred',
-    };
+    return message;
   }
 
   return (
@@ -115,7 +112,12 @@ export function EditBookingDialog() {
           />
         )}
         {saveBookingMutation.error instanceof Error && (
-          <WarningAlert {...getSubmissionError(saveBookingMutation.error)} />
+          <WarningAlert
+            title={'Error occurred'}
+            message={
+              <div data-testid="submission-failed-alert">{getSubmissionErrorMessage(saveBookingMutation.error)}</div>
+            }
+          />
         )}
         {saveBookingMutation.isSuccess && <Alert severity="success">Booking Saved</Alert>}
         <Grid container classes={{ root: classes.dialogContainer }}>
