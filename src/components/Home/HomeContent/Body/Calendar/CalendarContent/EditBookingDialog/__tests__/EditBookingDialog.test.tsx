@@ -75,7 +75,7 @@ describe('EditBookingDialog.tsx', () => {
     restApi.fetchBookings = jest.fn().mockClear();
     clickSubmitButton();
 
-    await waitFor(() => expect(restApi.fetchBookings).toHaveBeenCalled());
+    await waitFor(() => expect(screen.getByTestId('submit-booking')).toBeDisabled());
   });
 
   it('should NOT refetch bookings if booking submission is unsuccessful', async () => {
