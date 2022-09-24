@@ -12,7 +12,7 @@ import {
   Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { Booking } from '../../../../../../../interfaces/booking';
 import { useStyles } from './useStyles';
@@ -42,6 +42,7 @@ export function EditBookingDialog() {
   const fetchStaffListQuery = useStaffListQuery();
   const fetchStaffAvailabilityQuery = useStaffAvailabilityQuery(booking.staff.id, booking.date, booking.id);
   const history = useHistory();
+  const { search } = useLocation();
   const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
   const { data: existingBooking } = useBookingQuery(id);
   const saveBookingMutation = useSaveBookingMutation(id);
@@ -73,7 +74,7 @@ export function EditBookingDialog() {
   }
 
   function handleCancel() {
-    const searchParams = new URLSearchParams(window.location.search);
+    const searchParams = new URLSearchParams(search);
     if (!searchParams.toString()?.length) {
       history.push(PATHS.calendar);
       return;
@@ -150,11 +151,10 @@ export function EditBookingDialog() {
         </Grid>
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
-        <Button autoFocus color="primary" onClick={handleCancel}>
+        <Button data-testid="cancel-submission" color="primary" onClick={handleCancel}>
           CANCEL
         </Button>
         <Button
-          autoFocus
           data-testid="submit-booking"
           color="primary"
           variant="contained"

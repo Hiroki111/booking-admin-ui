@@ -46,6 +46,11 @@ describe('EditBookingDialog.tsx', () => {
     fireEvent.click(submitButton);
   }
 
+  function clickCancelButton() {
+    const submitButton = screen.getByTestId('cancel-submission');
+    fireEvent.click(submitButton);
+  }
+
   it('should allow the user to submit a new booking', async () => {
     renderEditBookingDialog();
     clickSubmitButton();
@@ -157,5 +162,19 @@ describe('EditBookingDialog.tsx', () => {
         'It failed to load data due to an internal error. Please try again later.',
       ),
     );
+  });
+
+  it('should redirect to the calendar page if there is no URL search params and cancel button is clicked', async () => {
+    renderEditBookingDialog();
+    clickCancelButton();
+
+    await waitFor(() => expect(mockedPush).toHaveBeenCalledWith(PATHS.calendar));
+  });
+
+  it('should redirect to the calendar page with a date if the the date is in URL and cancel button is clicked', async () => {
+    renderEditBookingDialog(NEW_BOOKING_ID, new Date('2023-01-31'));
+    clickCancelButton();
+
+    await waitFor(() => expect(mockedPush).toHaveBeenCalledWith(`${PATHS.calendar}?year=2023&month=01&day=31`));
   });
 });
