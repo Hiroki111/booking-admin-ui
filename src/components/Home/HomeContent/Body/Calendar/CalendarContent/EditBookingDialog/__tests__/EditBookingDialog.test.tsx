@@ -8,6 +8,7 @@ import { PATHS } from '../../../../../../../../staticData/routes';
 import { EditBookingDialog } from '../EditBookingDialog';
 import { renderWithBaseWrapper } from '../../../../../../../../testUtil/helper/render';
 import { createMockBooking } from '../../../../../../../../testUtil/mockData/booking';
+import { getDelayedPromise } from '../../../../../../../../testUtil/helper/async';
 import { getPathWithParam } from '../../../../../../../../services/routing';
 
 const mockedPush = jest.fn();
@@ -57,6 +58,14 @@ describe('EditBookingDialog.tsx', () => {
     clickSubmitButton();
 
     await waitFor(() => expect(restApi.updateBooking).toHaveBeenCalled());
+  });
+
+  it('should prevent the user from submitting a booking while another booking is being submitted', async () => {
+    restApi.createBooking = jest.fn().mockImplementation(getDelayedPromise);
+    renderEditBookingDialog();
+    clickSubmitButton();
+
+    await waitFor(() => expect(restApi.createBooking).not.toHaveBeenCalled());
   });
 
   it('should refetch bookings after booking submission is successful', async () => {
