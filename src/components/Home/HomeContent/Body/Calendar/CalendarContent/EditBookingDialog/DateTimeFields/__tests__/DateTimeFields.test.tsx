@@ -48,21 +48,22 @@ describe('DateTimeFields.tsx', () => {
   });
 
   it('should show a warning message if the end time is too early for the last available time slot', async () => {
-    restApi.fetchTimeslots = jest.fn().mockResolvedValue([
-      { startTime: '10:00', endTime: '10:30' },
-      { startTime: '10:30', endTime: '11:00' },
-    ]);
+    const endTimeInLastTimeslot = '11:00';
+    const warningMessage = `It must end by the end of the last timeslot (${endTimeInLastTimeslot})`;
+    restApi.fetchTimeslots = jest.fn().mockResolvedValue([{ startTime: '10:30', endTime: endTimeInLastTimeslot }]);
     const props = { ...defaultProps };
-    const mockServices = [createMockService({ id: 1, minutes: 0 })];
-    set(props, 'booking.startTime', '10:00');
-    set(props, 'booking.endTime', '11:00');
-    set(props, 'booking.services', mockServices);
+    set(props, 'booking.startTime', '10:30');
+    set(props, 'booking.endTime', endTimeInLastTimeslot);
+    set(props, 'booking.services', [createMockService({ id: 1, minutes: 0 })]);
     const { rerender } = renderDateTimeFields(props);
+    let textField = screen.getByTestId('end-time-field');
+
+    await waitFor(() => expect(textField).not.toHaveTextContent(warningMessage));
 
     set(props, 'booking.endTime', '11:30');
     rerender(<DateTimeFields {...props} />);
+    textField = screen.getByTestId('end-time-field');
 
-    const textField = screen.getByTestId('end-time-field');
-    await waitFor(() => expect(textField).toHaveTextContent('It must end by the end of the last timeslot (11:00)'));
+    await waitFor(() => expect(textField).toHaveTextContent(warningMessage));
   });
 });
