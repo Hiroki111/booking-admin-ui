@@ -25,5 +25,10 @@ export function renderWithBaseWrapper(ui: ReactElement, option?: RenderOption) {
     );
   }
 
-  render(ui, { wrapper: Wrapper });
+  const rendered = render(ui, { wrapper: Wrapper });
+
+  return {
+    ...rendered,
+    rerender: (ui: ReactElement) => rendered.rerender(Wrapper({ children: ui })),
+  };
 }

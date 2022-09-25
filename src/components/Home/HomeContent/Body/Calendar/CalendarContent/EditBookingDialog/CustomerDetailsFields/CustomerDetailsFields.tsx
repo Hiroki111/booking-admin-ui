@@ -37,10 +37,10 @@ export function CustomerDetailsFields({ booking, setBooking }: Props) {
   return (
     <>
       <Grid item container spacing={2}>
-        {upperRowFields.map((field) => renderCustomerDetailField(field))}
+        {upperRowFields.map(renderCustomerDetailField)}
       </Grid>
       <Grid item container spacing={2}>
-        {lowerRowFields.map((field) => renderCustomerDetailField(field))}
+        {lowerRowFields.map(renderCustomerDetailField)}
       </Grid>
     </>
   );

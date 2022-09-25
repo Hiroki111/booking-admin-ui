@@ -71,6 +71,7 @@ export function DateTimeFields({ booking, setBooking }: Props) {
         <TextField
           label="End at"
           variant="outlined"
+          data-testid="end-time-field"
           value={booking.endTime}
           helperText={timeValidationText}
           error={timeValidationText.length > 0}
