@@ -20,11 +20,19 @@ export function ServiceFields({ booking, setBooking }: Props) {
     setServiceOptions(serviceOptions);
   }, [fetchServicesQuery?.data, setServiceOptions]);
 
+  useEffect(() => {
+    setBooking({
+      ...booking,
+      totalPrice: booking.services.reduce((total, service) => total + service.price, 0),
+    });
+  }, [booking.services]);
+
   return (
     <>
       <Grid item container spacing={2}>
         <Grid item xs={12}>
           <Autocomplete
+            data-testid="service-list"
             multiple
             options={serviceOptions}
             isOptionEqualToValue={(option: Service, value: Service) => option.id === value.id}
@@ -32,11 +40,7 @@ export function ServiceFields({ booking, setBooking }: Props) {
             getOptionLabel={(option) => `${option.name} (${option.minutes} min)`}
             value={booking.services}
             onChange={(event: React.SyntheticEvent<Element, Event>, value: Service[]) => {
-              setBooking({
-                ...booking,
-                services: value as Service[],
-                totalPrice: (value as Service[]).reduce((total, service) => total + service.price, 0),
-              });
+              setBooking({ ...booking, services: value as Service[] });
             }}
             renderInput={(params) => <TextField {...params} label="Selected services" variant="outlined" required />}
           />
