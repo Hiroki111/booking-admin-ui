@@ -58,7 +58,7 @@ export function ActionDrawer() {
 
   return (
     <>
-      <IconButton onClick={() => setIsShowingDrawer(!isShowingDrawer)} size="large">
+      <IconButton aria-label="drawer-switch" onClick={() => setIsShowingDrawer(!isShowingDrawer)} size="large">
         <MenuIcon />
       </IconButton>
       <Drawer
@@ -95,6 +95,7 @@ export function ActionDrawer() {
                     ]),
                   }}
                   size="large"
+                  aria-label={`${calendarViewItem.calendarViewKey.toLocaleLowerCase()}-icon-button`}
                 >
                   <calendarViewItem.icon />
                 </IconButton>
@@ -106,7 +107,7 @@ export function ActionDrawer() {
           <Typography variant="h6" className={classes.listTitle}>
             Staff
           </Typography>
-          <List>
+          <List data-testid="staff-options">
             {staffOptions.map((staff) => (
               <ListItem button key={staff.id} onClick={() => setSelectedStaff(staff as Staff | null)}>
                 <Avatar
