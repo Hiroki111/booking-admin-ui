@@ -47,11 +47,12 @@ describe('ActionDrawer.tsx', () => {
     expect(screen.getByTestId('staff-options')).toHaveTextContent(mockStaffA.name);
     expect(screen.getByTestId('staff-options')).toHaveTextContent(mockStaffB.name);
 
-    // Avatar contents
+    // NOTE: container.querySelector doesn't test the icon below properly
     // eslint-disable-next-line testing-library/no-node-access
-    expect(document.querySelector('.people-icon')).toBeInTheDocument();
-    expect(screen.getByTestId('staff-options')).toHaveTextContent('JS');
-    expect(screen.getByTestId('staff-options')).toHaveTextContent('A');
+    expect(document.querySelector('.people-icon')).toHaveClass('MuiSvgIcon-root');
+    // Avatars for staff except ALL_STAFF
+    expect(screen.getByText('JS')).toHaveClass('MuiAvatar-root');
+    expect(screen.getByText('A')).toHaveClass('MuiAvatar-root');
   });
 
   it.each(Object.keys(CalendarView) as CalendarViewKey[])(
