@@ -32,8 +32,8 @@ describe('ActionDrawer.tsx', () => {
   }
 
   beforeEach(() => {
-    mockStaffA = createMockStaff({ id: 1, name: 'Staff A' });
-    mockStaffB = createMockStaff({ id: 2, name: 'Staff B' });
+    mockStaffA = createMockStaff({ id: 1, name: 'John Smith' });
+    mockStaffB = createMockStaff({ id: 2, name: 'Alice' });
     restApi.fetchStaffList = jest.fn().mockResolvedValue([mockStaffA, mockStaffB]);
   });
 
@@ -41,9 +41,17 @@ describe('ActionDrawer.tsx', () => {
     renderActionDrawer();
     openDrawer();
 
-    await waitFor(() => expect(screen.getByTestId('staff-options')).toHaveTextContent(ALL_STAFF.name));
-    await waitFor(() => expect(screen.getByTestId('staff-options')).toHaveTextContent(mockStaffA.name));
-    await waitFor(() => expect(screen.getByTestId('staff-options')).toHaveTextContent(mockStaffB.name));
+    await waitFor(() => expect(restApi.fetchStaffList).toHaveBeenCalled());
+
+    expect(screen.getByTestId('staff-options')).toHaveTextContent(ALL_STAFF.name);
+    expect(screen.getByTestId('staff-options')).toHaveTextContent(mockStaffA.name);
+    expect(screen.getByTestId('staff-options')).toHaveTextContent(mockStaffB.name);
+
+    // Avatar contents
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(document.querySelector('.people-icon')).toBeInTheDocument();
+    expect(screen.getByTestId('staff-options')).toHaveTextContent('JS');
+    expect(screen.getByTestId('staff-options')).toHaveTextContent('A');
   });
 
   it.each(Object.keys(CalendarView) as CalendarViewKey[])(
@@ -54,9 +62,7 @@ describe('ActionDrawer.tsx', () => {
       const dayButton = screen.getByRole('button', { name: `${calendarViewKey.toLocaleLowerCase()}-icon-button` });
       fireEvent.click(dayButton);
 
-      await waitFor(() => {
-        expect(mockedPush).toHaveBeenCalledWith(getUrlWithCalendarView(calendarViewKey));
-      });
+      await waitFor(() => expect(mockedPush).toHaveBeenCalledWith(getUrlWithCalendarView(calendarViewKey)));
     },
   );
 });

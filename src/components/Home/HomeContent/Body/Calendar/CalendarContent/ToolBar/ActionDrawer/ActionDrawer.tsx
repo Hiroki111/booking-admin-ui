@@ -40,7 +40,7 @@ export function ActionDrawer() {
 
   function getAvatarContent(staff: StaffOption) {
     if (!staff?.name || staff.id === ALL_STAFF.id) {
-      return <PeopleIcon />;
+      return <PeopleIcon className="people-icon" />;
     }
 
     const nameArray = staff.name.trim().split(' ') || [];
