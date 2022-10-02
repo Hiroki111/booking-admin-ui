@@ -20,7 +20,7 @@ describe('CalendarContent.tsx', () => {
     (useIsSmallWindow as jest.Mock).mockImplementation(() => true);
     renderCalendarContent();
 
-    expect(screen.getByTestId('today-icon')).toBeInTheDocument();
+    expect(screen.getByTestId('today-icon-button')).toBeInTheDocument();
     expect(screen.getByTestId('add-icon')).toBeInTheDocument();
   });
 
@@ -28,7 +28,7 @@ describe('CalendarContent.tsx', () => {
     (useIsSmallWindow as jest.Mock).mockImplementation(() => false);
     renderCalendarContent();
 
-    expect(screen.queryByTestId('today-icon')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('today-icon-button')).not.toBeInTheDocument();
     expect(screen.queryByTestId('add-icon')).not.toBeInTheDocument();
   });
 });

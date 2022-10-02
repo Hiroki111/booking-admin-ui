@@ -32,7 +32,7 @@ export function CalendarContent() {
       {isSmallWindow && (
         <>
           <Fab
-            data-testid="today-icon"
+            data-testid="today-icon-button"
             variant="extended"
             className={clsx(classes.floatingButton, classes.todayButton)}
             onClick={() => calendarApi?.today()}
