@@ -32,6 +32,7 @@ export function CalendarContent() {
       {isSmallWindow && (
         <>
           <Fab
+            data-testid="today-icon"
             variant="extended"
             className={clsx(classes.floatingButton, classes.todayButton)}
             onClick={() => calendarApi?.today()}
@@ -46,7 +47,7 @@ export function CalendarContent() {
               history.push(getPathWithParam(PATHS.calendarBookingEditId, { ':id': String(NEW_BOOKING_ID) }))
             }
           >
-            <AddIcon />
+            <AddIcon data-testid="add-icon" />
           </Fab>
         </>
       )}
