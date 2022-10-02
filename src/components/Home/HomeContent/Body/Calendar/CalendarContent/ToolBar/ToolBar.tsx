@@ -34,22 +34,22 @@ export function ToolBar() {
     <Grid container justifyContent="space-between" className={classes.toolbarContainer} ref={toolbarRef}>
       {isSmallWindow ? (
         <>
-          <Grid item>
+          <Grid item data-testid="date-navigator-grid">
             <DateNavigator />
           </Grid>
-          <Grid item>
+          <Grid item data-testid="action-drawer-grid">
             <ActionDrawer />
           </Grid>
         </>
       ) : (
         <>
-          <Grid item>
+          <Grid item data-testid="staff-selector-grid">
             <StaffSelector />
           </Grid>
-          <Grid item>
+          <Grid item data-testid="date-navigator-grid">
             <DateNavigator />
           </Grid>
-          <Grid item>
+          <Grid item data-testid="today-add-new-grid">
             <Grid container className={classes.actionButtonContainer}>
               <Button
                 onClick={() => {
