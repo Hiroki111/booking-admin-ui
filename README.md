@@ -8,6 +8,10 @@
 
 - Change fetch___Query into { data: ___ } for the sake of consistency
 
+## Auto-component generation
+Install Folder Templates (https://marketplace.visualstudio.com/items?itemName=Huuums.vscode-fast-folder-structure)
+
+
 Update routes
 
 export function getRoute(route: {} | string, params: {} = {}): string {
