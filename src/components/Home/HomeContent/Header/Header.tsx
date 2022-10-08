@@ -5,7 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 import { useStyles } from './useStyles';
-import { PATHS } from '../../../../staticData/routes';
+import { LOGIN_PAGE_PATH } from '../../../../staticData/routes';
 import { useAuthContext } from '../../../../contexts/AuthContext';
 import { useIsSmallWindow } from '../../../../hooks/window';
 import { UserAvatar } from './UserAvatar';
@@ -21,7 +21,7 @@ export function Header() {
   async function handleClickLogout() {
     try {
       await logout();
-      history.push(PATHS.login);
+      history.push(LOGIN_PAGE_PATH);
     } catch (error) {
       alert('Error logging out. Please try again later.');
     }
