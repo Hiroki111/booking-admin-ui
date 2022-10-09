@@ -9,6 +9,7 @@ export enum PATHS {
   calendar = '/calendar',
   calendarBookingEditId = '/calendar/booking/edit/:id',
   staff = '/staff',
+  staffAvailabilities = '/staff/availabilities',
 }
 
 // Used under <Body/>
