@@ -1,22 +1,19 @@
-import { Container } from '@mui/material';
+import { Box, Toolbar } from '@mui/material';
 import { Switch, Route } from 'react-router-dom';
 
 import { MODULE_ROUTES } from '../../../../staticData/routes';
-import { useStyles } from './useStyles';
 
 export function Body() {
-  const classes = useStyles();
-
   return (
-    <main className={classes.content}>
-      <div className={classes.appBarSpacer} />
-      <Container maxWidth="lg" className={classes.container}>
+    <Box component="main" sx={{ flexGrow: 1, height: '100vh', overflow: 'auto' }}>
+      <Toolbar />
+      <Box maxWidth="lg" sx={(theme) => ({ p: theme.spacing(1) })}>
         <Switch>
           {MODULE_ROUTES.map(({ exact, path, component }) => (
             <Route key={path as string} exact={exact} path={path} component={component} />
           ))}
         </Switch>
-      </Container>
-    </main>
+      </Box>
+    </Box>
   );
 }
