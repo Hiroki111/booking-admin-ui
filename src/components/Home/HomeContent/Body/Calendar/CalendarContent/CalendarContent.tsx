@@ -1,5 +1,5 @@
 import { useHistory } from 'react-router-dom';
-import { Grid, Paper, Box, Avatar, IconButton, Fab, SxProps, Theme } from '@mui/material';
+import { Grid, Paper, Box, Fab, SxProps, Theme } from '@mui/material';
 import { Route } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import NavigationIcon from '@mui/icons-material/Navigation';
@@ -9,7 +9,7 @@ import { useIsSmallWindow } from '../../../../../../hooks/window';
 import { EditBookingDialog } from './EditBookingDialog';
 import { CalendarWidget } from './CalendarWidget';
 import { ToolBar } from './ToolBar';
-import { sx } from './useStyles';
+import { sx } from './styles';
 import { PATHS } from '../../../../../../staticData/routes';
 import { getPathWithParam } from '../../../../../../services/routing';
 import { NEW_BOOKING_ID } from '../../../../../../staticData/calendar';

@@ -1,7 +1,5 @@
 import { SxProps } from '@mui/material';
-import Fab from '@mui/material/Fab';
 import { Theme } from '@mui/system';
-import { styled } from '@mui/material/styles';
 
 export const sx: Record<string, SxProps<Theme>> = {
   calendarContainer: {
