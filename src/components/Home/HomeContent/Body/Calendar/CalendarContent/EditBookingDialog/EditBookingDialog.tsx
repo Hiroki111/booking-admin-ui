@@ -15,7 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { Booking } from '../../../../../../../interfaces/booking';
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 import { useServicesQuery } from '../../../../../../../queries/service';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
 import { useStaffListQuery } from '../../../../../../../queries/staff';
@@ -31,7 +31,6 @@ import { UseCalendarState } from '../../../../../../../hooks/calendar';
 import { useStaffAvailabilityQuery } from '../../../../../../../queries/staffAvailability';
 
 export function EditBookingDialog() {
-  const classes = useStyles();
   const { year, month, day } = UseCalendarState();
   const [booking, setBooking] = useState<Booking>({
     ...DEFAULT_BOOKING,
@@ -97,7 +96,7 @@ export function EditBookingDialog() {
     <Dialog open maxWidth="lg">
       <Grid container justifyContent="space-between">
         <DialogTitle>{`${isCreatingNewBooking ? 'Add' : 'Edit'} Booking`}</DialogTitle>
-        <IconButton className={classes.closeButton} onClick={handleCancel} size="large">
+        <IconButton sx={sx.closeButton} onClick={handleCancel} size="large">
           <CloseIcon />
         </IconButton>
       </Grid>
@@ -120,31 +119,31 @@ export function EditBookingDialog() {
           />
         )}
         {saveBookingMutation.isSuccess && <Alert severity="success">Booking Saved</Alert>}
-        <Grid container classes={{ root: classes.dialogContainer }}>
+        <Grid container sx={sx.dialogContainer}>
           <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
-            <Grid item container rowSpacing={2} className={classes.fieldGroup}>
-              <Typography paragraph className={classes.dividerText}>
+            <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
+              <Typography paragraph sx={sx.dividerText}>
                 Date and time
               </Typography>
               <DateTimeFields booking={booking} setBooking={setBooking} />
             </Grid>
-            <Grid item container rowSpacing={2} className={classes.fieldGroup}>
-              <Typography paragraph className={classes.dividerText}>
+            <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
+              <Typography paragraph sx={sx.dividerText}>
                 Customer details
               </Typography>
               <CustomerDetailsFields booking={booking} setBooking={setBooking} />
             </Grid>
           </Grid>
-          <Divider orientation="vertical" flexItem className={classes.centralDivider} />
+          <Divider orientation="vertical" flexItem sx={sx.centralDivider} />
           <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
-            <Grid item container rowSpacing={2} className={classes.fieldGroup}>
-              <Typography paragraph className={classes.dividerText}>
+            <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
+              <Typography paragraph sx={sx.dividerText}>
                 Service
               </Typography>
               <ServiceFields booking={booking} setBooking={setBooking} />
             </Grid>
-            <Grid item container rowSpacing={2} className={classes.fieldGroup}>
-              <Typography paragraph className={classes.dividerText}>
+            <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
+              <Typography paragraph sx={sx.dividerText}>
                 Staff
               </Typography>
               <StaffFields booking={booking} setBooking={setBooking} />
@@ -152,7 +151,7 @@ export function EditBookingDialog() {
           </Grid>
         </Grid>
       </DialogContent>
-      <DialogActions className={classes.dialogActions}>
+      <DialogActions sx={sx.dialogActions}>
         <Button data-testid="cancel-submission" color="primary" onClick={handleCancel}>
           CANCEL
         </Button>
