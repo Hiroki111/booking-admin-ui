@@ -10,14 +10,14 @@ import { useBookingsQuery } from '../../../../../../../queries/booking';
 import { Booking } from '../../../../../../../interfaces/booking';
 import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 import { getPathWithParam } from '../../../../../../../services/routing';
 import { PATHS } from '../../../../../../../staticData/routes';
 import { UseCalendarState } from '../../../../../../../hooks/calendar';
 import { CalendarView } from '../../../../../../../interfaces/calendar';
+import { Box } from '@mui/material';
 
 export function CalendarWidget() {
-  const classes = useStyles();
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
   const { selectedStaff, areAllStaffSelected, calendarApi, setCalendarApi, setCalendarTitle } = useCalendarContext();
   const { year, month, day, calendarView } = UseCalendarState();
@@ -59,7 +59,7 @@ export function CalendarWidget() {
 
   function renderEventContent(eventInfo: EventContentArg) {
     return (
-      <div className={classes.eventContent}>
+      <Box sx={sx.eventContent}>
         {calendarApi?.view?.type === CalendarView.Month && (
           <span>
             <b>{eventInfo?.timeText}</b>{' '}
@@ -72,12 +72,12 @@ export function CalendarWidget() {
             <b>{eventInfo?.timeText}</b>
           </span>
         )}
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div className={classes.calendarWidgetContainer}>
+    <Box sx={sx.calendarWidgetContainer}>
       {fetchBookingsQuery.isError && <WarningAlert message={'It failed to load booking data'} />}
       <FullCalendar
         ref={calendarRef}
@@ -96,6 +96,6 @@ export function CalendarWidget() {
           meridiem: false,
         }}
       />
-    </div>
+    </Box>
   );
 }
