@@ -1,11 +1,11 @@
-import { Grid, Autocomplete, TextField } from '@mui/material';
+import { Grid, Autocomplete, TextField, Box } from '@mui/material';
 import { useState, useEffect, useMemo } from 'react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import { Booking } from '../../../../../../../../interfaces/booking';
 import { Staff } from '../../../../../../../../interfaces/staff';
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 import { useStaffListQuery } from '../../../../../../../../queries/staff';
 import { useStaffAvailabilityQuery } from '../../../../../../../../queries/staffAvailability';
 import { findTimeSlotByStartAndEndTime } from '../../../../../../../../services/staff';
@@ -30,7 +30,6 @@ const INITIAL_VALIDATION = {
 
 // TODO: ESLint is warning of missing dependencies
 export function StaffFields({ booking, setBooking }: Props) {
-  const classes = useStyles();
   const defaultStaff = { ...DEFAULT_BOOKING.staff };
   const [staffNameInputValue, setStaffNameInputValue] = useState('');
   const [selectedStaff, setSelectedStaff] = useState<Staff>(defaultStaff);
@@ -164,9 +163,9 @@ export function StaffFields({ booking, setBooking }: Props) {
               required
               error={validationMessages.length > 0}
               helperText={validationMessages?.map((message, i) => (
-                <span key={i} data-testid="staff-validation" className={classes.errorMessage}>
+                <Box component="span" key={i} data-testid="staff-validation" sx={sx.errorMessage}>
                   {message}
-                </span>
+                </Box>
               ))}
             />
           )}
