@@ -1,13 +1,12 @@
 import { useHistory } from 'react-router-dom';
 import { useRef } from 'react';
-import { Button, Grid } from '@mui/material';
-import clsx from 'clsx';
+import { Button, Grid, SxProps, Theme } from '@mui/material';
 
 import { useStaffListQuery } from '../../../../../../../queries/staff';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
 import { useCalendarContext } from '../../../../../../../contexts/CalendarContext';
 import { ViewModeMenu } from './ViewModeMenu';
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 import { StaffSelector } from './StaffSelector';
 import { DateNavigator } from './DateNavigator';
 import { ActionDrawer } from './ActionDrawer';
@@ -17,7 +16,6 @@ import { getPathWithParam, getUrlWithDate } from '../../../../../../../services/
 import { NEW_BOOKING_ID } from '../../../../../../../staticData/calendar';
 
 export function ToolBar() {
-  const classes = useStyles();
   const toolbarRef: React.MutableRefObject<any> = useRef();
   const staffListQuery = useStaffListQuery();
   const { calendarApi } = useCalendarContext();
@@ -31,7 +29,7 @@ export function ToolBar() {
   }
 
   return (
-    <Grid container justifyContent="space-between" className={classes.toolbarContainer} ref={toolbarRef}>
+    <Grid container justifyContent="space-between" sx={sx.toolbarContainer} ref={toolbarRef}>
       {isSmallWindow ? (
         <>
           <Grid item data-testid="date-navigator-grid">
@@ -50,7 +48,7 @@ export function ToolBar() {
             <DateNavigator />
           </Grid>
           <Grid item data-testid="today-add-new-grid">
-            <Grid container className={classes.actionButtonContainer}>
+            <Grid container sx={sx.actionButtonContainer}>
               <Button
                 onClick={() => {
                   if (!calendarApi) {
@@ -59,7 +57,7 @@ export function ToolBar() {
                   calendarApi.today();
                   history.push(getUrlWithDate(new Date()));
                 }}
-                className={clsx(classes.button, classes.whiteButton)}
+                sx={{ ...sx.button, ...sx.whiteButton } as SxProps<Theme>}
                 variant="outlined"
               >
                 Today
@@ -69,7 +67,7 @@ export function ToolBar() {
                 onClick={() =>
                   history.push(getPathWithParam(PATHS.calendarBookingEditId, { ':id': String(NEW_BOOKING_ID) }))
                 }
-                className={classes.button}
+                sx={sx.button}
                 variant="contained"
                 color="primary"
               >
