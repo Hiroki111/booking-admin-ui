@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Typography, Grid, Drawer } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Typography, Grid, Drawer, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
-import { useStyles } from './useStyles';
+import * as sx from './useStyles';
 import { LOGIN_PAGE_PATH } from '../../../../staticData/routes';
 import { useAuthContext } from '../../../../contexts/AuthContext';
 import { useIsSmallWindow } from '../../../../hooks/window';
@@ -12,7 +12,6 @@ import { UserAvatar } from './UserAvatar';
 import { DrawerList } from '../DrawerList';
 
 export function Header() {
-  const classes = useStyles();
   const [isDrawerIconClicked, setIsDrawerIconClicked] = useState<boolean>(false);
   const history = useHistory();
   const { logout, user } = useAuthContext();
@@ -29,8 +28,8 @@ export function Header() {
 
   return (
     <>
-      <AppBar position="absolute" className={classes.appBar}>
-        <Toolbar className={classes.toolBar}>
+      <AppBar position="absolute" sx={sx.appBar}>
+        <Toolbar sx={sx.toolBar}>
           <Grid container>
             {isSmallWindow && (
               <IconButton
@@ -38,33 +37,33 @@ export function Header() {
                 color="inherit"
                 aria-label="open drawer"
                 onClick={() => setIsDrawerIconClicked(!isDrawerIconClicked)}
-                className={classes.menuButton}
+                sx={sx.menuButton}
                 size="large"
               >
                 <MenuIcon />
               </IconButton>
             )}
-            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+            <Typography component="h1" variant="h6" color="inherit" noWrap sx={sx.title}>
               Booking
             </Typography>
           </Grid>
-          <div>
+          <Box>
             {isSmallWindow ? (
               <UserAvatar onClickLogout={handleClickLogout} />
             ) : (
-              <Typography component="p" color="inherit" noWrap className={classes.title}>
+              <Typography component="p" color="inherit" noWrap sx={sx.title}>
                 {user?.name}
-                <IconButton className={classes.logout} onClick={handleClickLogout} size="large">
+                <IconButton sx={sx.logout} onClick={handleClickLogout} size="large">
                   <ExitToAppIcon color="inherit" />
                 </IconButton>
               </Typography>
             )}
-          </div>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
         variant="temporary"
-        classes={{ paper: classes.drawerPaper }}
+        sx={sx.drawerPaper}
         open={isDrawerIconClicked}
         onClick={(_event?: React.MouseEvent<HTMLDivElement>) => setIsDrawerIconClicked(false)}
       >
