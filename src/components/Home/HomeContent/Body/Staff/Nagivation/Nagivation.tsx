@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 import { invert } from 'lodash';
 
 import { PATHS } from '../../../../../../staticData/routes';
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 
 export function Nagivation() {
-  const classes = useStyles();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const location = useLocation();
   const history = useHistory();
@@ -32,8 +31,8 @@ export function Nagivation() {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={selectedTabIndex} onChange={handleChange}>
-          <Tab classes={{ root: classes.tab }} label="Staff List" />
-          <Tab classes={{ root: classes.tab }} label="Staff Availabilities" />
+          <Tab sx={sx.tab} label="Staff List" />
+          <Tab sx={sx.tab} label="Staff Availabilities" />
         </Tabs>
       </Box>
     </Box>

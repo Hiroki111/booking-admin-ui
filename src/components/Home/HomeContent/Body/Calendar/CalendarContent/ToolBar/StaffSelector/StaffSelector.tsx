@@ -7,10 +7,9 @@ import { Staff } from '../../../../../../../../interfaces/staff';
 import { useStaffListQuery } from '../../../../../../../../queries/staff';
 import { StaffOption } from '../../../../../../../../interfaces/calendar';
 import { createStaffOptions } from '../../../../../../../../services/calendar';
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 
 export function StaffSelector() {
-  const classes = useStyles();
   const staffListQuery = useStaffListQuery();
   const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
   const [inputValue, setInputValue] = useState<string>(ALL_STAFF.name);
@@ -23,7 +22,7 @@ export function StaffSelector() {
 
   return (
     <Autocomplete
-      className={classes.staffSelectorContainer}
+      sx={sx.staffSelectorContainer}
       value={selectedStaff}
       inputValue={inputValue}
       onChange={(event: React.ChangeEvent<{}>, newSelectedStaff: StaffOption | null) =>

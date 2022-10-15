@@ -4,11 +4,10 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import WorkIcon from '@mui/icons-material/Work';
 
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 import { PATHS } from '../../../../staticData/routes';
 
 export function DrawerList() {
-  const classes = useStyles();
   const history = useHistory();
 
   const listItems = [
@@ -21,7 +20,7 @@ export function DrawerList() {
   ];
 
   return (
-    <List className={classes.list}>
+    <List sx={sx.list}>
       {listItems.map((listItem, i) => (
         <ListItem button key={i} onClick={listItem.onClick}>
           <ListItemIcon>
