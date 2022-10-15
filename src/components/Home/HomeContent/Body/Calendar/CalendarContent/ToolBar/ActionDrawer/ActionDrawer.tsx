@@ -1,6 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Avatar, Divider, Drawer, Grid, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  SxProps,
+  Theme,
+  Typography,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import PeopleIcon from '@mui/icons-material/People';
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,7 +22,7 @@ import ViewWeekOutlinedIcon from '@mui/icons-material/ViewWeekOutlined';
 import ViewComfyOutlinedIcon from '@mui/icons-material/ViewComfyOutlined';
 import clsx from 'clsx';
 
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 import { ALL_STAFF, useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
 import { useStaffListQuery } from '../../../../../../../../queries/staff';
 import { CalendarViewKey, StaffOption } from '../../../../../../../../interfaces/calendar';
@@ -19,7 +32,6 @@ import { getUrlWithCalendarView } from '../../../../../../../../services/routing
 import { UseCalendarState } from '../../../../../../../../hooks/calendar';
 
 export function ActionDrawer() {
-  const classes = useStyles();
   const [isShowingDrawer, setIsShowingDrawer] = useState(false);
   const [staffOptions, setStaffOptions] = useState<StaffOption[]>([ALL_STAFF]);
   const { selectedStaff, setSelectedStaff, updateCalendarView } = useCalendarContext();
@@ -61,39 +73,34 @@ export function ActionDrawer() {
       <IconButton aria-label="drawer-switch" onClick={() => setIsShowingDrawer(!isShowingDrawer)} size="large">
         <MenuIcon />
       </IconButton>
-      <Drawer
-        classes={{ root: classes.drawerRoot }}
-        anchor={'right'}
-        open={isShowingDrawer}
-        onClose={() => setIsShowingDrawer(false)}
-      >
-        <div className={classes.list}>
+      <Drawer sx={sx.drawerRoot} anchor={'right'} open={isShowingDrawer} onClose={() => setIsShowingDrawer(false)}>
+        <Box sx={sx.list}>
           <Grid container justifyContent="flex-end">
             <IconButton onClick={() => setIsShowingDrawer(false)} size="large">
               <CloseIcon />
             </IconButton>
           </Grid>
-          <Typography variant="h6" className={classes.listTitle}>
+          <Typography variant="h6" sx={sx.listTitle}>
             Calendar View
           </Typography>
-          <Grid container justifyContent="space-between" className={classes.viewListContainer}>
+          <Grid container justifyContent="space-between" sx={sx.viewListContainer}>
             {calendarViewItems.map((calendarViewItem, i) => (
               <Grid
                 key={i}
                 item
-                className={classes.viewListItem}
+                sx={sx.viewListItem}
                 onClick={() => {
                   updateCalendarView(calendarViewItem.calendarViewKey);
                   history.push(getUrlWithCalendarView(calendarViewItem.calendarViewKey));
                 }}
               >
                 <IconButton
-                  classes={{
-                    root: clsx([
-                      classes.iconButtonRoot,
-                      calendarViewKey === calendarViewItem.calendarViewKey ? classes.selectedItem : '',
-                    ]),
-                  }}
+                  sx={
+                    {
+                      ...sx.iconButtonRoot,
+                      ...(calendarViewKey == calendarViewItem.calendarViewKey && sx.selectedItem),
+                    } as SxProps<Theme>
+                  }
                   size="large"
                   aria-label={`${calendarViewItem.calendarViewKey.toLocaleLowerCase()}-icon-button`}
                 >
@@ -104,14 +111,19 @@ export function ActionDrawer() {
             ))}
           </Grid>
           <Divider />
-          <Typography variant="h6" className={classes.listTitle}>
+          <Typography variant="h6" sx={sx.listTitle}>
             Staff
           </Typography>
           <List data-testid="staff-options">
             {staffOptions.map((staff) => (
               <ListItem button key={staff.id} onClick={() => setSelectedStaff(staff as Staff | null)}>
                 <Avatar
-                  className={clsx([classes.staffIcon, selectedStaff?.id === staff.id ? classes.selectedItem : ''])}
+                  sx={
+                    {
+                      ...sx.staffIcon,
+                      ...(selectedStaff?.id === staff.id && sx.selectedItem),
+                    } as SxProps<Theme>
+                  }
                 >
                   {getAvatarContent(staff)}
                 </Avatar>
@@ -119,7 +131,7 @@ export function ActionDrawer() {
               </ListItem>
             ))}
           </List>
-        </div>
+        </Box>
       </Drawer>
     </>
   );
