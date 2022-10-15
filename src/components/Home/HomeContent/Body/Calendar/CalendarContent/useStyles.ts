@@ -1,6 +1,9 @@
-import makeStyles from '@mui/styles/makeStyles';
+import { SxProps } from '@mui/material';
+import Fab from '@mui/material/Fab';
+import { Theme } from '@mui/system';
+import { styled } from '@mui/material/styles';
 
-export const useStyles = makeStyles((theme) => ({
+export const sx: Record<string, SxProps<Theme>> = {
   calendarContainer: {
     position: 'relative',
   },
@@ -10,14 +13,13 @@ export const useStyles = makeStyles((theme) => ({
   floatingButton: {
     position: 'fixed',
     zIndex: 1,
-  },
-  todayButton: {
     right: 40,
+  },
+  todayFloatingButton: {
     bottom: 40,
     backgroundColor: 'white',
   },
-  addNewButton: {
-    right: 40,
+  addNewFloatingButton: {
     bottom: 100,
   },
-}));
+};
