@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Avatar, Popover, Typography, Divider } from '@mui/material';
+import { Avatar, Popover, Typography, Divider, Box } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 import { useAuthContext } from '../../../../../contexts/AuthContext';
 
 interface Props {
@@ -10,7 +10,6 @@ interface Props {
 }
 
 export function UserAvatar({ onClickLogout }: Props) {
-  const classes = useStyles();
   const { user } = useAuthContext();
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
 
@@ -36,10 +35,7 @@ export function UserAvatar({ onClickLogout }: Props) {
 
   return (
     <>
-      <Avatar
-        className={classes.avatar}
-        onClick={(event: React.MouseEvent<HTMLDivElement>) => setAnchorEl(event.currentTarget)}
-      >
+      <Avatar sx={sx.avatar} onClick={(event: React.MouseEvent<HTMLDivElement>) => setAnchorEl(event.currentTarget)}>
         {getAvatarContent()}
       </Avatar>
       <Popover
@@ -49,15 +45,15 @@ export function UserAvatar({ onClickLogout }: Props) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <div className={classes.popoverContent}>
+        <Box sx={sx.popoverContent}>
           <Typography component="p">
             Logged in as <strong>{user?.name}</strong>
           </Typography>
           <Divider />
-          <Typography component="p" className={classes.popoverLogoutText} onClick={onClickLogout}>
+          <Typography component="p" sx={sx.popoverLogoutText} onClick={onClickLogout}>
             Log out
           </Typography>
-        </div>
+        </Box>
       </Popover>
     </>
   );
