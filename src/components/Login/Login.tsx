@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { PATHS } from '../../staticData/routes';
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 import { useAuthContext } from '../../contexts/AuthContext';
 
 export function Login() {
@@ -21,7 +21,6 @@ export function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const { login } = useAuthContext();
   const history = useHistory();
-  const classes = useStyles();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -42,15 +41,15 @@ export function Login() {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
+      <Box sx={sx.paper}>
+        <Avatar sx={sx.avatar}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Log in
         </Typography>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <form className={classes.form} onSubmit={handleSubmit}>
+        <Box component="form" sx={sx.form} onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -79,11 +78,11 @@ export function Login() {
             autoComplete="off"
             error={hasLoginFailed}
           />
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+          <Button type="submit" fullWidth variant="contained" color="primary" sx={sx.submit}>
             Log In
           </Button>
-        </form>
-      </div>
+        </Box>
+      </Box>
       <Box mt={8}>
         <Typography variant="body2" color="textSecondary" align="center">
           {`Copyright © Booking System ${new Date().getFullYear()}.`}

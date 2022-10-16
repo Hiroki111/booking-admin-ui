@@ -1,13 +1,8 @@
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, Theme, StyledEngineProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
+import { ThemeProvider, StyledEngineProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import './fonts.css';
 
 import { grey } from '@mui/material/colors';
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
 
 export const themeConfig = {
   breakpoints: {
