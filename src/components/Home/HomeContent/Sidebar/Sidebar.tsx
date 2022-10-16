@@ -1,21 +1,11 @@
 import { Drawer } from '@mui/material';
-import clsx from 'clsx';
 
-import { useIsSmallWindow } from '../../../../hooks/window';
 import { DrawerList } from '../DrawerList';
-import { useStyles } from './useStyles';
+import * as sx from './styles';
 
 export function Sidebar() {
-  const classes = useStyles();
-  const isSmallWindow = useIsSmallWindow();
-
   return (
-    <Drawer
-      variant="permanent"
-      classes={{
-        paper: clsx(classes.drawerPaper, isSmallWindow && classes.drawerPaperClose),
-      }}
-    >
+    <Drawer variant="permanent" sx={sx.drawerPaper}>
       <DrawerList />
     </Drawer>
   );
