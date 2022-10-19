@@ -8,7 +8,8 @@ import AdapterDayjs from '@mui/lab/AdapterDayjs';
 import { RootThemeProvider } from '../../theme/RootThemeProvider';
 import { queryClient } from '../../components/Home';
 import { CalendarContext } from '../../contexts/CalendarContext';
-import { getMockCalendarContextValue } from '../../staticData/CalendarContext';
+import { getMockCalendarContextValue } from '../mockData/CalendarContext';
+
 interface RenderOption {
   pathName?: string;
   inCalendarContext?: boolean;

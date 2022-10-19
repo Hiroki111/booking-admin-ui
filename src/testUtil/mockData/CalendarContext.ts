@@ -12,3 +12,7 @@ export const mockCalendarContextValue: CalendarContextInterface = {
   setCalendarTitle: jest.fn(),
   updateCalendarView: jest.fn(),
 };
+
+export function getMockCalendarContextValue(params?: Partial<CalendarContextInterface>) {
+  return { ...mockCalendarContextValue, ...params };
+}
