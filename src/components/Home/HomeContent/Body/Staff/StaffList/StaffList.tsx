@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material';
 import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 
-import { EditButton, DeleteButton } from './styles';
+import { addNewButton, gridWrapper, deleteButton, editButton } from './styles';
 import { useStaffListQuery } from '../../../../../../queries/staff';
 
 export function StaffList() {
@@ -19,8 +19,10 @@ export function StaffList() {
       flex: 1,
       renderCell: () => (
         <>
-          <EditButton variant="outlined">Edit</EditButton>
-          <DeleteButton>Delete</DeleteButton>
+          <Button sx={editButton} variant="outlined">
+            Edit
+          </Button>
+          <Button sx={deleteButton}>Delete</Button>
         </>
       ),
     },
@@ -35,10 +37,10 @@ export function StaffList() {
 
   return (
     <Box>
-      <Box>
-        <Button>Add new staff</Button>
+      <Box sx={addNewButton}>
+        <Button variant="outlined">Add new staff</Button>
       </Box>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={gridWrapper}>
         <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5]} disableSelectionOnClick />
       </Box>
     </Box>
