@@ -9,7 +9,7 @@ export function Staff() {
   return (
     <>
       <Nagivation />
-      <Route exact path={PATHS.staff} component={StaffList} />
+      <Route exact path={[PATHS.staff, PATHS.staffEditId]} component={StaffList} />
       <Route exact path={PATHS.staffAvailabilities} component={StaffAvailabilities} />
     </>
   );
