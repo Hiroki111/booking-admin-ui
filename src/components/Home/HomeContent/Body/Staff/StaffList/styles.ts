@@ -13,6 +13,13 @@ export const deleteButton = (theme: Theme) => ({
   color: theme.palette.common.white,
 });
 
-export const addNewButton = { margin: '16px 0', display: 'flex', flexDirection: 'row-reverse' };
+export const addNewButton = {
+  margin: '16px 0',
+  display: 'flex',
+  flexDirection: 'row-reverse',
+};
 
-export const gridWrapper = { height: 400, width: '100%' };
+export const gridWrapper = {
+  height: 400,
+  width: '100%',
+};

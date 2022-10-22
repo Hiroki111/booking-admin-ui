@@ -3,9 +3,10 @@ import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 
 import { addNewButton, gridWrapper, deleteButton, editButton } from './styles';
 import { useStaffListQuery } from '../../../../../../queries/staff';
+import { WarningAlert } from '../../../../../../util/WarningAlert';
 
 export function StaffList() {
-  const { data: staffList } = useStaffListQuery();
+  const { data: staffList, isError } = useStaffListQuery();
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', flex: 2, minWidth: 150 },
@@ -37,6 +38,17 @@ export function StaffList() {
 
   return (
     <Box>
+      {isError && (
+        <Box>
+          <WarningAlert
+            message={
+              <div data-testid="fetching-data-failed-alert">
+                It failed to load data due to an internal error. Please try again later.
+              </div>
+            }
+          />
+        </Box>
+      )}
       <Box sx={addNewButton}>
         <Button variant="outlined">Add new staff</Button>
       </Box>
