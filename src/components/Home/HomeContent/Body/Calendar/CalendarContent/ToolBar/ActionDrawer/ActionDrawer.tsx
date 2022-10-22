@@ -20,7 +20,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import ViewDayOutlinedIcon from '@mui/icons-material/ViewDayOutlined';
 import ViewWeekOutlinedIcon from '@mui/icons-material/ViewWeekOutlined';
 import ViewComfyOutlinedIcon from '@mui/icons-material/ViewComfyOutlined';
-import clsx from 'clsx';
 
 import * as sx from './styles';
 import { ALL_STAFF, useCalendarContext } from '../../../../../../../../contexts/CalendarContext';
@@ -98,7 +97,7 @@ export function ActionDrawer() {
                   sx={
                     {
                       ...sx.iconButtonRoot,
-                      ...(calendarViewKey == calendarViewItem.calendarViewKey && sx.selectedItem),
+                      ...(calendarViewKey === calendarViewItem.calendarViewKey && sx.selectedItem),
                     } as SxProps<Theme>
                   }
                   size="large"

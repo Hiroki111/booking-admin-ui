@@ -1,39 +1,46 @@
-import { Box, Button, Paper, Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, Button } from '@mui/material';
+import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 
-import { StyledTableCell, EditButton, DeleteButton } from './styles';
+import { EditButton, DeleteButton } from './styles';
 import { useStaffListQuery } from '../../../../../../queries/staff';
 
 export function StaffList() {
   const { data: staffList } = useStaffListQuery();
+
+  const columns: GridColDef[] = [
+    { field: 'name', headerName: 'Name', flex: 2, minWidth: 150 },
+    { field: 'title', headerName: 'Title', flex: 2, minWidth: 150 },
+    {
+      field: 'action',
+      headerName: 'Action',
+      minWidth: 200,
+      align: 'center',
+      headerAlign: 'center',
+      flex: 1,
+      renderCell: () => (
+        <>
+          <EditButton variant="outlined">Edit</EditButton>
+          <DeleteButton>Delete</DeleteButton>
+        </>
+      ),
+    },
+  ];
+
+  const rows: GridRowsProp =
+    staffList?.map((staff) => ({
+      id: staff.id,
+      name: staff.name,
+      title: staff.title,
+    })) || [];
 
   return (
     <Box>
       <Box>
         <Button>Add new staff</Button>
       </Box>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell>Title</StyledTableCell>
-              <StyledTableCell align="center">Action</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {staffList?.map((staff) => (
-              <TableRow key={staff.id}>
-                <StyledTableCell>{staff.name}</StyledTableCell>
-                <StyledTableCell>{staff.title}</StyledTableCell>
-                <StyledTableCell align="center">
-                  <EditButton>Edit</EditButton>
-                  <DeleteButton>Delete</DeleteButton>
-                </StyledTableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Box sx={{ height: 400, width: '100%' }}>
+        <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5]} disableSelectionOnClick />
+      </Box>
     </Box>
   );
 }
