@@ -24,6 +24,8 @@ export function StaffList() {
       align: 'center',
       headerAlign: 'center',
       flex: 1,
+      disableColumnMenu: true,
+      sortable: false,
       renderCell: (params: GridRenderCellParams) => (
         <>
           <Button

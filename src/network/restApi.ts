@@ -37,6 +37,7 @@ const restApi = {
     });
   },
 
+  // NOTE: Shouldn't it use "/api/admin/bookings/{id}" ?
   fetchBooking: async function (id: string | number): Promise<Booking> {
     const res: AxiosResponse<Booking> = await axios({
       method: 'GET',
@@ -50,6 +51,15 @@ const restApi = {
     const res: AxiosResponse<Booking[]> = await axios({
       method: 'GET',
       url: `/api/admin/bookings?year=${year}&month=${month}`,
+      headers: defaultHeaders,
+    });
+    return res.data;
+  },
+
+  fetchStaff: async function (id: string | number): Promise<Staff> {
+    const res: AxiosResponse<Staff> = await axios({
+      method: 'GET',
+      url: `/api/admin/staff/${id}`,
       headers: defaultHeaders,
     });
     return res.data;
