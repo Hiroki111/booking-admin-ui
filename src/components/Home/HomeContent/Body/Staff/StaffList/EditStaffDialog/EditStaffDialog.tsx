@@ -53,7 +53,7 @@ export function EditStaffDialog() {
       </Grid>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item container justifyContent="center" xs={12}>
             <StaffAvatar staff={staff} />
           </Grid>
           <Grid item sm={6} xs={12}>
