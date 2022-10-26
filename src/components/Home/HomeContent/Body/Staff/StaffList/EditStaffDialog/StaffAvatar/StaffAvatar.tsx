@@ -34,31 +34,37 @@ export function StaffAvatar({ staff }: Props) {
     return initials;
   }
 
-  if (staff.id === NEW_STAFF_ID) {
+  function getAvatar(staff: Staff, isImageInvalid: boolean) {
+    if (staff.id === NEW_STAFF_ID) {
+      return (
+        <Avatar data-testid="new-staff-icon" sx={sx.avatar}>
+          <PeopleIcon />
+        </Avatar>
+      );
+    } else if (!staff?.profilePhotoUrl || isImageInvalid) {
+      return (
+        <Avatar data-testid="staff-initials" sx={sx.initials}>
+          {getInitials(staff)}
+        </Avatar>
+      );
+    }
+    // NOTE:
+    // <Avatar/>'s onError doesn't fire correctly if a new src is provided
+    // Thus, <img/> is used
     return (
-      <Avatar data-testid="new-staff-icon" sx={sx.avatar}>
-        <PeopleIcon />
-      </Avatar>
-    );
-  } else if (!staff?.profilePhotoUrl || isImageInvalid) {
-    return (
-      <Avatar data-testid="staff-initials" sx={sx.initials}>
-        {getInitials(staff)}
-      </Avatar>
+      <Box sx={sx.imageWrapper}>
+        <img data-testid="staff-photo" src={staff.profilePhotoUrl} onError={(e) => setIsImageInvalid(true)} />
+      </Box>
     );
   }
 
-  // NOTE:
-  // <Avatar/>'s onError doesn't fire correctly if a new src is provided
   return (
-    <Box sx={sx.imageWrapper}>
-      <Badge
-        overlap="circular"
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        badgeContent={<Box sx={sx.editBadge}>Edit</Box>}
-      >
-        <img data-testid="staff-photo" src={staff.profilePhotoUrl} onError={(e) => setIsImageInvalid(true)} />
-      </Badge>
-    </Box>
+    <Badge
+      overlap="circular"
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      badgeContent={<Box sx={sx.editBadge}>Edit</Box>}
+    >
+      {getAvatar(staff, isImageInvalid)}
+    </Badge>
   );
 }
