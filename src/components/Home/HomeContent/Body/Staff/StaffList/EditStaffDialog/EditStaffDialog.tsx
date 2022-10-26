@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Dialog, Grid, DialogTitle, IconButton, DialogContent, TextField, Autocomplete } from '@mui/material';
+import {
+  Dialog,
+  Grid,
+  DialogTitle,
+  IconButton,
+  DialogContent,
+  TextField,
+  Autocomplete,
+  DialogActions,
+  Button,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
@@ -102,6 +112,21 @@ export function EditStaffDialog() {
           </Grid>
         </Grid>
       </DialogContent>
+      <DialogActions sx={sx.dialogActions}>
+        <Button data-testid="cancel-submission" variant="outlined" color="primary" onClick={handleCancel}>
+          CANCEL
+        </Button>
+        <Button
+          data-testid="submit-staff"
+          color="primary"
+          variant="contained"
+          // disabled={saveStaffMutation.isLoading}
+          // onClick={handleSubmitStaff}
+        >
+          {/* {!saveStaffMutation.isLoading ? 'SAVE' : 'SUBMITTING...'} */}
+          SAVE
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 }

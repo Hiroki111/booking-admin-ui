@@ -1,7 +1,7 @@
 // NOTE: This component may well be reusable in the enitre project,
 // so that the avatar looks always the same based on the staff
 import { useEffect, useState } from 'react';
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Badge, Box } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 
 import { Staff } from '../../../../../../../../interfaces/staff';
@@ -52,7 +52,13 @@ export function StaffAvatar({ staff }: Props) {
   // <Avatar/>'s onError doesn't fire correctly if a new src is provided
   return (
     <Box sx={sx.imageWrapper}>
-      <img data-testid="staff-photo" src={staff.profilePhotoUrl} onError={(e) => setIsImageInvalid(true)} />
+      <Badge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        badgeContent={<Box sx={sx.editBadge}>Edit</Box>}
+      >
+        <img data-testid="staff-photo" src={staff.profilePhotoUrl} onError={(e) => setIsImageInvalid(true)} />
+      </Badge>
     </Box>
   );
 }
