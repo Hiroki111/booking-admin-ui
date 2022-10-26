@@ -36,13 +36,13 @@ export function StaffAvatar({ staff }: Props) {
 
   if (staff.id === NEW_STAFF_ID) {
     return (
-      <Avatar data-testid="no-preference-staff-avatar" sx={sx.avatar}>
+      <Avatar data-testid="new-staff-icon" sx={sx.avatar}>
         <PeopleIcon />
       </Avatar>
     );
   } else if (!staff?.profilePhotoUrl || isImageInvalid) {
     return (
-      <Avatar data-testid="staff-avatar" sx={sx.initials}>
+      <Avatar data-testid="staff-initials" sx={sx.initials}>
         {getInitials(staff)}
       </Avatar>
     );
