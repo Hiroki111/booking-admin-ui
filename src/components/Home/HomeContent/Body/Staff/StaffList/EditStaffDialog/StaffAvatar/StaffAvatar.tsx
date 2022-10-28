@@ -17,7 +17,7 @@ export function StaffAvatar({ staff }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const [isImageInvalid, setIsImageInvalid] = useState(false);
-  const [isPhotoUploaded, setIsPhotoUploaded] = useState(false);
+  const [imageFile, seTimageFile] = useState<File>();
 
   useEffect(() => {
     setIsImageInvalid(false);
@@ -62,14 +62,11 @@ export function StaffAvatar({ staff }: Props) {
     );
   }
 
-  function handleImageUploaded(event: FormEvent<HTMLDivElement>) {
-    console.log('handleImageUploaded', event);
-    // send the image to server
-
-    // success
-    //  show crop dialog
-    // failed
-    //  show a message
+  function handleImageUploaded(e: FormEvent<HTMLInputElement>) {
+    if (!e.currentTarget.files?.length) {
+      return;
+    }
+    seTimageFile(e.currentTarget.files[0]);
   }
 
   return (
@@ -95,14 +92,8 @@ export function StaffAvatar({ staff }: Props) {
               }}
             >
               <Box sx={sx.popoverContent}>
-                <input ref={fileInputRef} onChangeCapture={handleImageUploaded} type="file" />
-                <Typography
-                  component="p"
-                  onClick={() => {
-                    console.log('fileInputRef?.current', fileInputRef?.current);
-                    fileInputRef?.current?.click();
-                  }}
-                >
+                <input ref={fileInputRef} onChange={handleImageUploaded} type="file" />
+                <Typography component="p" onClick={() => fileInputRef?.current?.click()}>
                   Upload image
                 </Typography>
                 <Divider />
@@ -116,7 +107,15 @@ export function StaffAvatar({ staff }: Props) {
       >
         {getAvatar(staff, isImageInvalid)}
       </Badge>
-      {isPhotoUploaded && <UploadAvatarDialog />}
+      {imageFile && (
+        <UploadAvatarDialog
+          imageFile={imageFile}
+          onCancle={() => {
+            seTimageFile(undefined);
+            setAnchorEl(null);
+          }}
+        />
+      )}
     </>
   );
 }

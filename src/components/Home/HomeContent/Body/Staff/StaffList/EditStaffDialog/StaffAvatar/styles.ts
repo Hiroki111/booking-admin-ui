@@ -25,6 +25,9 @@ export const inputLabel = {
   backgroundColor: 'white',
   fontWeight: 'bold',
   borderRadius: '4px',
+  '&:hover': {
+    cursor: 'pointer',
+  },
 };
 
 export const popoverContent = (theme: Theme) => ({
