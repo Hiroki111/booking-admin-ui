@@ -1,19 +1,23 @@
 // NOTE: This component may well be reusable in the enitre project,
 // so that the avatar looks always the same based on the staff
-import { useEffect, useState } from 'react';
-import { Avatar, Badge, Box } from '@mui/material';
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { Avatar, Badge, Box, Divider, Popover, Typography } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 
 import { Staff } from '../../../../../../../../interfaces/staff';
 import { NEW_STAFF_ID } from '../../../../../../../../staticData/staff';
 import * as sx from './styles';
+import { UploadAvatarDialog } from './UploadAvatarDialog';
 
 interface Props {
   staff: Staff;
 }
 
 export function StaffAvatar({ staff }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const [isImageInvalid, setIsImageInvalid] = useState(false);
+  const [isPhotoUploaded, setIsPhotoUploaded] = useState(false);
 
   useEffect(() => {
     setIsImageInvalid(false);
@@ -58,13 +62,61 @@ export function StaffAvatar({ staff }: Props) {
     );
   }
 
+  function handleImageUploaded(event: FormEvent<HTMLDivElement>) {
+    console.log('handleImageUploaded', event);
+    // send the image to server
+
+    // success
+    //  show crop dialog
+    // failed
+    //  show a message
+  }
+
   return (
-    <Badge
-      overlap="circular"
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      badgeContent={<Box sx={sx.editBadge}>Edit</Box>}
-    >
-      {getAvatar(staff, isImageInvalid)}
-    </Badge>
+    <>
+      <Badge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        badgeContent={
+          <>
+            <Box
+              sx={sx.inputLabel}
+              onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => setAnchorEl(event.currentTarget)}
+            >
+              Edit
+            </Box>
+            <Popover
+              open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              onClose={() => setAnchorEl(null)}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+            >
+              <Box sx={sx.popoverContent}>
+                <input ref={fileInputRef} onChangeCapture={handleImageUploaded} type="file" />
+                <Typography
+                  component="p"
+                  onClick={() => {
+                    console.log('fileInputRef?.current', fileInputRef?.current);
+                    fileInputRef?.current?.click();
+                  }}
+                >
+                  Upload image
+                </Typography>
+                <Divider />
+                <Typography component="p" onClick={() => {}}>
+                  Delete image
+                </Typography>
+              </Box>
+            </Popover>
+          </>
+        }
+      >
+        {getAvatar(staff, isImageInvalid)}
+      </Badge>
+      {isPhotoUploaded && <UploadAvatarDialog />}
+    </>
   );
 }
