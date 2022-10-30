@@ -1,27 +1,91 @@
-import ReactCrop, { Crop } from 'react-image-crop';
+import ReactCrop, { centerCrop, Crop, makeAspectCrop } from 'react-image-crop';
 import { Button, Dialog, DialogActions, DialogContent, Grid } from '@mui/material';
 
+import { SyntheticEvent, useState } from 'react';
+import { Box } from '@mui/system';
+import * as sx from './styles';
 import 'react-image-crop/dist/ReactCrop.css';
-import { useState } from 'react';
 
 interface Props {
-  imageFile: File;
+  imageSrc: string;
   onCancle: () => void;
 }
 
-export function UploadAvatarDialog({ imageFile, onCancle }: Props) {
+// NOTE: 1 is for square, 16 / 9 is for landscape
+const ASPECT_RATIO = 1;
+
+export function UploadAvatarDialog({ imageSrc, onCancle }: Props) {
   const [crop, setCrop] = useState<Crop>();
+  const [imageElement, setImageElement] = useState<HTMLImageElement>();
+
+  function centerTheCropOnImageLoad(e: SyntheticEvent<HTMLImageElement, Event>) {
+    const { width, height } = e.currentTarget;
+    const crop = centerCrop(makeAspectCrop({ unit: 'px', width: width }, ASPECT_RATIO, width, height), width, height);
+
+    setCrop(crop);
+    setImageElement(e.currentTarget);
+  }
+
+  function onSave() {
+    if (!imageElement) {
+      throw new Error("The loaded image wasn't set");
+    } else if (!crop) {
+      throw new Error("The loaded image wasn't cropped");
+    }
+    const canvas = document.createElement('canvas');
+    const scaleXRatio = imageElement.naturalWidth / imageElement.width;
+    const scaleYRatio = imageElement.naturalHeight / imageElement.height;
+    canvas.width = crop.width;
+    canvas.height = crop.height;
+    let ctx: CanvasRenderingContext2D | null;
+    if (!(ctx = canvas.getContext('2d'))) {
+      throw new Error('2d context not supported or canvas already initialized');
+    }
+
+    const pixelRatio = window.devicePixelRatio;
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    const sourceX = crop.x * scaleXRatio;
+    const sourceY = crop.y * scaleYRatio;
+    const sourceWidth = crop.width * scaleXRatio;
+    const sourceHeight = crop.height * scaleYRatio;
+    const destinationWidth = crop.width;
+    const destinationHeight = crop.height;
+
+    ctx.drawImage(imageElement, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, destinationWidth, destinationHeight);
+
+    // Converting to base64
+    const base64Image = canvas.toDataURL('image/jpeg');
+
+    // Download the file
+    // const downloadLink = document.createElement('a');
+    // document.body.appendChild(downloadLink);
+    // downloadLink.href = base64Image;
+    // downloadLink.target = '_self';
+    // downloadLink.download = 'test.jpeg';
+    // downloadLink.click();
+  }
+
   return (
-    <Dialog open maxWidth="md" fullWidth>
-      <DialogContent>
-        <ReactCrop crop={crop} onChange={(c) => setCrop(c)}>
-          <img src={URL.createObjectURL(imageFile)} />
-        </ReactCrop>
+    <Dialog open maxWidth="sm" fullWidth>
+      <DialogContent sx={sx.dialogContent}>
+        <Box sx={sx.dialogContentWrapper}>
+          <ReactCrop circularCrop aspect={1} crop={crop} onChange={(crop) => setCrop(crop)}>
+            <img onLoad={centerTheCropOnImageLoad} src={imageSrc} alt="It failed to load the file" />
+          </ReactCrop>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Grid container justifyContent="space-between">
-          <Button onClick={onCancle}>Cancel</Button>
-          <Button>Save</Button>
+          <Button variant="outlined" onClick={onCancle}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={onSave}>
+            Save
+          </Button>
         </Grid>
       </DialogActions>
     </Dialog>

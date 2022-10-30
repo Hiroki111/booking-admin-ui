@@ -17,7 +17,7 @@ export function StaffAvatar({ staff }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const [isImageInvalid, setIsImageInvalid] = useState(false);
-  const [imageFile, seTimageFile] = useState<File>();
+  const [imageSrc, seTimageSrc] = useState<string>();
 
   useEffect(() => {
     setIsImageInvalid(false);
@@ -57,7 +57,12 @@ export function StaffAvatar({ staff }: Props) {
     // Thus, <img/> is used
     return (
       <Box sx={sx.imageWrapper}>
-        <img data-testid="staff-photo" src={staff.profilePhotoUrl} onError={(e) => setIsImageInvalid(true)} />
+        <img
+          data-testid="staff-photo"
+          src={staff.profilePhotoUrl}
+          onError={(e) => setIsImageInvalid(true)}
+          alt="It failed to load the file"
+        />
       </Box>
     );
   }
@@ -66,7 +71,7 @@ export function StaffAvatar({ staff }: Props) {
     if (!e.currentTarget.files?.length) {
       return;
     }
-    seTimageFile(e.currentTarget.files[0]);
+    seTimageSrc(URL.createObjectURL(e.currentTarget.files[0]));
   }
 
   return (
@@ -107,11 +112,11 @@ export function StaffAvatar({ staff }: Props) {
       >
         {getAvatar(staff, isImageInvalid)}
       </Badge>
-      {imageFile && (
+      {imageSrc && (
         <UploadAvatarDialog
-          imageFile={imageFile}
+          imageSrc={imageSrc}
           onCancle={() => {
-            seTimageFile(undefined);
+            seTimageSrc(undefined);
             setAnchorEl(null);
           }}
         />
