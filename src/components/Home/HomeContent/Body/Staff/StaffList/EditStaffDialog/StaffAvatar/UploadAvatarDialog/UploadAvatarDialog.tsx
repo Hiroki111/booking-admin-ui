@@ -63,13 +63,7 @@ export function UploadAvatarDialog({ imageSrc, onCancle }: Props) {
     // Converting to base64
     const base64Image = canvas.toDataURL('image/jpeg');
 
-    // Download the file
-    const downloadLink = document.createElement('a');
-    document.body.appendChild(downloadLink);
-    downloadLink.href = base64Image;
-    downloadLink.target = '_self';
-    downloadLink.download = 'test.jpeg';
-    downloadLink.click();
+    // uploadAvatarImageMutation(base64Image, staff.id);
   }
 
   return (

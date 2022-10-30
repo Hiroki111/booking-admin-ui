@@ -76,6 +76,7 @@ export function StaffAvatar({ staff }: Props) {
 
   return (
     <>
+      {/** Badge appears if staff.id > 0 */}
       <Badge
         overlap="circular"
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
