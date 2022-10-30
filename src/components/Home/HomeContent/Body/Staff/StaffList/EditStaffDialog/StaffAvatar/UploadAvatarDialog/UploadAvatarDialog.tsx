@@ -48,25 +48,28 @@ export function UploadAvatarDialog({ imageSrc, onCancle }: Props) {
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.imageSmoothingQuality = 'high';
 
-    const sourceX = crop.x * scaleXRatio;
-    const sourceY = crop.y * scaleYRatio;
-    const sourceWidth = crop.width * scaleXRatio;
-    const sourceHeight = crop.height * scaleYRatio;
-    const destinationWidth = crop.width;
-    const destinationHeight = crop.height;
-
-    ctx.drawImage(imageElement, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, destinationWidth, destinationHeight);
+    ctx.drawImage(
+      imageElement,
+      crop.x * scaleXRatio, // source X
+      crop.y * scaleYRatio, // source Y
+      crop.width * scaleXRatio, // source width
+      crop.height * scaleYRatio, // source height
+      0, // destination X
+      0, // destination Y
+      crop.width, // destination width
+      crop.height, // destination height
+    );
 
     // Converting to base64
     const base64Image = canvas.toDataURL('image/jpeg');
 
     // Download the file
-    // const downloadLink = document.createElement('a');
-    // document.body.appendChild(downloadLink);
-    // downloadLink.href = base64Image;
-    // downloadLink.target = '_self';
-    // downloadLink.download = 'test.jpeg';
-    // downloadLink.click();
+    const downloadLink = document.createElement('a');
+    document.body.appendChild(downloadLink);
+    downloadLink.href = base64Image;
+    downloadLink.target = '_self';
+    downloadLink.download = 'test.jpeg';
+    downloadLink.click();
   }
 
   return (
