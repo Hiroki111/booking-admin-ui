@@ -1,14 +1,16 @@
 import { FormEvent, useRef, useState } from 'react';
 import { Badge, Box, Divider, Popover, Typography } from '@mui/material';
 
-import { UploadAvatarDialog } from '../UploadAvatarDialog';
+import { UploadAvatarDialog } from './UploadAvatarDialog';
 import * as sx from './styles';
+import { Staff } from '../../../../../../../../../interfaces/staff';
 
 interface Props {
+  staff: Staff;
   children: JSX.Element;
 }
 
-export function StaffAvatarEditBadge({ children }: Props) {
+export function StaffAvatarEditBadge({ staff, children }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const [imageSrc, setImageSrc] = useState<string>();
@@ -37,10 +39,7 @@ export function StaffAvatarEditBadge({ children }: Props) {
               open={Boolean(anchorEl)}
               anchorEl={anchorEl}
               onClose={() => setAnchorEl(null)}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             >
               <Box sx={sx.popoverContent}>
                 <input ref={fileInputRef} onChange={handleImageUploaded} type="file" />
@@ -60,6 +59,7 @@ export function StaffAvatarEditBadge({ children }: Props) {
       </Badge>
       {imageSrc && (
         <UploadAvatarDialog
+          staff={staff}
           imageSrc={imageSrc}
           onCancle={() => {
             setImageSrc(undefined);

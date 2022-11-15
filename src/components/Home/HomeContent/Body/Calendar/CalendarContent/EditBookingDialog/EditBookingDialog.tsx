@@ -81,6 +81,7 @@ export function EditBookingDialog() {
     history.push(`${PATHS.calendar}?${searchParams.toString()}`);
   }
 
+  // TODO: Simplify this by following EditStaffDialog.tsx
   function getSubmissionErrorMessage(error: any) {
     let message = 'Please try again later.';
     if (error?.details && typeof error.details === 'object') {

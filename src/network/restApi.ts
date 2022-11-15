@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 import { Booking, CreateBookingRequestBody, UpdateBookingRequestBody } from '../interfaces/booking';
 import { Service } from '../interfaces/service';
-import { Staff } from '../interfaces/staff';
+import { CreateStaffRequestBody, Staff, UpdateStaffRequestBody } from '../interfaces/staff';
 import { StaffAvailability } from '../interfaces/staffAvailability';
 import { User } from '../interfaces/user';
 import { BookingRequestError } from './error';
@@ -89,6 +89,15 @@ const restApi = {
     return res.data.data[0];
   },
 
+  uploadAvatarImageMutation: async function (staffId: string | number, base64Image: string): Promise<void> {
+    await axios({
+      method: 'PUT',
+      url: `/api/admin/staff/avatar/${staffId}`,
+      data: { base64Image },
+      headers: defaultHeaders,
+    });
+  },
+
   fetchServices: async function (): Promise<Service[]> {
     const res: AxiosResponse<Service[]> = await axios({
       method: 'GET',
@@ -142,6 +151,48 @@ const restApi = {
         );
       }
       throw new Error(error);
+    }
+  },
+
+  createStaff: async function (payload: CreateStaffRequestBody): Promise<Staff> {
+    try {
+      const res: AxiosResponse<Staff> = await axios({
+        method: 'POST',
+        url: '/api/admin/staff',
+        data: payload,
+        headers: defaultHeaders,
+      });
+      return res.data;
+    } catch (error: any) {
+      if (error.isAxiosError) {
+        throw new BookingRequestError(
+          error?.response?.data?.message || 'API request failed',
+          error?.response?.data?.details,
+        );
+      }
+      throw error;
+    }
+  },
+
+  updateStaff: async function (payload: UpdateStaffRequestBody): Promise<Staff> {
+    try {
+      const res: AxiosResponse<Staff> = await axios({
+        method: 'PUT',
+        url: `/api/admin/staff/${payload.id}`,
+        data: payload,
+        headers: defaultHeaders,
+      });
+      return res.data;
+    } catch (error: any) {
+      if (error.isAxiosError && error?.response?.data?.details) {
+        // TODO: Don't use BookingRequestError.
+        // This isn't for booking requests
+        throw new BookingRequestError(
+          error?.response?.data?.message || 'API request failed',
+          error?.response?.data?.details,
+        );
+      }
+      throw error;
     }
   },
 };

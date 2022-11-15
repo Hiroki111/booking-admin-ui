@@ -13,6 +13,7 @@ interface Props {
   staff: Staff;
 }
 
+// NOTE: Consider using context API to pass staff
 export function StaffAvatar({ staff }: Props) {
   const [isImageInvalid, setIsImageInvalid] = useState(false);
 
@@ -44,7 +45,7 @@ export function StaffAvatar({ staff }: Props) {
   }
   if (!staff?.profilePhotoUrl || isImageInvalid) {
     return (
-      <StaffAvatarEditBadge>
+      <StaffAvatarEditBadge staff={staff}>
         <Avatar data-testid="staff-initials" sx={sx.initials}>
           {getInitials(staff)}
         </Avatar>
@@ -54,7 +55,7 @@ export function StaffAvatar({ staff }: Props) {
   // NOTE:
   // <Avatar/>'s onError doesn't fire correctly if a new src is provided. Hence <img/> is used
   return (
-    <StaffAvatarEditBadge>
+    <StaffAvatarEditBadge staff={staff}>
       <Box sx={sx.imageWrapper}>
         <img
           data-testid="staff-photo"

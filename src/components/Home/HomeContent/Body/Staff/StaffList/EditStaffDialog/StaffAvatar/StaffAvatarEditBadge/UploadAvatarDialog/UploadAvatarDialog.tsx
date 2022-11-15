@@ -5,8 +5,11 @@ import { SyntheticEvent, useState } from 'react';
 import { Box } from '@mui/system';
 import * as sx from './styles';
 import 'react-image-crop/dist/ReactCrop.css';
+import { Staff } from '../../../../../../../../../../interfaces/staff';
+import { useUploadAvatarImageMutation } from '../../../../../../../../../../queries/staff';
 
 interface Props {
+  staff: Staff;
   imageSrc: string;
   onCancle: () => void;
 }
@@ -14,9 +17,11 @@ interface Props {
 // NOTE: 1 is for square, 16 / 9 is for landscape
 const ASPECT_RATIO = 1;
 
-export function UploadAvatarDialog({ imageSrc, onCancle }: Props) {
+export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
+  // TODO: Create Context API and get staff from there
   const [crop, setCrop] = useState<Crop>();
   const [imageElement, setImageElement] = useState<HTMLImageElement>();
+  const uploadAvatarImageMutation = useUploadAvatarImageMutation();
 
   function centerTheCropOnImageLoad(e: SyntheticEvent<HTMLImageElement, Event>) {
     const { width, height } = e.currentTarget;
@@ -63,7 +68,7 @@ export function UploadAvatarDialog({ imageSrc, onCancle }: Props) {
     // Converting to base64
     const base64Image = canvas.toDataURL('image/jpeg');
 
-    // uploadAvatarImageMutation(base64Image, staff.id);
+    uploadAvatarImageMutation.mutate({ staffId: staff.id, base64Image });
   }
 
   return (

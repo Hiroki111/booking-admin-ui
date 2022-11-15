@@ -9,6 +9,7 @@ import {
   Autocomplete,
   DialogActions,
   Button,
+  Box,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
@@ -18,9 +19,10 @@ import { PATHS } from '../../../../../../../staticData/routes';
 import { Staff } from '../../../../../../../interfaces/staff';
 import { Service } from '../../../../../../../interfaces/service';
 import { useServicesQuery } from '../../../../../../../queries/service';
-import { useStaffQuery } from '../../../../../../../queries/staff';
+import { useStaffQuery, useSaveStaffMutation } from '../../../../../../../queries/staff';
 import { StaffAvatar } from './StaffAvatar';
 import * as sx from './styles';
+import { WarningAlert } from '../../../../../../../util/WarningAlert';
 
 export function EditStaffDialog() {
   const [staff, setStaff] = useState<Staff>(DEFAULT_STAFF);
@@ -31,15 +33,7 @@ export function EditStaffDialog() {
   const { id } = useParams<{ id: string }>();
   const { data: existingStaff } = useStaffQuery(id);
   const isCreatingNewStaff = id === String(NEW_STAFF_ID);
-
-  function handleCancel() {
-    const searchParams = new URLSearchParams(search);
-    if (!searchParams.toString()?.length) {
-      history.push(PATHS.staff);
-      return;
-    }
-    history.push(`${PATHS.staff}?${searchParams.toString()}`);
-  }
+  const saveStaffMutation = useSaveStaffMutation(id);
 
   useEffect(() => {
     if (!isCreatingNewStaff && existingStaff) {
@@ -53,6 +47,34 @@ export function EditStaffDialog() {
     setServiceOptions(serviceOptions);
   }, [fetchServicesQuery?.data, setServiceOptions]);
 
+  function handleCancel() {
+    const searchParams = new URLSearchParams(search);
+    if (!searchParams.toString()?.length) {
+      history.push(PATHS.staff);
+      return;
+    }
+    history.push(`${PATHS.staff}?${searchParams.toString()}`);
+  }
+
+  function handleSubmitStaff() {
+    saveStaffMutation.mutate({
+      ...staff,
+      serviceIds: staff.services.map((service) => service.id),
+    });
+  }
+
+  function getSubmissionErrorMessage(error: any) {
+    let message: string;
+    if (error?.details && typeof error.details === 'object') {
+      message = Object.keys(error.details)
+        .map((key) => `${key}: ${error.details[key]}`)
+        .join(', ');
+    } else {
+      message = 'Please try again later.';
+    }
+    return message;
+  }
+
   return (
     <Dialog open maxWidth="md" fullWidth>
       <Grid container justifyContent="space-between">
@@ -62,6 +84,16 @@ export function EditStaffDialog() {
         </IconButton>
       </Grid>
       <DialogContent>
+        {saveStaffMutation.error instanceof Error && (
+          <Box sx={sx.warningAlertContainer}>
+            <WarningAlert
+              title={'Error occurred'}
+              message={
+                <div data-testid="submission-failed-alert">{getSubmissionErrorMessage(saveStaffMutation.error)}</div>
+              }
+            />
+          </Box>
+        )}
         <Grid container spacing={2}>
           <Grid item container justifyContent="center" xs={12}>
             <StaffAvatar staff={staff} />
@@ -120,11 +152,10 @@ export function EditStaffDialog() {
           data-testid="submit-staff"
           color="primary"
           variant="contained"
-          // disabled={saveStaffMutation.isLoading}
-          // onClick={handleSubmitStaff}
+          disabled={saveStaffMutation.isLoading}
+          onClick={handleSubmitStaff}
         >
-          {/* {!saveStaffMutation.isLoading ? 'SAVE' : 'SUBMITTING...'} */}
-          SAVE
+          {!saveStaffMutation.isLoading ? 'SAVE' : 'SUBMITTING...'}
         </Button>
       </DialogActions>
     </Dialog>
