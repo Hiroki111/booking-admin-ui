@@ -8,3 +8,7 @@ export const dialogContentWrapper = {
   maxHeight: { xs: 400, sm: 550 },
   maxWidth: { xs: 400, sm: 550 },
 };
+
+export const alertContainer = {
+  marginBottom: '16px',
+};

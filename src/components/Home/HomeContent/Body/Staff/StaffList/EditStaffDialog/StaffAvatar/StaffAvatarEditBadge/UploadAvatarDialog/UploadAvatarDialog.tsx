@@ -1,5 +1,6 @@
 import ReactCrop, { centerCrop, Crop, makeAspectCrop } from 'react-image-crop';
-import { Alert, Button, Dialog, DialogActions, DialogContent, Grid } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { SyntheticEvent, useState } from 'react';
 import { Box } from '@mui/system';
@@ -87,13 +88,16 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
 
   return (
     <Dialog open maxWidth="sm" fullWidth>
-      <DialogContent sx={sx.dialogContent}>
+      <Grid container justifyContent="space-between">
+        <DialogTitle>Upload Avatar</DialogTitle>
+        <IconButton onClick={onCancle} size="large">
+          <CloseIcon />
+        </IconButton>
+      </Grid>
+      <DialogContent>
         <Box sx={sx.dialogContentWrapper}>
-          <ReactCrop circularCrop aspect={1} crop={crop} onChange={(crop) => setCrop(crop)}>
-            <img onLoad={centerTheCropOnImageLoad} src={imageSrc} alt="It failed to load the file" />
-          </ReactCrop>
           {uploadAvatarImageMutation.error instanceof Error && (
-            <Box>
+            <Box sx={sx.alertContainer}>
               <WarningAlert
                 title={'Error occurred'}
                 message={
@@ -104,7 +108,16 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
               />
             </Box>
           )}
-          {uploadAvatarImageMutation.isSuccess && <Alert severity="success">Image Saved</Alert>}
+          {uploadAvatarImageMutation.isSuccess && (
+            <Alert sx={sx.alertContainer} severity="success">
+              Image Saved
+            </Alert>
+          )}
+          <Grid item container justifyContent="center" xs={12}>
+            <ReactCrop circularCrop aspect={1} crop={crop} onChange={(crop) => setCrop(crop)}>
+              <img onLoad={centerTheCropOnImageLoad} src={imageSrc} alt="It failed to load the file" />
+            </ReactCrop>
+          </Grid>
         </Box>
       </DialogContent>
       <DialogActions>
