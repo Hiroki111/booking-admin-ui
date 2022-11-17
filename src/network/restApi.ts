@@ -181,13 +181,8 @@ const restApi = {
       });
       return res.data;
     } catch (error: any) {
-      if (error.isAxiosError && error?.response?.data?.details) {
-        // TODO: Don't use BookingRequestError.
-        // This isn't for booking requests
-        throw new BookingRequestError(
-          error?.response?.data?.message || 'API request failed',
-          error?.response?.data?.details,
-        );
+      if (typeof error?.response?.data?.details === 'object') {
+        throw new ErrorWithDetails(error.response.data?.message || 'API request failed', error.response.data.details);
       }
       throw error;
     }

@@ -25,6 +25,7 @@ import { StaffAvatar } from './StaffAvatar';
 import * as sx from './styles';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
 import { ErrorWithDetails } from '../../../../../../../network/error';
+import { getPathWithParam } from '../../../../../../../services/routing';
 
 export function EditStaffDialog() {
   const [staff, setStaff] = useState<Staff>(DEFAULT_STAFF);
@@ -42,6 +43,12 @@ export function EditStaffDialog() {
       setStaff(existingStaff);
     }
   }, [isCreatingNewStaff, existingStaff]);
+
+  useEffect(() => {
+    if (isCreatingNewStaff && saveStaffMutation.isSuccess && saveStaffMutation.data?.id) {
+      history.push(getPathWithParam(PATHS.staffEditId, { ':id': String(saveStaffMutation.data.id) }));
+    }
+  }, [history, isCreatingNewStaff, saveStaffMutation.isSuccess, saveStaffMutation.data, id]);
 
   useEffect(() => {
     const serviceOptions = fetchServicesQuery?.data || [];
