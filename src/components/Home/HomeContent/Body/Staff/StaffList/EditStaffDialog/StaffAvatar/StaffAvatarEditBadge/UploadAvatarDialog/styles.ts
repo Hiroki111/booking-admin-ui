@@ -1,6 +1,7 @@
 export const dialogContent = {
   display: 'flex',
   justifyContent: 'center',
+  paddingBottom: '16px',
 };
 
 export const dialogContentWrapper = {

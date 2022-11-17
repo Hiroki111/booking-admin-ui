@@ -1,5 +1,5 @@
 import ReactCrop, { centerCrop, Crop, makeAspectCrop } from 'react-image-crop';
-import { Button, Dialog, DialogActions, DialogContent, Grid } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, Grid } from '@mui/material';
 
 import { SyntheticEvent, useState } from 'react';
 import { Box } from '@mui/system';
@@ -7,6 +7,8 @@ import * as sx from './styles';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Staff } from '../../../../../../../../../../interfaces/staff';
 import { useUploadAvatarImageMutation } from '../../../../../../../../../../queries/staff';
+import { ErrorWithDetails } from '../../../../../../../../../../network/error';
+import { WarningAlert } from '../../../../../../../../../../util/WarningAlert';
 
 interface Props {
   staff: Staff;
@@ -71,6 +73,18 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
     uploadAvatarImageMutation.mutate({ staffId: staff.id, base64Image });
   }
 
+  function getSubmissionErrorMessage(error: any) {
+    let message = 'Please try again later.';
+    if (error instanceof ErrorWithDetails) {
+      message = Object.keys(error.details)
+        .map((key) => `${key}: ${error.details[key]}`)
+        .join(', ');
+    } else if (error.message) {
+      message = error.message;
+    }
+    return message;
+  }
+
   return (
     <Dialog open maxWidth="sm" fullWidth>
       <DialogContent sx={sx.dialogContent}>
@@ -78,6 +92,19 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
           <ReactCrop circularCrop aspect={1} crop={crop} onChange={(crop) => setCrop(crop)}>
             <img onLoad={centerTheCropOnImageLoad} src={imageSrc} alt="It failed to load the file" />
           </ReactCrop>
+          {uploadAvatarImageMutation.error instanceof Error && (
+            <Box>
+              <WarningAlert
+                title={'Error occurred'}
+                message={
+                  <div data-testid="submission-failed-alert">
+                    {getSubmissionErrorMessage(uploadAvatarImageMutation.error)}
+                  </div>
+                }
+              />
+            </Box>
+          )}
+          {uploadAvatarImageMutation.isSuccess && <Alert severity="success">Image Saved</Alert>}
         </Box>
       </DialogContent>
       <DialogActions>
@@ -85,8 +112,8 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
           <Button variant="outlined" onClick={onCancle}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={onSave}>
-            Save
+          <Button variant="contained" onClick={onSave} disabled={uploadAvatarImageMutation.isLoading}>
+            {!uploadAvatarImageMutation.isLoading ? 'SAVE' : 'SUBMITTING...'}
           </Button>
         </Grid>
       </DialogActions>
