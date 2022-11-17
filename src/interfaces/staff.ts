@@ -20,6 +20,8 @@ export interface CreateStaffRequestBody {
   serviceIds: number[];
 }
 
+// Note: I don't need to include the ID in the body,
+// because ID has to be in URL
 export type UpdateStaffRequestBody = CreateStaffRequestBody & {
   id: number;
 };

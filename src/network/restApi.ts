@@ -5,7 +5,7 @@ import { Service } from '../interfaces/service';
 import { CreateStaffRequestBody, Staff, UpdateStaffRequestBody } from '../interfaces/staff';
 import { StaffAvailability } from '../interfaces/staffAvailability';
 import { User } from '../interfaces/user';
-import { BookingRequestError } from './error';
+import { BookingRequestError, ErrorWithDetails } from './error';
 
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -164,11 +164,8 @@ const restApi = {
       });
       return res.data;
     } catch (error: any) {
-      if (error.isAxiosError) {
-        throw new BookingRequestError(
-          error?.response?.data?.message || 'API request failed',
-          error?.response?.data?.details,
-        );
+      if (typeof error?.response?.data?.details === 'object') {
+        throw new ErrorWithDetails(error.response.data?.message || 'API request failed', error.response.data.details);
       }
       throw error;
     }

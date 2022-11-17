@@ -8,6 +8,6 @@ export const dialogActions = {
   padding: '0 24px 20px 24px',
 };
 
-export const warningAlertContainer = {
+export const alertContainer = {
   marginBottom: '16px',
 };

@@ -10,6 +10,7 @@ import {
   DialogActions,
   Button,
   Box,
+  Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
@@ -23,6 +24,7 @@ import { useStaffQuery, useSaveStaffMutation } from '../../../../../../../querie
 import { StaffAvatar } from './StaffAvatar';
 import * as sx from './styles';
 import { WarningAlert } from '../../../../../../../util/WarningAlert';
+import { ErrorWithDetails } from '../../../../../../../network/error';
 
 export function EditStaffDialog() {
   const [staff, setStaff] = useState<Staff>(DEFAULT_STAFF);
@@ -64,13 +66,13 @@ export function EditStaffDialog() {
   }
 
   function getSubmissionErrorMessage(error: any) {
-    let message: string;
-    if (error?.details && typeof error.details === 'object') {
+    let message = 'Please try again later.';
+    if (error instanceof ErrorWithDetails) {
       message = Object.keys(error.details)
         .map((key) => `${key}: ${error.details[key]}`)
         .join(', ');
-    } else {
-      message = 'Please try again later.';
+    } else if (error.message) {
+      message = error.message;
     }
     return message;
   }
@@ -85,7 +87,7 @@ export function EditStaffDialog() {
       </Grid>
       <DialogContent>
         {saveStaffMutation.error instanceof Error && (
-          <Box sx={sx.warningAlertContainer}>
+          <Box sx={sx.alertContainer}>
             <WarningAlert
               title={'Error occurred'}
               message={
@@ -93,6 +95,11 @@ export function EditStaffDialog() {
               }
             />
           </Box>
+        )}
+        {saveStaffMutation.isSuccess && (
+          <Alert sx={sx.alertContainer} severity="success">
+            Staff Saved
+          </Alert>
         )}
         <Grid container spacing={2}>
           <Grid item container justifyContent="center" xs={12}>
