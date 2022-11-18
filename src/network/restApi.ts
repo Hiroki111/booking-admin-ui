@@ -89,13 +89,17 @@ const restApi = {
     return res.data.data[0];
   },
 
-  uploadAvatarImageMutation: async function (staffId: string | number, base64Image: string): Promise<void> {
+  uploadAvatarImage: async function (staffId: string | number, base64Image: string): Promise<void> {
     await axios({
       method: 'PUT',
       url: `/api/admin/staff/avatar/${staffId}`,
       data: { base64Image },
       headers: defaultHeaders,
     });
+  },
+
+  deleteAvatarImage: async function (staffId: number): Promise<void> {
+    // TODO: Implement this
   },
 
   fetchServices: async function (): Promise<Service[]> {

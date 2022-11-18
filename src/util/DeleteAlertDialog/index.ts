@@ -1,0 +1,1 @@
+export { DeleteAlertDialog } from './DeleteAlertDialog';

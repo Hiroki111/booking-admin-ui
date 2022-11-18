@@ -4,6 +4,8 @@ import { Badge, Box, Divider, Popover, Typography } from '@mui/material';
 import { UploadAvatarDialog } from './UploadAvatarDialog';
 import * as sx from './styles';
 import { Staff } from '../../../../../../../../../interfaces/staff';
+import { DeleteAlertDialog } from '../../../../../../../../../util/DeleteAlertDialog';
+import { useDeleteAvatarImageMutation } from '../../../../../../../../../queries/staff';
 
 interface Props {
   staff: Staff;
@@ -14,12 +16,20 @@ export function StaffAvatarEditBadge({ staff, children }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const [imageSrc, setImageSrc] = useState<string>();
+  const [isOpeningDeleteDialog, setIsOpeningDeleteDialog] = useState(false);
+  const deleteAvatarImageMutation = useDeleteAvatarImageMutation();
 
   function handleImageUploaded(e: FormEvent<HTMLInputElement>) {
     if (!e.currentTarget.files?.length) {
       return;
     }
     setImageSrc(URL.createObjectURL(e.currentTarget.files[0]));
+  }
+
+  function handleDeleteImage() {
+    deleteAvatarImageMutation.mutate(staff.id);
+    setIsOpeningDeleteDialog(false);
+    setAnchorEl(null);
   }
 
   return (
@@ -47,11 +57,17 @@ export function StaffAvatarEditBadge({ staff, children }: Props) {
                   Upload image
                 </Typography>
                 <Divider />
-                <Typography component="p" onClick={() => {}}>
+                <Typography component="p" onClick={() => setIsOpeningDeleteDialog(true)}>
                   Delete image
                 </Typography>
               </Box>
             </Popover>
+            <DeleteAlertDialog
+              isOpening={isOpeningDeleteDialog}
+              onCancel={() => setIsOpeningDeleteDialog(false)}
+              onDelete={handleDeleteImage}
+              text={`You're going to delete ${staff.name}'s avatar image. Deleted images can't be restored. Do you really wish to delete it?`}
+            />
           </>
         }
       >

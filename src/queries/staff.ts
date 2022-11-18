@@ -23,8 +23,12 @@ export function useStaffQuery(id: string | number): UseQueryResult<Staff> {
 
 export function useUploadAvatarImageMutation() {
   return useMutation(staffQuries.uploadAvatarImage, (payload: UploadAvatarImagePayload) =>
-    restApi.uploadAvatarImageMutation(payload.staffId, payload.base64Image),
+    restApi.uploadAvatarImage(payload.staffId, payload.base64Image),
   );
+}
+
+export function useDeleteAvatarImageMutation() {
+  return useMutation(staffQuries.uploadAvatarImage, (id: number) => restApi.deleteAvatarImage(id));
 }
 
 export function useSaveStaffMutation(id: string | number) {
