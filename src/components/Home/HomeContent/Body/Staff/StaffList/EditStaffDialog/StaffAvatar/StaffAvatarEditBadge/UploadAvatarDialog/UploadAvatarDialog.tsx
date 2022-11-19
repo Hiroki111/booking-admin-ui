@@ -1,15 +1,14 @@
 import ReactCrop, { centerCrop, Crop, makeAspectCrop } from 'react-image-crop';
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useState, useEffect } from 'react';
 import { Box } from '@mui/system';
 import * as sx from './styles';
-import 'react-image-crop/dist/ReactCrop.css';
 import { Staff } from '../../../../../../../../../../interfaces/staff';
 import { useUploadAvatarImageMutation } from '../../../../../../../../../../queries/staff';
-import { ErrorWithDetails } from '../../../../../../../../../../network/error';
-import { WarningAlert } from '../../../../../../../../../../util/WarningAlert';
+import { useSnackbar } from 'notistack';
+import 'react-image-crop/dist/ReactCrop.css';
 
 interface Props {
   staff: Staff;
@@ -25,6 +24,21 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
   const [crop, setCrop] = useState<Crop>();
   const [imageElement, setImageElement] = useState<HTMLImageElement>();
   const uploadAvatarImageMutation = useUploadAvatarImageMutation();
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (uploadAvatarImageMutation.error instanceof Error) {
+      enqueueSnackbar(getSubmissionErrorMessage(uploadAvatarImageMutation.error), { variant: 'error' });
+    }
+  }, [uploadAvatarImageMutation.error]);
+
+  useEffect(() => {
+    if (uploadAvatarImageMutation.isSuccess) {
+      enqueueSnackbar('Image saved', { variant: 'info' });
+      onCancle();
+      // reload the image in the dialog
+    }
+  }, [uploadAvatarImageMutation.isSuccess]);
 
   function centerTheCropOnImageLoad(e: SyntheticEvent<HTMLImageElement, Event>) {
     const { width, height } = e.currentTarget;
@@ -75,15 +89,14 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
   }
 
   function getSubmissionErrorMessage(error: any) {
-    let message = 'Please try again later.';
-    if (error instanceof ErrorWithDetails) {
-      message = Object.keys(error.details)
+    if (error.details) {
+      return Object.keys(error.details)
         .map((key) => `${key}: ${error.details[key]}`)
         .join(', ');
     } else if (error.message) {
-      message = error.message;
+      return error.message;
     }
-    return message;
+    return 'Please try again later.';
   }
 
   return (
@@ -96,23 +109,6 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
       </Grid>
       <DialogContent>
         <Box sx={sx.dialogContentWrapper}>
-          {uploadAvatarImageMutation.error instanceof Error && (
-            <Box sx={sx.alertContainer}>
-              <WarningAlert
-                title={'Error occurred'}
-                message={
-                  <div data-testid="submission-failed-alert">
-                    {getSubmissionErrorMessage(uploadAvatarImageMutation.error)}
-                  </div>
-                }
-              />
-            </Box>
-          )}
-          {uploadAvatarImageMutation.isSuccess && (
-            <Alert sx={sx.alertContainer} severity="success">
-              Image Saved
-            </Alert>
-          )}
           <Grid item container justifyContent="center" xs={12}>
             <ReactCrop circularCrop aspect={1} crop={crop} onChange={(crop) => setCrop(crop)}>
               <img onLoad={centerTheCropOnImageLoad} src={imageSrc} alt="It failed to load the file" />

@@ -9,9 +9,8 @@ import {
   Autocomplete,
   DialogActions,
   Button,
-  Box,
-  Alert,
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import CloseIcon from '@mui/icons-material/Close';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
@@ -23,8 +22,6 @@ import { useServicesQuery } from '../../../../../../../queries/service';
 import { useStaffQuery, useSaveStaffMutation } from '../../../../../../../queries/staff';
 import { StaffAvatar } from './StaffAvatar';
 import * as sx from './styles';
-import { WarningAlert } from '../../../../../../../util/WarningAlert';
-import { ErrorWithDetails } from '../../../../../../../network/error';
 import { getPathWithParam } from '../../../../../../../services/routing';
 
 export function EditStaffDialog() {
@@ -37,6 +34,7 @@ export function EditStaffDialog() {
   const { data: existingStaff } = useStaffQuery(id);
   const isCreatingNewStaff = id === String(NEW_STAFF_ID);
   const saveStaffMutation = useSaveStaffMutation(id);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (!isCreatingNewStaff && existingStaff) {
@@ -56,6 +54,18 @@ export function EditStaffDialog() {
     setServiceOptions(serviceOptions);
   }, [fetchServicesQuery?.data, setServiceOptions]);
 
+  useEffect(() => {
+    if (saveStaffMutation.error instanceof Error) {
+      enqueueSnackbar(getSubmissionErrorMessage(saveStaffMutation.error), { variant: 'error' });
+    }
+  }, [saveStaffMutation.error]);
+
+  useEffect(() => {
+    if (saveStaffMutation.isSuccess) {
+      enqueueSnackbar('Staff saved', { variant: 'info' });
+    }
+  }, [saveStaffMutation.isSuccess]);
+
   function handleCancel() {
     const searchParams = new URLSearchParams(search);
     if (!searchParams.toString()?.length) {
@@ -73,15 +83,14 @@ export function EditStaffDialog() {
   }
 
   function getSubmissionErrorMessage(error: any) {
-    let message = 'Please try again later.';
-    if (error instanceof ErrorWithDetails) {
-      message = Object.keys(error.details)
+    if (error.details) {
+      return Object.keys(error.details)
         .map((key) => `${key}: ${error.details[key]}`)
         .join(', ');
     } else if (error.message) {
-      message = error.message;
+      return error.message;
     }
-    return message;
+    return 'Please try again later.';
   }
 
   return (
@@ -93,21 +102,6 @@ export function EditStaffDialog() {
         </IconButton>
       </Grid>
       <DialogContent>
-        {saveStaffMutation.error instanceof Error && (
-          <Box sx={sx.alertContainer}>
-            <WarningAlert
-              title={'Error occurred'}
-              message={
-                <div data-testid="submission-failed-alert">{getSubmissionErrorMessage(saveStaffMutation.error)}</div>
-              }
-            />
-          </Box>
-        )}
-        {saveStaffMutation.isSuccess && (
-          <Alert sx={sx.alertContainer} severity="success">
-            Staff Saved
-          </Alert>
-        )}
         <Grid container spacing={2}>
           <Grid item container justifyContent="center" xs={12}>
             <StaffAvatar staff={staff} />

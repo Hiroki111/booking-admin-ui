@@ -187,6 +187,8 @@ const restApi = {
     } catch (error: any) {
       if (typeof error?.response?.data?.details === 'object') {
         throw new ErrorWithDetails(error.response.data?.message || 'API request failed', error.response.data.details);
+      } else if (error?.response?.data?.message) {
+        throw new Error(error.response.data?.message);
       }
       throw error;
     }
