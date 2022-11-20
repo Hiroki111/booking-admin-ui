@@ -1,14 +1,14 @@
-import ReactCrop, { centerCrop, Crop, makeAspectCrop } from 'react-image-crop';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-
 import { SyntheticEvent, useState, useEffect } from 'react';
+import ReactCrop, { centerCrop, Crop, makeAspectCrop } from 'react-image-crop';
+import { Grid } from '@mui/material';
 import { Box } from '@mui/system';
+
 import * as sx from './styles';
 import { Staff } from '../../../../../../../../../../interfaces/staff';
-import { useUploadAvatarImageMutation } from '../../../../../../../../../../queries/staff';
-import { useSnackbar } from 'notistack';
+import { useStaffQuery, useUploadAvatarImageMutation } from '../../../../../../../../../../queries/staff';
 import 'react-image-crop/dist/ReactCrop.css';
+import { FormDialog } from '../../../../../../../../../../util/FormDialog';
+import { useParams } from 'react-router-dom';
 
 interface Props {
   staff: Staff;
@@ -24,19 +24,12 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
   const [crop, setCrop] = useState<Crop>();
   const [imageElement, setImageElement] = useState<HTMLImageElement>();
   const uploadAvatarImageMutation = useUploadAvatarImageMutation();
-  const { enqueueSnackbar } = useSnackbar();
-
-  useEffect(() => {
-    if (uploadAvatarImageMutation.error instanceof Error) {
-      enqueueSnackbar(getSubmissionErrorMessage(uploadAvatarImageMutation.error), { variant: 'error' });
-    }
-  }, [uploadAvatarImageMutation.error]);
+  const { id } = useParams<{ id: string }>();
+  const { refetch } = useStaffQuery(id);
 
   useEffect(() => {
     if (uploadAvatarImageMutation.isSuccess) {
-      enqueueSnackbar('Image saved', { variant: 'info' });
-      onCancle();
-      // reload the image in the dialog
+      refetch();
     }
   }, [uploadAvatarImageMutation.isSuccess]);
 
@@ -48,7 +41,7 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
     setImageElement(e.currentTarget);
   }
 
-  function onSave() {
+  function handleSubmitImage() {
     if (!imageElement) {
       throw new Error("The loaded image wasn't set");
     } else if (!crop) {
@@ -88,44 +81,26 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
     uploadAvatarImageMutation.mutate({ staffId: staff.id, base64Image });
   }
 
-  function getSubmissionErrorMessage(error: any) {
-    if (error.details) {
-      return Object.keys(error.details)
-        .map((key) => `${key}: ${error.details[key]}`)
-        .join(', ');
-    } else if (error.message) {
-      return error.message;
-    }
-    return 'Please try again later.';
-  }
-
   return (
-    <Dialog open maxWidth="sm" fullWidth>
-      <Grid container justifyContent="space-between">
-        <DialogTitle>Upload Avatar</DialogTitle>
-        <IconButton onClick={onCancle} size="large">
-          <CloseIcon />
-        </IconButton>
-      </Grid>
-      <DialogContent>
-        <Box sx={sx.dialogContentWrapper}>
-          <Grid item container justifyContent="center" xs={12}>
-            <ReactCrop circularCrop aspect={1} crop={crop} onChange={(crop) => setCrop(crop)}>
-              <img onLoad={centerTheCropOnImageLoad} src={imageSrc} alt="It failed to load the file" />
-            </ReactCrop>
-          </Grid>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Grid container justifyContent="space-between">
-          <Button variant="outlined" onClick={onCancle}>
-            Cancel
-          </Button>
-          <Button variant="contained" onClick={onSave} disabled={uploadAvatarImageMutation.isLoading}>
-            {!uploadAvatarImageMutation.isLoading ? 'SAVE' : 'SUBMITTING...'}
-          </Button>
+    <FormDialog
+      maxDialogWidth={'sm'}
+      dialogTitle={'Upload Avatar'}
+      isSubmittingForm={uploadAvatarImageMutation.isLoading}
+      isDataSubmissonSuccess={uploadAvatarImageMutation.isSuccess}
+      dataSubmissionError={
+        uploadAvatarImageMutation.error instanceof Error ? uploadAvatarImageMutation.error : undefined
+      }
+      dataSubmissonSuccessMessage={'Image uploaded'}
+      onCancel={onCancle}
+      onSubmitForm={handleSubmitImage}
+    >
+      <Box sx={sx.dialogContentWrapper}>
+        <Grid item container justifyContent="center" xs={12}>
+          <ReactCrop circularCrop aspect={1} crop={crop} onChange={(crop) => setCrop(crop)}>
+            <img onLoad={centerTheCropOnImageLoad} src={imageSrc} alt="It failed to load the file" />
+          </ReactCrop>
         </Grid>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </FormDialog>
   );
 }

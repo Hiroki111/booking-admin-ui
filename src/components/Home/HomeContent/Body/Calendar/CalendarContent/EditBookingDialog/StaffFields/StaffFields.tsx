@@ -137,7 +137,15 @@ export function StaffFields({ booking, setBooking }: Props) {
           options={allStaffList}
           inputValue={staffNameInputValue}
           filterOptions={() => filterAndSortStaff(allStaffList, booking)}
-          getOptionLabel={(option: Staff) => option?.name || ''}
+          getOptionLabel={(option: Staff) => option.name}
+          renderOption={(props, option) => {
+            const key = `listItem-${option.id}`;
+            return (
+              <li {...props} key={key}>
+                {option.name}
+              </li>
+            );
+          }}
           isOptionEqualToValue={(option: Staff, value: Staff) => option.id === value.id}
           value={selectedStaff}
           noOptionsText={'No staff available for the selected services'}
