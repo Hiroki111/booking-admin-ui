@@ -1,14 +1,17 @@
+import { useParams } from 'react-router-dom';
 import { SyntheticEvent, useState, useEffect } from 'react';
 import ReactCrop, { centerCrop, Crop, makeAspectCrop } from 'react-image-crop';
-import { Grid } from '@mui/material';
+import { Dialog, Grid } from '@mui/material';
 import { Box } from '@mui/system';
 
 import * as sx from './styles';
 import { Staff } from '../../../../../../../../../../interfaces/staff';
 import { useStaffQuery, useUploadAvatarImageMutation } from '../../../../../../../../../../queries/staff';
+import { FormDialogActions } from '../../../../../../../../../../util/FormDialog/FormDialogActions';
+import { FormDialogContent } from '../../../../../../../../../../util/FormDialog/FormDialogContent';
+import { FormDialogHeader } from '../../../../../../../../../../util/FormDialog/FormDialogHeader';
+import { FormDialogNotification } from '../../../../../../../../../../util/FormDialog/FormDialogNotification';
 import 'react-image-crop/dist/ReactCrop.css';
-import { FormDialog } from '../../../../../../../../../../util/FormDialog';
-import { useParams } from 'react-router-dom';
 
 interface Props {
   staff: Staff;
@@ -82,25 +85,27 @@ export function UploadAvatarDialog({ staff, imageSrc, onCancle }: Props) {
   }
 
   return (
-    <FormDialog
-      maxDialogWidth={'sm'}
-      dialogTitle={'Upload Avatar'}
-      isSubmittingForm={uploadAvatarImageMutation.isLoading}
-      isDataSubmissonSuccess={uploadAvatarImageMutation.isSuccess}
-      dataSubmissionError={
-        uploadAvatarImageMutation.error instanceof Error ? uploadAvatarImageMutation.error : undefined
-      }
-      dataSubmissonSuccessMessage={'Image uploaded'}
-      onCancel={onCancle}
-      onSubmitForm={handleSubmitImage}
-    >
-      <Box sx={sx.dialogContentWrapper}>
-        <Grid item container justifyContent="center" xs={12}>
-          <ReactCrop circularCrop aspect={1} crop={crop} onChange={(crop) => setCrop(crop)}>
-            <img onLoad={centerTheCropOnImageLoad} src={imageSrc} alt="It failed to load the file" />
-          </ReactCrop>
-        </Grid>
-      </Box>
-    </FormDialog>
+    <Dialog open maxWidth={'sm'}>
+      <FormDialogHeader onCancel={onCancle}>{'Upload Avatar'}</FormDialogHeader>
+      <FormDialogContent>
+        <FormDialogNotification
+          isDataSubmissionSuccessful={uploadAvatarImageMutation.isSuccess}
+          dataSubmissionError={uploadAvatarImageMutation.error}
+          dataSubmissonSuccessMessage={'Image uploaded'}
+        />
+        <Box sx={sx.dialogContentWrapper}>
+          <Grid item container justifyContent="center" xs={12}>
+            <ReactCrop circularCrop aspect={1} crop={crop} onChange={(crop) => setCrop(crop)}>
+              <img onLoad={centerTheCropOnImageLoad} src={imageSrc} alt="It failed to load the file" />
+            </ReactCrop>
+          </Grid>
+        </Box>
+      </FormDialogContent>
+      <FormDialogActions
+        onCancel={onCancle}
+        onSubmitForm={handleSubmitImage}
+        isSubmittingData={uploadAvatarImageMutation.isLoading}
+      />
+    </Dialog>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Grid, Typography, Divider } from '@mui/material';
+import { Grid, Typography, Divider, Dialog } from '@mui/material';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { Booking } from '../../../../../../../interfaces/booking';
@@ -16,7 +16,10 @@ import { DEFAULT_BOOKING, NEW_BOOKING_ID } from '../../../../../../../staticData
 import { getPathWithParam } from '../../../../../../../services/routing';
 import { UseCalendarState } from '../../../../../../../hooks/calendar';
 import { useStaffAvailabilityQuery } from '../../../../../../../queries/staffAvailability';
-import { FormDialog } from '../../../../../../../util/FormDialog';
+import { FormDialogHeader } from '../../../../../../../util/FormDialog/FormDialogHeader';
+import { FormDialogContent } from '../../../../../../../util/FormDialog/FormDialogContent';
+import { FormDialogNotification } from '../../../../../../../util/FormDialog/FormDialogNotification';
+import { FormDialogActions } from '../../../../../../../util/FormDialog/FormDialogActions';
 
 export function EditBookingDialog() {
   const { year, month, day } = UseCalendarState();
@@ -31,15 +34,19 @@ export function EditBookingDialog() {
   const history = useHistory();
   const { search } = useLocation();
   const isCreatingNewBooking = id === String(NEW_BOOKING_ID);
-  const { data: existingBooking } = useBookingQuery(id);
+  const fetchBooking = useBookingQuery(id);
   const saveBookingMutation = useSaveBookingMutation(id);
   const { refetch } = useBookingsQuery(year, month);
+  const isLoadingContent = [fetchBooking].some((query) => query.isLoading);
+  const hasLoadingDataError = [fetchServicesQuery, fetchStaffListQuery, fetchStaffAvailabilityQuery, fetchBooking].some(
+    (query) => query.isError,
+  );
 
   useEffect(() => {
-    if (!isCreatingNewBooking && existingBooking) {
-      setBooking(existingBooking);
+    if (!isCreatingNewBooking && fetchBooking.data) {
+      setBooking(fetchBooking.data);
     }
-  }, [isCreatingNewBooking, existingBooking]);
+  }, [isCreatingNewBooking, fetchBooking.data]);
 
   useEffect(() => {
     if (isCreatingNewBooking && saveBookingMutation.isSuccess && saveBookingMutation.data?.id) {
@@ -70,50 +77,52 @@ export function EditBookingDialog() {
   }
 
   return (
-    <FormDialog
-      maxDialogWidth={'lg'}
-      dialogTitle={`${isCreatingNewBooking ? 'Add' : 'Edit'} Booking`}
-      hasDataLoadingError={
-        fetchServicesQuery.isError || fetchStaffListQuery.isError || fetchStaffAvailabilityQuery.isError
-      }
-      isSubmittingForm={saveBookingMutation.isLoading}
-      isDataSubmissonSuccess={saveBookingMutation.isSuccess}
-      dataSubmissionError={saveBookingMutation.error instanceof Error ? saveBookingMutation.error : undefined}
-      dataSubmissonSuccessMessage={'Booking Saved'}
-      onCancel={handleCancel}
-      onSubmitForm={handleSubmitBooking}
-    >
-      <Grid container sx={sx.dialogContainer}>
-        <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
-          <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
-            <Typography paragraph sx={sx.dividerText}>
-              Date and time
-            </Typography>
-            <DateTimeFields booking={booking} setBooking={setBooking} />
+    <Dialog open maxWidth={'lg'}>
+      <FormDialogHeader onCancel={handleCancel}>{`${isCreatingNewBooking ? 'Add' : 'Edit'} Booking`}</FormDialogHeader>
+      <FormDialogContent isLoadingContent={isLoadingContent}>
+        <FormDialogNotification
+          hasLoadingDataError={hasLoadingDataError}
+          isDataSubmissionSuccessful={saveBookingMutation.isSuccess}
+          dataSubmissionError={saveBookingMutation.error}
+          dataSubmissonSuccessMessage={'Booking Saved'}
+        />
+        <Grid container sx={sx.dialogContainer}>
+          <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
+            <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
+              <Typography paragraph sx={sx.dividerText}>
+                Date and time
+              </Typography>
+              <DateTimeFields booking={booking} setBooking={setBooking} />
+            </Grid>
+            <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
+              <Typography paragraph sx={sx.dividerText}>
+                Customer details
+              </Typography>
+              <CustomerDetailsFields booking={booking} setBooking={setBooking} />
+            </Grid>
           </Grid>
-          <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
-            <Typography paragraph sx={sx.dividerText}>
-              Customer details
-            </Typography>
-            <CustomerDetailsFields booking={booking} setBooking={setBooking} />
-          </Grid>
-        </Grid>
-        <Divider orientation="vertical" flexItem sx={sx.centralDivider} />
-        <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
-          <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
-            <Typography paragraph sx={sx.dividerText}>
-              Service
-            </Typography>
-            <ServiceFields booking={booking} setBooking={setBooking} />
-          </Grid>
-          <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
-            <Typography paragraph sx={sx.dividerText}>
-              Staff
-            </Typography>
-            <StaffFields booking={booking} setBooking={setBooking} />
+          <Divider orientation="vertical" flexItem sx={sx.centralDivider} />
+          <Grid container spacing={2} item alignContent="start" md={6} sm={12}>
+            <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
+              <Typography paragraph sx={sx.dividerText}>
+                Service
+              </Typography>
+              <ServiceFields booking={booking} setBooking={setBooking} />
+            </Grid>
+            <Grid item container rowSpacing={2} sx={sx.fieldGroup}>
+              <Typography paragraph sx={sx.dividerText}>
+                Staff
+              </Typography>
+              <StaffFields booking={booking} setBooking={setBooking} />
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </FormDialog>
+      </FormDialogContent>
+      <FormDialogActions
+        onCancel={handleCancel}
+        onSubmitForm={handleSubmitBooking}
+        isSubmittingData={saveBookingMutation.isLoading}
+      />
+    </Dialog>
   );
 }

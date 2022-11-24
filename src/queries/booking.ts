@@ -1,4 +1,4 @@
-import { useQuery, UseQueryResult, useMutation } from 'react-query';
+import { useQuery, UseQueryResult, useMutation, UseMutationResult } from 'react-query';
 import { Booking, CreateBookingRequestBody, UpdateBookingRequestBody } from '../interfaces/booking';
 
 import restApi from '../network/restApi';
@@ -22,7 +22,9 @@ export function useBookingsQuery(year: string, month: string): UseQueryResult<Bo
   });
 }
 
-export function useSaveBookingMutation(id: string | number) {
+export function useSaveBookingMutation(
+  id: string | number,
+): UseMutationResult<Booking, unknown, CreateBookingRequestBody | UpdateBookingRequestBody, unknown> {
   return useMutation(bookingQuries.createBooking, (payload: CreateBookingRequestBody | UpdateBookingRequestBody) => {
     if (id === String(NEW_BOOKING_ID)) {
       return restApi.createBooking(payload as CreateBookingRequestBody);

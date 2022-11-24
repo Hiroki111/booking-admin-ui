@@ -3,6 +3,7 @@ import { ThemeProvider, StyledEngineProvider, createTheme, responsiveFontSizes }
 import './fonts.css';
 
 import { grey } from '@mui/material/colors';
+import { blue } from '@material-ui/core/colors';
 
 export const themeConfig = {
   breakpoints: {
@@ -20,6 +21,9 @@ export const themeConfig = {
   palette: {
     primary: {
       main: grey[900],
+    },
+    secondary: {
+      main: blue[600],
     },
   },
 };
