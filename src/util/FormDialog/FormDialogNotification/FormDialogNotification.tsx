@@ -46,7 +46,7 @@ export function FormDialogNotification({
     return (
       <WarningAlert
         sx={sx.alert}
-        data-testid="submitting-data-failed-alert"
+        data-testid="submission-failed-alert"
         title="Submission failed"
         message={getSubmissionErrorMessage(dataSubmissionError)}
       />

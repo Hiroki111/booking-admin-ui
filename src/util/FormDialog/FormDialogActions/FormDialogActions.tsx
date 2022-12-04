@@ -15,7 +15,7 @@ export function FormDialogActions({ onCancel, onSubmitForm, isSubmittingData }: 
         CANCEL
       </Button>
       <Button
-        data-testid="submission"
+        data-testid="submit"
         color="primary"
         variant="contained"
         disabled={isSubmittingData}
