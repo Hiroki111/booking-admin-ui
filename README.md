@@ -1,5 +1,7 @@
 ## TODO
 
+- I've update EditBookingDialog with FormDialog\_ components.
+  Write tests for EditStaffDialog, DeleteAlertDialog, UploadAvatarDialog
 - Consider using Formik to improve FormDialog
 - On Booking editor, wouldn't it be better to refresh the staff list every time
   date, time, selected services are updated?
