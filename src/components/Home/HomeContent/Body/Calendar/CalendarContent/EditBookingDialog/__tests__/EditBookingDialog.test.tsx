@@ -138,21 +138,25 @@ describe('EditBookingDialog.tsx', () => {
     expect(await screen.findByText('Loading data failed')).toBeInTheDocument();
   });
 
-  // it('should show an error when it fails to fetch staff', async () => {
-  //   console.error = jest.fn();
-  //   restApi.fetchStaffList = jest.fn().mockRejectedValue('Failed');
-  //   renderEditBookingDialog();
+  it('should show an error when it fails to fetch staff', async () => {
+    console.error = jest.fn();
+    restApi.fetchStaffList = jest.fn().mockRejectedValue('Failed');
+    renderEditBookingDialog();
 
-  //   expect(await screen.findByText('Loading data failed')).toBeInTheDocument();
-  // });
+    await waitFor(() => expect(restApi.fetchStaffList).toHaveBeenCalled());
+    expect(await screen.findByText('Loading data failed')).toBeInTheDocument();
+  });
 
-  // it('should show an error when it fails to fetch staff availabilities', async () => {
-  //   console.error = jest.fn();
-  //   restApi.fetchStaffAvailability = jest.fn().mockRejectedValue('Failed');
-  //   renderEditBookingDialog();
+  it('should show an error when it fails to fetch staff availabilities', async () => {
+    console.error = jest.fn();
+    const existingBooking = createMockBooking();
+    restApi.fetchBooking = jest.fn().mockResolvedValue(existingBooking);
+    restApi.fetchStaffAvailability = jest.fn().mockRejectedValue('Failed');
+    renderEditBookingDialog(existingBooking.id);
 
-  //   expect(await screen.findByText('Loading data failed')).toBeInTheDocument();
-  // });
+    await waitFor(() => expect(restApi.fetchStaffAvailability).toHaveBeenCalled());
+    expect(await screen.findByText('Loading data failed')).toBeInTheDocument();
+  });
 
   it('should redirect to the calendar page if there is no URL search params and cancel button is clicked', async () => {
     renderEditBookingDialog();
